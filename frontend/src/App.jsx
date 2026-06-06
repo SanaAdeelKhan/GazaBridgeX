@@ -169,7 +169,7 @@ function AppRoutes() {
   console.log('isAuthPath:', isAuthPath);
 
   return (
-<div className="min-h-screen bg-gradient-to-b from-[#F5F3EA] via-white to-[#F5F3EA]/30">
+<div className="min-h-screen bg-gradient-to-b from-[#F2DDD8] via-white to-[#F2DDD8]/30">
       {showPublicLayout && (
         <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
 <div className="h-full bg-gradient-to-r from-[#C26100] to-[#E07A1B] transition-all duration-300" />

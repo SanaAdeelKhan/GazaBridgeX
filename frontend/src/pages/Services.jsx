@@ -217,14 +217,14 @@ export default function HowItWorks() {
   const lineH = useTransform(stepsScroll, [0.1, 0.85], ['0%', '100%']);
 
   return (
-    <div className="bg-[#F5F0E6]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="bg-[#F2DDD8]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <CursorBlob />
 
       {/* ══════════════════════════════════════════════ HERO ══ */}
       <motion.section
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-screen flex items-center overflow-hidden bg-[#F5F0E6] pt-20 md:pt-24"
+        className="relative min-h-screen flex items-center overflow-hidden bg-[#F2DDD8] pt-20 md:pt-24"
       >
         <NoiseOverlay />
         <MouseGradient />
@@ -420,7 +420,7 @@ export default function HowItWorks() {
       </div>
 
       {/* ══════════════════════════════════════════════ ROLE TOGGLE ══ */}
-      <section className="py-10 md:py-20 bg-[#F5F0E6]">
+      <section className="py-10 md:py-20 bg-[#F2DDD8]">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
 
           <motion.div
@@ -522,7 +522,7 @@ export default function HowItWorks() {
       </section>
 
       {/* ══════════════════════════════════════════════ STATS BAND ══ */}
-      <section className="py-10 md:py-16 bg-[#F5F0E6] overflow-hidden">
+      <section className="py-10 md:py-16 bg-[#F2DDD8] overflow-hidden">
         <NoiseOverlay />
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-[#808000]/10 rounded-3xl overflow-hidden border border-[#808000]/10">
@@ -556,7 +556,7 @@ export default function HowItWorks() {
 
       {/* ══════════════════════════════════════════════ FINAL CTA ══ */}
       <section className="relative py-16 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E6] via-[#E8E0D0] to-[#D4C9B5]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F2DDD8] via-[#E8E0D0] to-[#D4C9B5]" />
         <div className="absolute inset-0 overflow-hidden">
           <motion.div animate={{ x: [0, -50, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
             className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] bg-[#808000]/5 rounded-full blur-3xl" />

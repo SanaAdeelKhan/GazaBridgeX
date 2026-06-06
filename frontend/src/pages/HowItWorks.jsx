@@ -160,7 +160,7 @@ function StepCard({ step, index, accentBar }) {
 
       {/* Content */}
       <div className="flex-1 pt-0.5">
-        {/* Changed: group-hover:text-emerald-600 -> group-hover:text-[#808000] */}
+        {/* Changed: group-hover:text-orange-600 -> group-hover:text-[#808000] */}
         <h3 className="text-base font-bold text-gray-900 mb-1 group-hover:text-[#808000] transition-colors duration-200">
           {step.title}
         </h3>
@@ -205,7 +205,7 @@ function WhyCard({ emoji, title, points, gradient }) {
               transition={{ delay: 0.3 + i * 0.08 }}
               className="flex items-start gap-3 text-sm text-gray-600"
             >
-              {/* Changed: bg-emerald-50 -> bg-[#808000]/10, border-emerald-200 -> border-[#808000]/30, text-emerald-500 -> text-[#808000] */}
+              {/* Changed: bg-orange-500 -> bg-[#808000]/10, border-orange-400 -> border-[#808000]/30, text-orange-600 -> text-[#808000] */}
               <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#808000]/10 border border-[#808000]/30 flex items-center justify-center text-[#808000] text-[10px] mt-0.5 font-bold">✓</span>
               {p}
             </motion.li>
@@ -237,14 +237,14 @@ export default function HowItWorks() {
   const lineH = useTransform(stepsScroll, [0.1, 0.85], ['0%', '100%']);
 
   return (
-    <div className="bg-[#f8faf8]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="bg-[#F2DDD8]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <CursorBlob />
 
       {/* ══════════════════════════════════════════════ HERO ══ */}
       <motion.section
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-screen flex items-center overflow-hidden bg-[#f8faf8] pt-20 md:pt-24"
+        className="relative min-h-screen flex items-center overflow-hidden bg-[#F2DDD8] pt-20 md:pt-24"
       >
         <NoiseOverlay />
         <MouseGradient />
@@ -284,7 +284,7 @@ export default function HowItWorks() {
                 <textPath href="#ring-hiw">5 SIMPLE STEPS • FREE FOREVER • </textPath>
               </text>
             </svg>
-            {/* Changed: bg-emerald-500 -> bg-[#808000], shadow-emerald-500 -> shadow-[#808000] */}
+            {/* Changed: bg-orange-500 -> bg-[#808000], shadow-emerald-500 -> shadow-[#808000] */}
             <div className="w-14 h-14 rounded-full bg-[#808000] flex items-center justify-center shadow-xl shadow-[#808000]/30">
               <span className="text-white text-xl">✦</span>
             </div>
@@ -306,7 +306,7 @@ export default function HowItWorks() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#808000]/40 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#808000]" />
               </motion.span>
-              {/* Changed: text-emerald-700 -> text-[#808000] */}
+              {/* Changed: text-orange-600 -> text-[#808000] */}
               <span className="text-sm font-semibold text-[#808000]">Simple 5-Step Process</span>
             </motion.div>
 
@@ -372,7 +372,7 @@ export default function HowItWorks() {
                       Join as Volunteer
                       <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
                     </span>
-                    {/* Changed: from-teal-500 to-cyan-500 -> darker olive */}
+                    {/* Changed: from-orange-600 to-cyan-500 -> darker olive */}
                     <motion.div className="absolute inset-0 bg-gradient-to-r from-[#555500] to-[#333300] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.button>
                 </Link>
@@ -466,7 +466,7 @@ export default function HowItWorks() {
             viewport={{ once: true }} transition={{ duration: 0.6 }}
             className="flex flex-col items-center mb-16 gap-6"
           >
-            {/* Changed: bg-emerald-400 -> bg-[#808000] */}
+            {/* Changed: bg-orange-500 -> bg-[#808000] */}
             <div className="flex items-center gap-3">
               <div className="h-px w-8 bg-[#808000]" />
               <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#808000]">The Process</span>
@@ -514,7 +514,7 @@ export default function HowItWorks() {
               <div ref={stepsRef} className="relative">
                 {/* Vertical line - Olive */}
                 <div className="absolute left-[26px] top-6 bottom-6 w-px bg-gray-100">
-                  {/* Changed: from-emerald-400 to-teal-500 -> from-[#808000] to-[#6b6b00] */}
+                  {/* Changed: from-orange-600 to-orange-500 -> from-[#808000] to-[#6b6b00] */}
                   <motion.div style={{ height: lineH }} className="w-full bg-gradient-to-b from-[#808000] to-[#6b6b00] origin-top" />
                 </div>
 
@@ -571,7 +571,7 @@ export default function HowItWorks() {
       </section>
 
       {/* ══════════════════════════════════════════════ STATS BAND ══ */}
-      <section className="py-10 md:py-16 bg-[#f8faf8] overflow-hidden">
+      <section className="py-10 md:py-16 bg-[#F2DDD8] overflow-hidden">
         <NoiseOverlay />
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200 rounded-3xl overflow-hidden border border-gray-200">
@@ -593,7 +593,7 @@ export default function HowItWorks() {
                   style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
                 >{s.v}</div>
                 <div className="text-xs text-gray-500 font-medium">{s.l}</div>
-                {/* Changed: from-emerald-400 to-teal-400 -> from-[#808000] to-[#6b6b00] */}
+                {/* Changed: from-orange-600 to-orange-500 -> from-[#808000] to-[#6b6b00] */}
                 <motion.div
                   className="mt-4 h-0.5 bg-gradient-to-r from-[#808000] to-[#6b6b00] origin-left"
                   initial={{ scaleX: 0 }}
@@ -609,7 +609,7 @@ export default function HowItWorks() {
       {/* ══════════════════════════════════════════════ FINAL CTA ══ */}
       <section className="relative py-16 md:py-32 overflow-hidden">
         {/* Cream/Beige Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E6] via-[#E8E0D0] to-[#D4C9B5]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F2DDD8] via-[#E8E0D0] to-[#D4C9B5]" />
         <div className="absolute inset-0 overflow-hidden">
           <motion.div animate={{ x: [0, -50, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
             className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] bg-[#808000]/5 rounded-full blur-3xl" />

@@ -169,14 +169,14 @@ export default function FAQ() {
     : faqData;
 
   return (
-    <div className="bg-[#F5F0E6]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="bg-[#F2DDD8]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       <CursorBlob />
 
       {/* ══════════════════════════════════════════════ HERO ══ */}
       <motion.section
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-[85vh] flex items-center overflow-hidden bg-[#F5F0E6] pt-24"
+        className="relative min-h-[85vh] flex items-center overflow-hidden bg-[#F2DDD8] pt-24"
       >
         <NoiseOverlay />
         <MouseGradient />
@@ -385,7 +385,7 @@ export default function FAQ() {
             className="mt-16 relative rounded-3xl overflow-hidden"
           >
             {/* Cream/Beige Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E6] via-[#E8E0D0] to-[#D4C9B5]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#F2DDD8] via-[#E8E0D0] to-[#D4C9B5]" />
             <div className="absolute inset-0 overflow-hidden">
               <motion.div animate={{ x: [0, -30, 0] }} transition={{ duration: 16, repeat: Infinity, ease: 'linear' }}
                 className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] bg-[#808000]/5 rounded-full blur-3xl" />

@@ -7,7 +7,7 @@ export default function Blog() {
   return (
     <div className="pt-24">
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F5F3EA] via-white to-[#FAF3E8]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#F2DDD8] via-white to-[#FAF3E8]" />
 
         <div className="relative max-w-7xl mx-auto px-6">
           <motion.div

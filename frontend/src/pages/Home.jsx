@@ -181,7 +181,7 @@ function Hero() {
   return (
     <motion.section
       style={{ opacity }}
-      className="relative min-h-screen flex items-center overflow-hidden bg-[#f8faf8]"
+      className="relative min-h-screen flex items-center overflow-hidden bg-[#F2DDD8]"
     >
       {/* Video Background */}
       <div className="absolute inset-0 w-full h-full overflow-hidden z-0">
@@ -194,7 +194,7 @@ function Hero() {
         >
           <source src="/assets/public/gaabridge.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-[#f8faf8]/20" />
+        <div className="absolute inset-0 bg-[#F2DDD8]/20" />
       </div>
 
       <NoiseOverlay />
@@ -551,7 +551,7 @@ function HowItWorksSection() {
   const lineHeight = useTransform(scrollYProgress, [0.1, 0.9], ['0%', '100%']);
 
   return (
-    <section ref={containerRef} className="py-32 bg-[#f8faf8] relative overflow-hidden">
+    <section ref={containerRef} className="py-32 bg-[#F2DDD8] relative overflow-hidden">
       <NoiseOverlay />
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-[1fr_3fr] gap-16 items-start">
@@ -642,7 +642,7 @@ function HowItWorksSection() {
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-[#f8faf8] overflow-hidden selection:bg-[#808000] selection:text-white">
+    <div className="relative min-h-screen bg-[#F2DDD8] overflow-hidden selection:bg-[#808000] selection:text-white">
       <CursorBlob />
       <Hero />
       <MarqueeStrip />

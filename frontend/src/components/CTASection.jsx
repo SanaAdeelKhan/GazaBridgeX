@@ -11,7 +11,7 @@ export default function CTASection() {
     <section className="relative py-12 md:py-24 overflow-hidden">
       {/* Animated Gradient Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-600" />
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-teal-500 to-cyan-600" />
         <motion.div
           animate={{
             scale: [1, 1.2, 1],
@@ -92,7 +92,7 @@ export default function CTASection() {
             <motion.button
               whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(0, 0, 0, 0.2)" }}
               whileTap={{ scale: 0.95 }}
-              className="px-10 py-5 bg-white text-emerald-600 font-bold rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 text-lg"
+              className="px-10 py-5 bg-white text-orange-600 font-bold rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 text-lg"
               onClick={() => window.location.href = '#'}
             >
               Get Started Free

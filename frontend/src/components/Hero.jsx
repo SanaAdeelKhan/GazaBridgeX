@@ -31,7 +31,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-[#F5F3EA]">
+    <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-[#F2DDD8]">
       {/* ── Background Elements (تأثير الإضاءة بالماوس والدوائر بالـ utilities المخصصة) ── */}
       <div className="absolute inset-0 overflow-hidden">
         <div 

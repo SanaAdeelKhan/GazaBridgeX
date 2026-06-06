@@ -36,7 +36,7 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
       {/* Background - Cream/Beige */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F5F0E6] via-white to-[#E8E0D0]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#F2DDD8] via-white to-[#E8E0D0]" />
       
       <motion.div
         initial={{ opacity: 0, y: 30 }}

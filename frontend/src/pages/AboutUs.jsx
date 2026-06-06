@@ -66,10 +66,10 @@ export default function AboutUs() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   return (
-    <div className="bg-[#F5F0E6]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div className="bg-[#F2DDD8]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
 
       {/* ── HERO ────────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-[72vh] flex items-end pb-20 overflow-hidden bg-[#F5F0E6] pt-28">
+      <section ref={heroRef} className="relative min-h-[72vh] flex items-end pb-20 overflow-hidden bg-[#F2DDD8] pt-28">
         <NoiseOverlay />
 
         {/* Grid lines - Olive */}
@@ -155,7 +155,7 @@ export default function AboutUs() {
           </motion.div>
         </motion.div>
 
-        <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#F5F0E6] to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-[#F2DDD8] to-transparent pointer-events-none" />
       </section>
 
       {/* ── STORY SECTION ───────────────────────────────────────────────────── */}
@@ -248,7 +248,7 @@ export default function AboutUs() {
       </section>
 
       {/* ── TEAM ────────────────────────────────────────────────────────────── */}
-      <section className="py-28 bg-[#F5F0E6] overflow-hidden">
+      <section className="py-28 bg-[#F2DDD8] overflow-hidden">
         <NoiseOverlay />
         <div className="max-w-7xl mx-auto px-6">
 
@@ -372,7 +372,7 @@ export default function AboutUs() {
       </section>
 
       {/* ── JOIN CTA ────────────────────────────────────────────────────────── */}
-      <section className="py-24 bg-[#F5F0E6] relative overflow-hidden">
+      <section className="py-24 bg-[#F2DDD8] relative overflow-hidden">
         <NoiseOverlay />
         
         {/* Animated grid background - Olive */}

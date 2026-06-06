@@ -27,7 +27,7 @@ export default function DashboardLayout() {
 
   if (isChatPage) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <div className="min-h-screen bg-[#F2DDD8]">
         <HeaderBar />
         <Outlet />
       </div>
@@ -35,7 +35,7 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50 flex">
+    <div className="min-h-screen bg-[#F2DDD8] flex">
       <AnimatePresence>
         {sidebarOpen && (
           <motion.aside
@@ -43,7 +43,7 @@ export default function DashboardLayout() {
             animate={{ x: 0 }}
             exit={{ x: -280 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="w-64 lg:w-72 bg-white border-r border-gray-200 flex-shrink-0 h-screen sticky top-0 overflow-y-auto z-30"
+            className="w-64 lg:w-72 bg-gray-100 border-r border-gray-200 flex-shrink-0 h-screen sticky top-0 overflow-y-auto z-30"
           >
             {isAdmin ? <AdminSidebar /> : <Sidebar />}
           </motion.aside>
