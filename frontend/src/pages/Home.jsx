@@ -297,7 +297,7 @@ function Hero() {
                 transition={{ delay: 0.3, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                 className="flex items-end gap-4 overflow-visible"
               >
-                <div className="relative overflow-hidden" style={{ height: 'clamp(3.2rem,7vw,6.5rem)', minWidth: '250px' }}>
+                <div className="relative overflow-hidden" style={{ height: 'clamp(3.2rem,7vw,6.5rem)', minWidth: '350px' }}>
                   <AnimatePresence mode="wait">
                     <motion.span
                       key={wordIndex}
