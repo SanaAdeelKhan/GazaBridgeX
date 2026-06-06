@@ -85,7 +85,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
-              className="text-3xl md:text-5xl lg:text-7xl font-bold leading-tight"
+              className="text-2xl md:text-4xl lg:text-6xl font-bold leading-tight"
             >
               <span className="text-gray-900">Build Your </span>
               <span className="relative">
