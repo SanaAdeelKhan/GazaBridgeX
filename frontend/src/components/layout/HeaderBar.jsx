@@ -41,20 +41,20 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
   const isAdmin = user?.roles?.some(r => adminRoles.includes(r)) || user?.is_staff || user?.is_superuser;
 
   return (
-    <header className="bg-gray-100 border-b border-gray-200 sticky top-0 z-20" style={{ boxShadow: '0 1px 8px rgba(30,58,95,0.07)' }}>
+    <header className="bg-[#4B5563] border-b border-[#374151] sticky top-0 z-20" style={{ boxShadow: '0 1px 8px rgba(30,58,95,0.07)' }}>
       <div className="flex items-center justify-between px-6 py-3">
         {/* Left: Toggle & Logo */}
         <div className="flex items-center gap-4">
           {onToggleSidebar && (
-            <button onClick={onToggleSidebar} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <svg className="w-5 h-5" style={{ color: '#1e3a5f' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button onClick={onToggleSidebar} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+              <svg className="w-5 h-5" style={{ color: '#ffffff' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           )}
           <Link to={isAdmin ? '/admin' : '/dashboard'} className="flex items-center gap-2">
-            <img src="/gb-logo.png" alt="GazaBridge" className="w-24 h-24 object-contain" />
-            <span className="text-xl font-bold hidden sm:block" style={{ color: '#1e3a5f' }}>GazaBridge</span>
+            <div className="w-14 h-14 rounded-full bg-[#F2DDD8] flex items-center justify-center shadow-sm"><img src="/gb-logo.png" alt="GazaBridge" className="w-12 h-12 object-contain" /></div>
+            <span className="text-xl font-bold hidden sm:block" style={{ color: '#ffffff' }}>GazaBridge</span>
           </Link>
         </div>
 
@@ -62,8 +62,8 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
         <div className="flex items-center gap-2">
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/notifications')}
-            className="relative p-2 hover:bg-pink-50 rounded-xl transition-colors">
-            <svg className="w-6 h-6" style={{ color: '#1e3a5f' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            className="relative p-2 hover:bg-white/10 rounded-xl transition-colors">
+            <svg className="w-6 h-6" style={{ color: '#ffffff' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             {unreadCount > 0 && (
@@ -75,8 +75,8 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
 
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/chat')}
-            className="relative p-2 hover:bg-pink-50 rounded-xl transition-colors">
-            <svg className="w-6 h-6" style={{ color: '#1e3a5f' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            className="relative p-2 hover:bg-white/10 rounded-xl transition-colors">
+            <svg className="w-6 h-6" style={{ color: '#ffffff' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </motion.button>
@@ -84,9 +84,9 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
           <div className="relative" ref={profileRef}>
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center gap-2 p-2 hover:bg-pink-50 rounded-xl transition-colors">
+              className="flex items-center gap-2 p-2 hover:bg-white/10 rounded-xl transition-colors">
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                style={{ background: 'linear-gradient(135deg, #1e3a5f, #ec4899)' }}>
+                style={{ background: 'linear-gradient(135deg, #C26100, #E07A1B)' }}>
                 {getInitials()}
               </div>
               <span className="text-sm font-medium hidden md:block" style={{ color: '#1e3a5f' }}>{getDisplayName()}</span>
@@ -98,7 +98,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
             <AnimatePresence>
               {showProfileMenu && (
                 <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50">
+                  className="absolute right-0 mt-2 w-56 bg-[#fdf8f5] rounded-2xl shadow-xl border border-[#e8b4b0] py-2 z-50">
                   <div className="px-4 py-3 border-b border-gray-100">
                     <p className="font-semibold text-sm" style={{ color: '#1e3a5f' }}>{getDisplayName()}</p>
                     <p className="text-xs text-gray-500">{user?.email}</p>

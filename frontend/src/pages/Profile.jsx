@@ -174,7 +174,7 @@ export default function Profile() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[#d4e0a0] rounded-3xl shadow-lg p-8 border border-[#a8bc6a]"
+            className="bg-[#DCE6F2] rounded-3xl shadow-lg p-8 border border-[#B7C7D9]"
           >
             {editMode ? (
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -295,7 +295,7 @@ export default function Profile() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-[#d4e0a0] rounded-3xl shadow-lg p-8 border border-[#a8bc6a]"
+            className="bg-[#DCE6F2] rounded-3xl shadow-lg p-8 border border-[#B7C7D9]"
           >
             <form onSubmit={handlePasswordChange} className="space-y-6 max-w-md">
               <div>

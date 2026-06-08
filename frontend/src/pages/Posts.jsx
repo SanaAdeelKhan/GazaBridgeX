@@ -26,7 +26,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
         onClick={(e) => e.stopPropagation()}
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-orange-600 to-orange-500'}`} />
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-[#C26100] to-[#E07A1B]'}`} />
         
         <div className="p-6">
           <div className="flex justify-center mb-4">
@@ -50,7 +50,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
             </motion.div>
           </div>
 
-          <h3 className="text-xl font-bold text-center text-gray-900 mb-2">{title}</h3>
+          <h3 className="text-xl font-bold text-center text-[#5A6E2A] mb-2">{title}</h3>
           <p className="text-gray-600 text-center mb-6">{message}</p>
 
           <div className="flex gap-3">
@@ -58,7 +58,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+              className="flex-1 px-4 py-2.5 bg-[#F2DDD8] hover:bg-[#e8b4b0] text-[#1e3a5f] font-medium rounded-xl transition-colors"
             >
               Cancel
             </motion.button>
@@ -69,7 +69,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
                 type === 'delete'
                   ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  : 'bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-600 hover:to-orange-500'
+                  : 'bg-gradient-to-r from-[#C26100] to-[#E07A1B] hover:from-[#945005] hover:to-[#C26100]'
               }`}
             >
               Confirm
@@ -101,7 +101,7 @@ const AVAILABILITY = [
 ];
 
 const STATUS = [
-  { value: 'active', label: 'Active', color: 'bg-orange-500 text-orange-600' },
+  { value: 'active', label: 'Active', color: 'bg-[#E07A1B] text-white' },
   { value: 'inactive', label: 'Inactive', color: 'bg-gray-100 text-gray-700' },
   { value: 'closed', label: 'Closed', color: 'bg-red-100 text-red-700' },
 ];
@@ -230,7 +230,7 @@ export default function Posts() {
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-orange-600 via-white to-orange-500">
+    <div className="pt-24 min-h-screen bg-[#F2DDD8]">
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
         <motion.div
@@ -240,10 +240,10 @@ export default function Posts() {
         >
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+              <h1 className="text-4xl md:text-5xl font-bold text-[#5A6E2A] mb-2">
                 Community Posts
               </h1>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-[#5A6E2A]/80">
                 Browse offers and requests from the community
               </p>
             </div>
@@ -252,7 +252,7 @@ export default function Posts() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-gradient-to-r from-[#C26100] to-[#E07A1B] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -274,18 +274,18 @@ export default function Posts() {
                 onClick={() => handleTabChange(tab.value)}
                 className={`flex-1 p-4 rounded-2xl text-left transition-all ${
                   activeTab === tab.value
-                    ? 'bg-white shadow-lg border-2 border-orange-400'
-                    : 'bg-white/50 border-2 border-transparent hover:border-gray-200'
+                    ? 'bg-[#1e3a5f] text-white shadow-lg border-2 border-[#1e3a5f] hover:bg-[#2d5a8e]'
+                    : 'bg-[#2d5a8e]/20 text-[#1e3a5f] border-2 border-transparent hover:border-[#1e3a5f] hover:bg-[#2d5a8e]/30'
                 }`}
               >
-                <div className="text-lg font-semibold text-gray-900">{tab.label}</div>
-                <div className="text-sm text-gray-500">{tab.description}</div>
+                <div className="text-lg font-semibold text-white">{tab.label}</div>
+                <div className="text-sm text-white/70">{tab.description}</div>
               </motion.button>
             ))}
           </div>
 
           {/* Search and Filters */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="bg-[#D6DEE8] rounded-2xl shadow-lg p-6 border border-[#A7B8CC]">
             <form onSubmit={handleSearch} className="flex gap-3 mb-4">
               <div className="flex-1 relative">
                 <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -296,14 +296,14 @@ export default function Posts() {
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   placeholder={`Search ${activeTab}...`}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all outline-none"
+                  className="w-full pl-12 pr-4 py-3 bg-white border-2 border-[#1e3a5f]/30 rounded-xl focus:ring-2 focus:ring-[#1e3a5f] focus:border-[#1e3a5f] transition-all outline-none text-[#1e3a5f]"
                 />
               </div>
               <motion.button
                 type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                className="px-6 py-3 bg-gradient-to-r from-[#C26100] to-[#E07A1B] text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
               >
                 Search
               </motion.button>
@@ -327,7 +327,7 @@ export default function Posts() {
               <select
                 value={filters.category}
                 onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-orange-400 outline-none"
+                className="px-4 py-2 rounded-xl border-2 border-[#1e3a5f]/30 bg-white text-sm font-medium text-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f] outline-none"
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.icon} {cat.label}</option>
@@ -337,7 +337,7 @@ export default function Posts() {
               <select
                 value={filters.status}
                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-orange-400 outline-none"
+                className="px-4 py-2 rounded-xl border-2 border-[#1e3a5f]/30 bg-white text-sm font-medium text-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f] outline-none"
               >
                 <option value="">All Statuses</option>
                 {STATUS.map(s => (
@@ -349,7 +349,7 @@ export default function Posts() {
                 <select
                   value={filters.availability}
                   onChange={(e) => setFilters(prev => ({ ...prev, availability: e.target.value }))}
-                  className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-orange-400 outline-none"
+                  className="px-4 py-2 rounded-xl border-2 border-[#1e3a5f]/30 bg-white text-sm font-medium text-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f] outline-none"
                 >
                   <option value="">All Availability</option>
                   {AVAILABILITY.map(a => (
@@ -394,10 +394,10 @@ export default function Posts() {
             className="text-center py-20"
           >
             <div className="text-6xl mb-6">{activeTab === 'offers' ? '🙌' : '🌟'}</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl font-bold text-[#1e3a5f] mb-2">
               No {activeTab} found
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-[#64748b] mb-6">
               {filters.search || filters.category || filters.status
                 ? 'Try adjusting your search or filters.'
                 : `Be the first to create a ${activeTab === 'offers' ? 'offer' : 'request'}!`}
@@ -418,7 +418,7 @@ export default function Posts() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-semibold rounded-xl shadow-lg"
+                className="px-6 py-3 bg-gradient-to-r from-[#C26100] to-[#E07A1B] text-white font-semibold rounded-xl shadow-lg"
               >
                 Create Your First Post
               </motion.button>
@@ -451,14 +451,14 @@ export default function Posts() {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLoadMore}
                   disabled={loading}
-                  className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-orange-400 hover:text-orange-600 transition-all shadow-sm disabled:opacity-50"
+                  className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-[#C26100] hover:text-[#C26100] transition-all shadow-sm disabled:opacity-50"
                 >
                   {loading ? 'Loading...' : `Load More (${pagination.totalPages - pagination.page} pages)`}
                 </motion.button>
               </div>
             )}
 
-            <div className="text-center mt-4 text-sm text-gray-500">
+            <div className="text-center mt-4 text-sm text-[#64748b]">
               Showing {posts.length} of {pagination.totalCount} {activeTab}
             </div>
           </>

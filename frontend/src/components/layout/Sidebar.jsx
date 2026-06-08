@@ -18,11 +18,11 @@ export default function Sidebar() {
   return (
     <div className="py-6">
       <div className="px-6 mb-8 flex items-center gap-3">
-        <img src="/gb-logo.png" alt="GazaBridge" className="w-24 h-24 object-contain" />
-        <span className="font-bold text-lg" style={{ color: '#1e3a5f' }}>GazaBridge</span>
+        <div className="w-24 h-24 rounded-full bg-[#F2DDD8] flex items-center justify-center shadow-md"><img src="/gb-logo.png" alt="GazaBridge" className="w-20 h-20 object-contain" /></div>
+        <span className="font-bold text-lg" style={{ color: "#ffffff" }}>GazaBridge</span>
       </div>
       <div className="px-6 mb-4">
-        <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#94a3b8' }}>Main Menu</h2>
+        <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#cbd5e1" }}>Main Menu</h2>
       </div>
       <nav className="space-y-1 px-3">
         {navItems.map((item) => {
@@ -30,13 +30,13 @@ export default function Sidebar() {
           return (
             <NavLink key={item.path} to={item.path}
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all relative"
-              style={isActive ? { background: 'linear-gradient(135deg, #1e3a5f15, #ec489915)', color: '#1e3a5f' } : { color: '#64748b' }}
+              style={isActive ? { background: 'linear-gradient(135deg, #ffffff20, #ec489930)', color: '#ffffff' } : { color: '#D1D5DB' }}
             >
-              <span style={isActive ? { color: '#ec4899' } : {}}>{item.icon}</span>
+              <span style={isActive ? { color: '#FFD166' } : {}}>{item.icon}</span>
               <span>{item.label}</span>
               {isActive && (
                 <motion.div layoutId="activeSidebar" className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full"
-                  style={{ background: 'linear-gradient(to bottom, #1e3a5f, #ec4899)' }} />
+                  style={{ background: 'linear-gradient(to bottom, #FFD166, #C26100)' }} />
               )}
             </NavLink>
           );

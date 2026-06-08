@@ -68,7 +68,7 @@ export default function UserDashboard() {
     <div className="max-w-7xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         {/* Welcome Section */}
-        <div className="bg-[#d4e0a0] rounded-3xl shadow-lg p-8 mb-8 border border-[#a8bc6a]">
+        <div className="bg-[#DCE6F2] rounded-3xl shadow-lg p-8 mb-8 border border-[#B7C7D9]">
           <div className="flex items-center gap-6">
             <div className="w-20 h-20 bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
               {getInitials()}
@@ -100,7 +100,7 @@ export default function UserDashboard() {
             <Link key={stat.label} to={stat.path}>
               <motion.div
                 whileHover={{ y: -5 }}
-                className="bg-[#d4e0a0] rounded-2xl shadow-lg p-6 border border-[#a8bc6a] hover:shadow-xl transition-all"
+                className="bg-[#DCE6F2] rounded-2xl shadow-lg p-6 border border-[#B7C7D9] hover:shadow-xl transition-all"
               >
                 <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center text-2xl mb-4`}>
                   {stat.icon}
@@ -113,7 +113,7 @@ export default function UserDashboard() {
         </div>
 
         {/* Recent Posts */}
-        <div className="bg-[#d4e0a0] rounded-3xl shadow-lg p-8 border border-[#a8bc6a]">
+        <div className="bg-[#DCE6F2] rounded-3xl shadow-lg p-8 border border-[#B7C7D9]">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">Recent Posts</h2>
             <Link to="/posts" className="text-orange-600 hover:text-orange-600 font-semibold text-sm">
@@ -144,7 +144,7 @@ export default function UserDashboard() {
                 <Link
                   key={post.id}
                   to={post.postType === 'offer' ? `/offers/${post.id}` : `/posts`}
-                  className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-orange-500 transition-colors"
+                  className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-[#1e3a5f]/10 transition-colors"
                 >
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold mt-1 ${
                     post.postType === 'offer'

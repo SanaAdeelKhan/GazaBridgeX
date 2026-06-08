@@ -1,16 +1,40 @@
 @import "tailwindcss";
 
 @theme {
-  --color-olive: #6B6A2E;
-  --color-olive-light: #8B8A47;
-  --color-olive-dark: #4D4C1F;
-  --color-olive-5: rgba(107, 106, 46, 0.05);
-  --color-olive-10: rgba(107, 106, 46, 0.10);
-  --color-olive-15: rgba(107, 106, 46, 0.15);
-  --color-olive-20: rgba(107, 106, 46, 0.20);
+  /* ── Page & Layout ─────────────────────────────────── */
+  --color-gaza-page-bg: #F2DDD8;
+  --color-gaza-sidebar: #4B5563;
+  --color-gaza-sidebar-border: #374151;
 
-  --color-orange: #FF9913;
-  --color-orange-light: #FFB352;
-  --color-orange-10: rgba(255, 153, 19, 0.10);
-  --color-orange-15: rgba(255, 153, 19, 0.15);
+  /* ── Cards ─────────────────────────────────────────── */
+  --color-gaza-card: #d4e0a0;
+  --color-gaza-card-border: #a8bc6a;
+
+  /* ── Dropdown (header only) ────────────────────────── */
+  --color-gaza-dropdown: #FDF8F5;
+  --color-gaza-dropdown-border: #E8B4B0;
+
+  /* ── Text ───────────────────────────────────────────── */
+  --color-gaza-title: #1e3a5f;
+  --color-gaza-body: #2d4a2d;
+  --color-gaza-white: #FFFFFF;
+  --color-gaza-secondary: #D1D5DB;
+  --color-gaza-muted: #CBD5E1;
+
+  /* ── Accent (amber gradient) ────────────────────────── */
+  --color-gaza-accent-start: #C26100;
+  --color-gaza-accent-end: #E07A1B;
+
+  /* ── Badges ─────────────────────────────────────────── */
+  --color-gaza-badge: #EC4899;
+
+  /* ── Profile banner ─────────────────────────────────── */
+  --color-gaza-banner-start: #1e3a5f;
+  --color-gaza-banner-end: #2d5a8e;
+
+  /* ── Tailwind orange overrides ──────────────────────── */
+  --color-orange-400: #E07A1B;
+  --color-orange-500: #D86F0A;
+  --color-orange-600: #C26100;
+  --color-orange: #D86F0A;
 }
