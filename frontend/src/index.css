@@ -6,9 +6,9 @@
   --color-gaza-sidebar: #4B5563;
   --color-gaza-sidebar-border: #374151;
 
-  /* ── Cards ─────────────────────────────────────────── */
-  --color-gaza-card: #d4e0a0;
-  --color-gaza-card-border: #a8bc6a;
+  /* ── Cards (light navy-blue) ────────────────────────── */
+  --color-gaza-card: #d8e4f0;
+  --color-gaza-card-border: #a8c4dc;
 
   /* ── Dropdown (header only) ────────────────────────── */
   --color-gaza-dropdown: #FDF8F5;
@@ -16,7 +16,7 @@
 
   /* ── Text ───────────────────────────────────────────── */
   --color-gaza-title: #1e3a5f;
-  --color-gaza-body: #2d4a2d;
+  --color-gaza-body: #2d4a6e;
   --color-gaza-white: #FFFFFF;
   --color-gaza-secondary: #D1D5DB;
   --color-gaza-muted: #CBD5E1;
