@@ -1,38 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Page & Layout ─────────────────────────────────── */
   --color-gaza-page-bg: #F2DDD8;
   --color-gaza-sidebar: #4B5563;
   --color-gaza-sidebar-border: #374151;
 
-  /* ── Cards (light navy-blue) ────────────────────────── */
   --color-gaza-card: #d8e4f0;
   --color-gaza-card-border: #a8c4dc;
 
-  /* ── Dropdown (header only) ────────────────────────── */
   --color-gaza-dropdown: #FDF8F5;
   --color-gaza-dropdown-border: #E8B4B0;
 
-  /* ── Text ───────────────────────────────────────────── */
-  --color-gaza-title: #1e3a5f;
-  --color-gaza-body: #2d4a6e;
+  /* Text — olive */
+  --color-gaza-title: #3d4a00;
+  --color-gaza-body: #5a6600;
   --color-gaza-white: #FFFFFF;
   --color-gaza-secondary: #D1D5DB;
   --color-gaza-muted: #CBD5E1;
 
-  /* ── Accent (amber gradient) ────────────────────────── */
   --color-gaza-accent-start: #C26100;
   --color-gaza-accent-end: #E07A1B;
 
-  /* ── Badges ─────────────────────────────────────────── */
   --color-gaza-badge: #EC4899;
 
-  /* ── Profile banner ─────────────────────────────────── */
   --color-gaza-banner-start: #1e3a5f;
   --color-gaza-banner-end: #2d5a8e;
 
-  /* ── Tailwind orange overrides ──────────────────────── */
   --color-orange-400: #E07A1B;
   --color-orange-500: #D86F0A;
   --color-orange-600: #C26100;
