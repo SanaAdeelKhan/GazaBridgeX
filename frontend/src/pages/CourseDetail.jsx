@@ -16,7 +16,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
       <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }} onClick={(e) => e.stopPropagation()}
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-[#C26100] to-[#E07A1B]'}`} />
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.accentEnd}]'}`} />
         <div className="p-6">
           <div className="flex justify-center mb-4">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
@@ -26,7 +26,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-[#C26100]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8 text-[${colors.accentStart}]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
@@ -92,7 +92,7 @@ export default function CourseDetail() {
 
   if (loading) return (
     <div className={`pt-24 min-h-screen flex items-center justify-center ${tw.pageBg}`}>
-      <div className="animate-spin w-12 h-12 border-4 border-[#C26100] border-t-transparent rounded-full" />
+      <div className="animate-spin w-12 h-12 border-4 border-[${colors.accentStart}] border-t-transparent rounded-full" />
     </div>
   );
 
@@ -100,7 +100,7 @@ export default function CourseDetail() {
     <div className={`pt-24 min-h-screen flex items-center justify-center ${tw.pageBg}`}>
       <div className="text-center">
         <h2 className={`text-2xl font-bold mb-4 ${tw.titleText}`}>Course not found</h2>
-        <Link to="/courses" className="text-[#C26100] font-semibold">← Back to Courses</Link>
+        <Link to="/courses" className="text-[${colors.accentStart}] font-semibold">← Back to Courses</Link>
       </div>
     </div>
   );
@@ -108,7 +108,7 @@ export default function CourseDetail() {
   return (
     <div className={`pt-24 min-h-screen ${tw.pageBg}`}>
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link to="/courses" className="inline-flex items-center gap-2 text-[#C26100] font-semibold mb-6">
+        <Link to="/courses" className="inline-flex items-center gap-2 text-[${colors.accentStart}] font-semibold mb-6">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -121,7 +121,7 @@ export default function CourseDetail() {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                  course.status === 'active' ? 'bg-[#E07A1B] text-white' :
+                  course.status === 'active' ? 'bg-[${colors.accentEnd}] text-white' :
                   course.status === 'closed' ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'}`}>
                   {course.status}
                 </span>
@@ -147,7 +147,7 @@ export default function CourseDetail() {
                 { label: 'Category', value: course.category },
               ].map(({ label, value }) => (
                 <div key={label} className="p-4 bg-white/60 rounded-xl">
-                  <div className="text-sm text-[#2d4a2d]/70">{label}</div>
+                  <div className="text-sm text-[${colors.body}]/70">{label}</div>
                   <div className={`font-semibold capitalize ${tw.titleText}`}>{value}</div>
                 </div>
               ))}
@@ -159,7 +159,7 @@ export default function CourseDetail() {
               </div>
               <div>
                 <div className={`font-medium ${tw.titleText}`}>{course.user_full_name}</div>
-                <div className="text-sm text-[#2d4a2d]/70">{course.user_email}</div>
+                <div className="text-sm text-[${colors.body}]/70">{course.user_email}</div>
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function CourseDetail() {
                       <h3 className={`font-semibold ${tw.titleText}`}>{content.content_title}</h3>
                       {content.description && <p className={`text-sm mt-1 ${tw.bodyText}`}>{content.description}</p>}
                       <a href={content.link} target="_blank" rel="noopener noreferrer"
-                        className="text-[#C26100] text-sm mt-2 inline-block hover:text-[#E07A1B]">
+                        className="text-[${colors.accentStart}] text-sm mt-2 inline-block hover:text-[${colors.accentEnd}]">
                         Open Resource →
                       </a>
                     </div>

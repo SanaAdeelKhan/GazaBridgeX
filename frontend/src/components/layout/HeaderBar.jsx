@@ -1,4 +1,3 @@
-// frontend/src/components/layout/HeaderBar.jsx
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,7 +37,6 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
       style={{ boxShadow: '0 1px 8px rgba(30,58,95,0.07)' }}>
       <div className="flex items-center justify-between px-3 sm:px-6 py-2 sm:py-3">
 
-        {/* Left: Hamburger + Logo */}
         <div className="flex items-center gap-2 sm:gap-4">
           {onToggleSidebar && (
             <button onClick={onToggleSidebar}
@@ -60,10 +58,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
           </Link>
         </div>
 
-        {/* Right: Actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-
-          {/* Notifications */}
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/notifications')}
             className="relative p-2 hover:bg-white/10 rounded-xl transition-colors">
@@ -71,13 +66,12 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 sm:w-5 sm:h-5 text-white text-[10px] sm:text-xs font-bold rounded-full flex items-center justify-center bg-[#ec4899]">
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 sm:w-5 sm:h-5 text-white text-[10px] sm:text-xs font-bold rounded-full flex items-center justify-center bg-[#EC4899]">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
           </motion.button>
 
-          {/* Chat */}
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/chat')}
             className="p-2 hover:bg-white/10 rounded-xl transition-colors">
@@ -86,7 +80,6 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
             </svg>
           </motion.button>
 
-          {/* Profile */}
           <div className="relative" ref={profileRef}>
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setShowProfileMenu(!showProfileMenu)}
@@ -109,7 +102,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                     <p className="font-semibold text-sm text-[#1e3a5f] truncate">{getDisplayName()}</p>
                     <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                     {user?.roles?.map((role, i) => (
-                      <span key={i} className="inline-block px-2 py-0.5 rounded-full text-xs mt-1 mr-1 capitalize text-white bg-[#ec4899]">
+                      <span key={i} className="inline-block px-2 py-0.5 rounded-full text-xs mt-1 mr-1 capitalize text-white bg-[#EC4899]">
                         {role}
                       </span>
                     ))}

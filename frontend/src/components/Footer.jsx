@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 
 import { Link, useLocation } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -43,7 +44,7 @@ function MarqueeStrip() {
             className="text-sm font-bold tracking-wide"
             style={{
               fontFamily: "'DM Sans', sans-serif",
-              color: item === '✦' ? '#808000' : '#111111'
+              color: item === '✦' ? colors.title : '#111111'
             }}
           >
             {item}
@@ -147,8 +148,8 @@ export default function Footer() {
       />
 
       {/* Glow orbs */}
-      <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] bg-[#808000]/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-[300px] h-[200px] bg-[#C26100]/8 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] bg-[${colors.title}]/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-[300px] h-[200px] bg-[${colors.accentStart}]/8 rounded-full blur-[80px] pointer-events-none" />
 
       {/* Scrolling marquee strip */}
       <MarqueeStrip />
@@ -173,7 +174,7 @@ export default function Footer() {
                   whileHover={{ rotate: 0 }}
                   initial={{ rotate: 12 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 bg-gradient-to-br from-[#808000] to-[#949413] rounded-xl shadow-md shadow-[#808000]/20"
+                  className="absolute inset-0 bg-gradient-to-br from-[${colors.title}] to-[#949413] rounded-xl shadow-md shadow-[${colors.title}]/20"
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -183,7 +184,7 @@ export default function Footer() {
                 </div>
               </div>
               <span
-                className="text-xl font-bold bg-gradient-to-r from-[#C26100] to-[#E07A1B] bg-clip-text text-transparent"
+                className="text-xl font-bold bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.accentEnd}] bg-clip-text text-transparent"
                 style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
               >
                 GazaBridge
@@ -207,7 +208,7 @@ export default function Footer() {
                   aria-label={s.label}
                   whileHover={{ scale: 1.15, y: -2 }}
                   whileTap={{ scale: 0.93 }}
-                  className="w-9 h-9 rounded-xl bg-black/[0.05] border border-black/[0.08] flex items-center justify-center text-gray-500 hover:text-[#C26100] hover:bg-[#C26100]/10 hover:border-[#C26100]/20 transition-colors duration-200"
+                  className="w-9 h-9 rounded-xl bg-black/[0.05] border border-black/[0.08] flex items-center justify-center text-gray-500 hover:text-[${colors.accentStart}] hover:bg-[${colors.accentStart}]/10 hover:border-[${colors.accentStart}]/20 transition-colors duration-200"
                 >
                   {s.icon}
                 </motion.a>
@@ -218,9 +219,9 @@ export default function Footer() {
             <motion.a
               href="mailto:hello@gazabridge.org"
               whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 text-xs text-gray-500 hover:text-[#C26100] transition-colors group"
+              className="inline-flex items-center gap-2 text-xs text-gray-500 hover:text-[${colors.accentStart}] transition-colors group"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#808000] group-hover:animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[${colors.title}] group-hover:animate-pulse" />
               hello@gazabridge.org
             </motion.a>
           </motion.div>
@@ -235,7 +236,7 @@ export default function Footer() {
               transition={{ delay: catIndex * 0.08, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="flex items-center gap-2 mb-5">
-                <div className="h-px w-4 bg-[#808000]/60" />
+                <div className="h-px w-4 bg-[${colors.title}]/60" />
                 <h4 className="text-[11px] font-bold tracking-[0.18em] uppercase text-gray-400">
                   {category}
                 </h4>
@@ -252,10 +253,10 @@ export default function Footer() {
                   >
                     <Link
                       to={link.href}
-                      className="group flex items-center gap-2 text-sm text-gray-500 hover:text-[#C26100] transition-colors duration-200"
+                      className="group flex items-center gap-2 text-sm text-gray-500 hover:text-[${colors.accentStart}] transition-colors duration-200"
                     >
                       <motion.span
-                        className="w-0 h-px bg-[#C26100] group-hover:w-3 transition-all duration-300"
+                        className="w-0 h-px bg-[${colors.accentStart}] group-hover:w-3 transition-all duration-300"
                       />
                       {link.name}
                     </Link>
@@ -296,10 +297,10 @@ export default function Footer() {
           {/* Centre */}
           <motion.div
             whileHover={{ scale: 1.04 }}
-            className="flex items-center gap-2 px-4 py-1.5 bg-[#C26100]/10 border border-[#C26100]/20 rounded-full"
+            className="flex items-center gap-2 px-4 py-1.5 bg-[${colors.accentStart}]/10 border border-[${colors.accentStart}]/20 rounded-full"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C26100] animate-pulse" />
-            <span className="text-[11px] font-semibold text-[#C26100] tracking-wide uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-[${colors.accentStart}] animate-pulse" />
+            <span className="text-[11px] font-semibold text-[${colors.accentStart}] tracking-wide uppercase">
               100% Free Forever
             </span>
           </motion.div>
@@ -313,7 +314,7 @@ export default function Footer() {
               <Link
                 key={l.name}
                 to={l.href}
-                className="text-xs text-gray-400 hover:text-[#C26100] transition-colors duration-200"
+                className="text-xs text-gray-400 hover:text-[${colors.accentStart}] transition-colors duration-200"
               >
                 {l.name}
               </Link>

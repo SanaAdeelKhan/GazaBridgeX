@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 // frontend/src/components/Navbar.jsx
 
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -133,7 +134,7 @@ export default function Navbar() {
       <div
         className={`transition-all duration-500 ${
           isScrolled
-            ? "bg-white/80 backdrop-blur-2xl shadow-lg shadow-black/5 border-b border-[#808000]/10"
+            ? "bg-white/80 backdrop-blur-2xl shadow-lg shadow-black/5 border-b border-[${colors.title}]/10"
             : "bg-transparent"
         }`}
       >
@@ -165,7 +166,7 @@ export default function Navbar() {
           >
             {/* Hover background pill */}
             <motion.div
-              className="bg-[#E07A1B]/10"
+              className="bg-[${colors.accentEnd}]/10"
               animate={hoverStyle}
               transition={{
                 type: "spring",
@@ -196,15 +197,15 @@ export default function Navbar() {
                       className={`relative flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-full transition-colors duration-200 select-none
                       ${
                         active
-                          ? "text-[#C26100]"
-                          : "text-gray-600 hover:text-[#C26100]"
+                          ? "text-[${colors.accentStart}]"
+                          : "text-gray-600 hover:text-[${colors.accentStart}]"
                       }`}
                     >
                       {/* Active dot */}
                       {active && (
                         <motion.span
                           layoutId="nav-dot"
-                          className="w-1.5 h-1.5 rounded-full bg-[#C26100] flex-shrink-0"
+                          className="w-1.5 h-1.5 rounded-full bg-[${colors.accentStart}] flex-shrink-0"
                           transition={{
                             type: "spring",
                             stiffness: 400,
@@ -235,8 +236,8 @@ export default function Navbar() {
                     className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-colors
                       ${
                         location.pathname === "/chat"
-                          ? "text-[#808000] bg-[#808000]/10"
-                          : "text-gray-600 hover:text-[#808000] hover:bg-[#808000]/10"
+                          ? "text-[${colors.title}] bg-[${colors.title}]/10"
+                          : "text-gray-600 hover:text-[${colors.title}] hover:bg-[${colors.title}]/10"
                       }`}
                   >
                     <svg
@@ -260,9 +261,9 @@ export default function Navbar() {
                 <Magnetic strength={0.25}>
                   <motion.div
                     whileHover={{ scale: 1.04 }}
-                    className="flex items-center gap-2.5 pl-1 pr-3 py-1 bg-[#E07A1B]/5 border border-[#E07A1B]/10 rounded-full cursor-default"
+                    className="flex items-center gap-2.5 pl-1 pr-3 py-1 bg-[${colors.accentEnd}]/5 border border-[${colors.accentEnd}]/10 rounded-full cursor-default"
                   >
-                    <div className="w-8 h-8 bg-gradient-to-br from-[#808000] to-[#949413] rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                    <div className="w-8 h-8 bg-gradient-to-br from-[${colors.title}] to-[#949413] rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm">
                       {user?.first_name?.[0] || user?.email?.[0] || "U"}
                     </div>
 
@@ -290,7 +291,7 @@ export default function Navbar() {
                     <motion.button
                       whileHover={{ scale: 1.04 }}
                       whileTap={{ scale: 0.96 }}
-                      className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-[#808000] rounded-full hover:bg-[#808000]/10 transition-all duration-200"
+                      className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-[${colors.title}] rounded-full hover:bg-[${colors.title}]/10 transition-all duration-200"
                     >
                       Log In
                     </motion.button>
@@ -311,7 +312,7 @@ export default function Navbar() {
                         background: "linear-gradient(135deg, #C26100, #E07A1B)",
                       }}
                     >
-                      <motion.div className="absolute inset-0 bg-gradient-to-r from-[#945005] to-[#C26100] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                      <motion.div className="absolute inset-0 bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.accentStart}] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                       <span className="relative z-10 flex items-center gap-1.5">
                         Get Started
@@ -337,7 +338,7 @@ export default function Navbar() {
           <motion.button
             whileTap={{ scale: 0.88 }}
             onClick={() => setMobileMenu(!isMobileMenuOpen)}
-            className="md:hidden relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#808000]/10 transition-colors"
+            className="md:hidden relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[${colors.title}]/10 transition-colors"
           >
             <div className="flex flex-col gap-[5px] w-5">
               <motion.span
@@ -345,7 +346,7 @@ export default function Navbar() {
                   isMobileMenuOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }
                 }
                 transition={{ duration: 0.3 }}
-                className="block h-0.5 w-full bg-[#808000] rounded-full origin-center"
+                className="block h-0.5 w-full bg-[${colors.title}] rounded-full origin-center"
               />
 
               <motion.span
@@ -355,7 +356,7 @@ export default function Navbar() {
                     : { opacity: 1, x: 0 }
                 }
                 transition={{ duration: 0.2 }}
-                className="block h-0.5 w-full bg-[#808000] rounded-full"
+                className="block h-0.5 w-full bg-[${colors.title}] rounded-full"
               />
 
               <motion.span
@@ -365,7 +366,7 @@ export default function Navbar() {
                     : { rotate: 0, y: 0 }
                 }
                 transition={{ duration: 0.3 }}
-                className="block h-0.5 w-full bg-[#808000] rounded-full origin-center"
+                className="block h-0.5 w-full bg-[${colors.title}] rounded-full origin-center"
               />
             </div>
           </motion.button>

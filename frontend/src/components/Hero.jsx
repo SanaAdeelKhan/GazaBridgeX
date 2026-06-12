@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 // frontend/src/components/Hero.jsx
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -31,7 +32,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-[#F2DDD8]">
+    <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-[${colors.pageBg}]">
       {/* ── Background Elements (تأثير الإضاءة بالماوس والدوائر بالـ utilities المخصصة) ── */}
       <div className="absolute inset-0 overflow-hidden">
         <div 

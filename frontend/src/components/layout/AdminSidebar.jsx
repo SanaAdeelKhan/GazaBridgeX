@@ -1,3 +1,4 @@
+import { tw, colors } from '../../theme/colors';
 // frontend/src/components/layout/AdminSidebar.jsx
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -108,7 +109,7 @@ export default function AdminSidebar({ onClose }) {
                     {/* Icon */}
                     <span
                       className="w-5 h-5 flex items-center justify-center text-base flex-shrink-0"
-                      style={isActive ? { color: '#FFD166' } : {}}
+                      style={isActive ? { color: colors.accentEnd } : {}}
                     >
                       {item.icon}
                     </span>

@@ -1,3 +1,4 @@
+import { tw, colors } from '../../theme/colors';
 // frontend/src/pages/dashboard/UserDashboard.jsx
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -68,9 +69,9 @@ export default function UserDashboard() {
     <div className="max-w-7xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         {/* Welcome Section */}
-        <div className="bg-[#DCE6F2] rounded-3xl shadow-lg p-8 mb-8 border border-[#B7C7D9]">
+        <div className="bg-[${colors.cardBorder}] rounded-3xl shadow-lg p-8 mb-8 border border-[${colors.cardBorder}]">
           <div className="flex items-center gap-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+            <div className="w-20 h-20 bg-gradient-to-br from-[${colors.bannerStart}] to-[${colors.bannerEnd}] rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-lg">
               {getInitials()}
             </div>
             <div>
@@ -80,7 +81,7 @@ export default function UserDashboard() {
               <p className="text-gray-600 mt-1">{user?.email}</p>
               <div className="flex gap-2 mt-3">
                 {user?.roles?.map(role => (
-                  <span key={role.id || role} className="px-3 py-1 bg-[#E07A1B] text-white rounded-full text-xs font-semibold capitalize">
+                  <span key={role.id || role} className="px-3 py-1 bg-[${colors.accentEnd}] text-white rounded-full text-xs font-semibold capitalize">
                     {typeof role === 'string' ? role : role.name}
                   </span>
                 ))}
@@ -94,13 +95,13 @@ export default function UserDashboard() {
           {[
             { label: 'Offers', value: stats.offers, icon: '🙌', color: 'from-blue-500 to-cyan-500', path: '/posts' },
             { label: 'Requests', value: stats.requests, icon: '🌟', color: 'from-purple-500 to-pink-500', path: '/posts' },
-            { label: 'Courses', value: stats.courses, icon: '📚', color: 'from-[#1e3a5f] to-[#2d5a8e]', path: '/courses' },
+            { label: 'Courses', value: stats.courses, icon: '📚', color: 'from-[${colors.bannerStart}] to-[${colors.bannerEnd}]', path: '/courses' },
             { label: 'Live Sections', value: stats.liveSections, icon: '📡', color: 'from-orange-500 to-red-500', path: '/live-sections' },
           ].map(stat => (
             <Link key={stat.label} to={stat.path}>
               <motion.div
                 whileHover={{ y: -5 }}
-                className="bg-[#DCE6F2] rounded-2xl shadow-lg p-6 border border-[#B7C7D9] hover:shadow-xl transition-all"
+                className="bg-[${colors.cardBorder}] rounded-2xl shadow-lg p-6 border border-[${colors.cardBorder}] hover:shadow-xl transition-all"
               >
                 <div className={`w-12 h-12 bg-gradient-to-br ${stat.color} rounded-xl flex items-center justify-center text-2xl mb-4`}>
                   {stat.icon}
@@ -113,7 +114,7 @@ export default function UserDashboard() {
         </div>
 
         {/* Recent Posts */}
-        <div className="bg-[#DCE6F2] rounded-3xl shadow-lg p-8 border border-[#B7C7D9]">
+        <div className="bg-[${colors.cardBorder}] rounded-3xl shadow-lg p-8 border border-[${colors.cardBorder}]">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">Recent Posts</h2>
             <Link to="/posts" className="text-orange-600 hover:text-orange-600 font-semibold text-sm">
@@ -144,7 +145,7 @@ export default function UserDashboard() {
                 <Link
                   key={post.id}
                   to={post.postType === 'offer' ? `/offers/${post.id}` : `/posts`}
-                  className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-[#1e3a5f]/10 transition-colors"
+                  className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-[${colors.bannerStart}]/10 transition-colors"
                 >
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold mt-1 ${
                     post.postType === 'offer'

@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 // frontend/src/pages/Blog.jsx
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -7,7 +8,7 @@ export default function Blog() {
   return (
     <div className="pt-24">
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F2DDD8] via-white to-[#FAF3E8]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[${colors.pageBg}] via-white to-[#FAF3E8]" />
 
         <div className="relative max-w-7xl mx-auto px-6">
           <motion.div
@@ -21,7 +22,7 @@ export default function Blog() {
             </span>
 
             <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-[#C26100] to-[#808000] bg-clip-text text-transparent">Insights</span>
+              <span className="bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.title}] bg-clip-text text-transparent">Insights</span>
 
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -47,14 +48,14 @@ export default function Blog() {
                       <span>•</span>
                       <span>{post.readTime}</span>
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#808000] transition-colors">
+                    <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[${colors.title}] transition-colors">
 
                       {post.title}
                     </h2>
                     <p className="text-gray-600 mb-4">{post.excerpt}</p>
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <span className="text-sm font-medium text-gray-500">By {post.author}</span>
-                      <span className="text-sm font-medium text-[#808000] group-hover:translate-x-1 transition-transform inline-block">
+                      <span className="text-sm font-medium text-[${colors.title}] group-hover:translate-x-1 transition-transform inline-block">
 
                         Read More →
                       </span>

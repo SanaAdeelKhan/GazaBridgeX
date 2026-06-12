@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 // frontend/src/pages/Login.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -54,7 +55,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
       {/* Background - Cream/Beige */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F2DDD8] via-white to-[#E8E0D0]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[${colors.pageBg}] via-white to-[#E8E0D0]" />
       
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -100,13 +101,13 @@ export default function Login() {
         </div>
         
         {/* Form Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#808000]/10">
+        <div className="bg-white rounded-3xl shadow-xl p-8 border border-[${colors.title}]/10">
           {/* Google Login */}
           <GoogleLoginButton />
           
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-[#808000]/10" />
+              <div className="w-full border-t border-[${colors.title}]/10" />
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-4 bg-white text-[#555500]">or continue with email</span>
@@ -142,7 +143,7 @@ export default function Login() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100] placeholder-gray-400"
+                className="w-full px-4 py-3 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100] placeholder-gray-400"
                 placeholder="you@example.com"
               />
             </div>
@@ -160,13 +161,13 @@ export default function Login() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 pr-12 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100] placeholder-gray-400"
+                  className="w-full px-4 py-3 pr-12 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100] placeholder-gray-400"
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(prev => !prev)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#808000] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[${colors.title}] transition-colors"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? (
@@ -184,7 +185,7 @@ export default function Login() {
               <div className="text-right mt-1">
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-[#808000] hover:text-[#6b6b00] font-medium transition-colors"
+                  className="text-sm text-[${colors.title}] hover:text-[#6b6b00] font-medium transition-colors"
                 >
                   Forgot your password?
                 </Link>
@@ -196,7 +197,7 @@ export default function Login() {
               disabled={loading}
               whileHover={{ scale: loading ? 1 : 1.02 }}
               whileTap={{ scale: loading ? 1 : 0.98 }}
-              className="w-full py-3.5 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[#808000]/25 hover:shadow-[#808000]/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 bg-gradient-to-r from-[${colors.title}] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[${colors.title}]/25 hover:shadow-[${colors.title}]/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
@@ -215,7 +216,7 @@ export default function Login() {
 
         <p className="text-center mt-6 text-[#555500]">
           Don't have an account?{' '}
-          <Link to="/register" className="text-[#808000] hover:text-[#6b6b00] font-semibold">
+          <Link to="/register" className="text-[${colors.title}] hover:text-[#6b6b00] font-semibold">
             Create one free
           </Link>
         </p>

@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 // frontend/src/pages/ForgotPassword.jsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -36,7 +37,7 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
       {/* Background - Cream/Beige */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F2DDD8] via-white to-[#E8E0D0]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[${colors.pageBg}] via-white to-[#E8E0D0]" />
       
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -80,7 +81,7 @@ export default function ForgotPassword() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#808000]/10">
+        <div className="bg-white rounded-3xl shadow-xl p-8 border border-[${colors.title}]/10">
           {/* Error Message */}
           {error && (
             <motion.div
@@ -107,7 +108,7 @@ export default function ForgotPassword() {
               <motion.div
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.5 }}
-                className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#808000] to-[#6b6b00] rounded-full flex items-center justify-center"
+                className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[${colors.title}] to-[#6b6b00] rounded-full flex items-center justify-center"
               >
                 <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -124,14 +125,14 @@ export default function ForgotPassword() {
                     setSuccess(false);
                     setError('');
                   }}
-                  className="text-[#808000] hover:text-[#6b6b00] font-semibold"
+                  className="text-[${colors.title}] hover:text-[#6b6b00] font-semibold"
                 >
                   try again
                 </button>
               </p>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 text-[#808000] hover:text-[#6b6b00] font-semibold"
+                className="inline-flex items-center gap-2 text-[${colors.title}] hover:text-[#6b6b00] font-semibold"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -157,7 +158,7 @@ export default function ForgotPassword() {
                   }}
                   required
                   autoFocus
-                  className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100] placeholder-gray-400"
+                  className="w-full px-4 py-3 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100] placeholder-gray-400"
                   placeholder="you@example.com"
                 />
               </div>
@@ -167,7 +168,7 @@ export default function ForgotPassword() {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full py-3.5 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[#808000]/25 hover:shadow-[#808000]/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3.5 bg-gradient-to-r from-[${colors.title}] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[${colors.title}]/25 hover:shadow-[${colors.title}]/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <div className="flex items-center justify-center gap-2">
@@ -185,7 +186,7 @@ export default function ForgotPassword() {
               <div className="text-center mt-6">
                 <Link
                   to="/login"
-                  className="inline-flex items-center gap-2 text-sm text-[#555500] hover:text-[#808000] transition-colors"
+                  className="inline-flex items-center gap-2 text-sm text-[#555500] hover:text-[${colors.title}] transition-colors"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

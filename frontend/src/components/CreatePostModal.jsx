@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 // frontend/src/components/CreatePostModal.jsx - Updated to support both types
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -104,7 +105,7 @@ export default function CreatePostModal({ onClose, onCreated }) {
                 onClick={() => setPostType('offer')}
                 className={`p-4 rounded-xl border-2 text-left transition-all ${
                   postType === 'offer'
-                    ? 'border-[#1e3a5f] bg-[#1e3a5f] shadow-md'
+                    ? 'border-[${colors.bannerStart}] bg-[${colors.bannerStart}] shadow-md'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -117,7 +118,7 @@ export default function CreatePostModal({ onClose, onCreated }) {
                 onClick={() => setPostType('request')}
                 className={`p-4 rounded-xl border-2 text-left transition-all ${
                   postType === 'request'
-                    ? 'border-[#1e3a5f] bg-[#1e3a5f] shadow-md'
+                    ? 'border-[${colors.bannerStart}] bg-[${colors.bannerStart}] shadow-md'
                     : 'border-gray-200 hover:border-gray-300'
                 }`}
               >
@@ -145,7 +146,7 @@ export default function CreatePostModal({ onClose, onCreated }) {
                 value={formData[postType === 'offer' ? 'offer_name' : 'request_name']}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#1e3a5f] focus:border-[#1e3a5f] transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[${colors.bannerStart}] focus:border-[${colors.bannerStart}] transition-all outline-none"
                 placeholder={postType === 'offer' ? 'e.g., English Tutoring, Web Development Mentoring' : 'e.g., Need help with CV, Want to learn Python'}
               />
             </div>
@@ -158,7 +159,7 @@ export default function CreatePostModal({ onClose, onCreated }) {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#1e3a5f] focus:border-[#1e3a5f] transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[${colors.bannerStart}] focus:border-[${colors.bannerStart}] transition-all outline-none"
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -176,7 +177,7 @@ export default function CreatePostModal({ onClose, onCreated }) {
                 onChange={handleChange}
                 required
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#1e3a5f] focus:border-[#1e3a5f] transition-all outline-none resize-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[${colors.bannerStart}] focus:border-[${colors.bannerStart}] transition-all outline-none resize-none"
                 placeholder={postType === 'offer' 
                   ? 'Describe what you can teach, your experience, and how you can help...' 
                   : 'Describe what you need help with, your goals, and what you\'re looking for...'}
@@ -192,7 +193,7 @@ export default function CreatePostModal({ onClose, onCreated }) {
                   name="availability"
                   value={formData.availability}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#1e3a5f] focus:border-[#1e3a5f] transition-all outline-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[${colors.bannerStart}] focus:border-[${colors.bannerStart}] transition-all outline-none"
                 >
                   {AVAILABILITY.map(a => (
                     <option key={a.value} value={a.value}>{a.label}</option>
@@ -214,7 +215,7 @@ export default function CreatePostModal({ onClose, onCreated }) {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-gradient-to-r from-[#C26100] to-[#E07A1B] text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                className="flex-1 py-3 bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.accentEnd}] text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
               >
                 {loading ? 'Creating...' : `Create ${postType === 'offer' ? 'Offer' : 'Request'}`}
               </motion.button>

@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 // frontend/src/components/PostCard.jsx - Updated with edit functionality and offer links
 import { motion } from 'framer-motion';
 import { useState } from 'react';
@@ -32,7 +33,7 @@ const AVAILABILITY_LABELS = {
 };
 
 const STATUS_COLORS = {
-  active: 'bg-[#E07A1B] text-white border-[#C26100]',
+  active: 'bg-[${colors.accentEnd}] text-white border-[${colors.accentStart}]',
   inactive: 'bg-gray-100 text-gray-700 border-gray-200',
   closed: 'bg-red-100 text-red-700 border-red-200',
 };
@@ -52,7 +53,7 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.5 }}
       whileHover={{ y: -5 }}
-      className="group relative bg-[#D7DFEA] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-[#B7C7D9] overflow-hidden hover:bg-[#C8D3E2]"
+      className="group relative bg-[${colors.card}] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-[${colors.cardBorder}] overflow-hidden hover:bg-[${colors.card}]"
     >
       {/* Status Badge */}
       <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold border ${STATUS_COLORS[post.status] || STATUS_COLORS.active}`}>
@@ -79,26 +80,26 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
         {/* Name */}
         {type === 'offer' ? (
           <Link to={`/offers/${post.id}`}>
-            <h3 className="text-xl font-bold text-[#1e3a5f] mb-2 group-hover:text-orange-600 transition-colors hover:text-orange-600">
+            <h3 className="text-xl font-bold text-[${colors.bannerStart}] mb-2 group-hover:text-orange-600 transition-colors hover:text-orange-600">
               {name}
             </h3>
           </Link>
         ) : (
-          <h3 className="text-xl font-bold text-[#1e3a5f] mb-2 group-hover:text-orange-600 transition-colors">
+          <h3 className="text-xl font-bold text-[${colors.bannerStart}] mb-2 group-hover:text-orange-600 transition-colors">
             {name}
           </h3>
         )}
 
         {/* Category */}
         <div className="mb-3">
-          <span className="text-sm text-[#4A5D22] font-semibold">
+          <span className="text-sm text-[${colors.title}] font-semibold">
             {CATEGORY_LABELS[post.category] || post.category}
           </span>
         </div>
 
         {/* Description */}
         <div className="mb-4">
-          <p className="text-[#3A4A1A] font-medium text-sm leading-relaxed">
+          <p className="text-[${colors.body}] font-medium text-sm leading-relaxed">
             {isExpanded ? post.description : truncatedDescription}
           </p>
           {post.description?.length > 150 && (
@@ -117,7 +118,7 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
             <svg className="w-4 h-4 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-sm text-[#3A4A1A] font-medium">
+            <span className="text-sm text-[${colors.body}] font-medium">
               {AVAILABILITY_LABELS[post.availability] || post.availability}
             </span>
           </div>
@@ -138,12 +139,12 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
 
         {/* Author */}
         <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-          <div className="w-8 h-8 bg-gradient-to-br from-[#C26100] to-[#E07A1B] rounded-full flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-8 h-8 bg-gradient-to-br from-[${colors.accentStart}] to-[${colors.accentEnd}] rounded-full flex items-center justify-center text-white text-xs font-bold">
             {post.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-[#1e3a5f]">{post.user_full_name}</p>
-            <p className="text-xs text-[#4A5D22] font-semibold">
+            <p className="text-sm font-medium text-[${colors.bannerStart}]">{post.user_full_name}</p>
+            <p className="text-xs text-[${colors.title}] font-semibold">
               {new Date(post.created_at).toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',

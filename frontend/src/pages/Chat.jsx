@@ -7,7 +7,6 @@ import ChatWindow from '../components/chat/ChatWindow';
 import ConversationList from '../components/chat/ConversationList';
 import CreateGroupModal from '../components/chat/CreateGroupModal';
 import StartConversationModal from '../components/chat/StartConversationModal';
-import { tw } from '../theme/colors';
 
 export default function Chat() {
   const { user } = useAuth();
@@ -63,11 +62,13 @@ export default function Chat() {
   const filteredGroups = groups.filter((g) => g.name?.toLowerCase().includes(q) || g.description?.toLowerCase().includes(q));
 
   return (
-    <div className={`flex h-[calc(100vh-4rem)] overflow-hidden ${tw.pageBg}`} id="chat-page">
+    <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-[#F2DDD8]" id="chat-page">
+
       {/* Sidebar */}
       <aside className={`flex flex-col bg-[#4B5563] border-r border-[#374151] shadow-sm transition-all duration-300
           ${sidebarOpen ? 'w-80 min-w-[20rem]' : 'w-0 overflow-hidden min-w-0'}
           md:w-80 md:min-w-[20rem] md:overflow-visible`}>
+
         <div className="px-4 pt-5 pb-3 border-b border-[#374151]">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-bold text-white">Messages</h1>
@@ -86,6 +87,7 @@ export default function Chat() {
               </button>
             </div>
           </div>
+
           {/* Search */}
           <div className="relative">
             <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#D1D5DB]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,18 +97,22 @@ export default function Chat() {
               placeholder="Search conversations…"
               className="w-full pl-9 pr-4 py-2 bg-white/10 rounded-xl text-sm text-white placeholder-[#D1D5DB] outline-none focus:bg-white/20 focus:ring-2 focus:ring-[#C26100] transition-all" />
           </div>
+
           {/* Tabs */}
           <div className="flex gap-1 mt-3 p-1 bg-black/20 rounded-xl">
             {[{ id: 'all', label: 'All' }, { id: 'dms', label: 'DMs' }, { id: 'groups', label: 'Groups' }].map((tab) => (
               <button key={tab.id} id={`tab-${tab.id}`} onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                  activeTab === tab.id ? 'bg-gradient-to-r from-[#ffffff20] to-[#ec489930] text-white shadow-sm' : 'text-[#D1D5DB] hover:text-white'
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-[#ffffff20] to-[#ec489930] text-white shadow-sm'
+                    : 'text-[#D1D5DB] hover:text-white'
                 }`}>
                 {tab.label}
               </button>
             ))}
           </div>
         </div>
+
         <div className="flex-1 overflow-y-auto">
           {loadingList ? (
             <div className="flex justify-center py-10">
@@ -126,12 +132,13 @@ export default function Chat() {
       <main className="flex-1 flex flex-col min-w-0 relative">
         {!sidebarOpen && (
           <button id="chat-back-btn" onClick={() => setSidebarOpen(true)}
-            className={`md:hidden absolute top-4 left-4 z-10 p-2 ${tw.cancelBtn} rounded-xl shadow-md hover:bg-[#e8c5bf]`}>
+            className="md:hidden absolute top-4 left-4 z-10 p-2 bg-[#F2DDD8] text-[#3d4a00] rounded-xl shadow-md hover:bg-[#e8c8c0]">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
         )}
+
         <AnimatePresence mode="wait">
           {activeChat ? (
             <motion.div key={`${activeChat.type}-${activeChat.id}-${activeChat.otherUser?.id}`}
@@ -144,18 +151,19 @@ export default function Chat() {
           ) : (
             <motion.div key="empty" className="flex-1 flex flex-col items-center justify-center text-center p-8 gap-6"
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <div className="w-24 h-24 bg-gradient-to-br from-[#C26100] to-[#E07A1B] rounded-full flex items-center justify-center text-5xl shadow-inner">
+              <div className="w-24 h-24 rounded-full flex items-center justify-center text-5xl shadow-inner"
+                style={{ background: 'linear-gradient(135deg, #C26100, #E07A1B)' }}>
                 💬
               </div>
               <div>
-                <h2 className={`text-2xl font-bold mb-2 ${tw.titleText}`}>Your Messages</h2>
-                <p className={`text-sm max-w-xs leading-relaxed ${tw.bodyText}`}>
+                <h2 className="text-2xl font-bold mb-2 text-[#3d4a00]">Your Messages</h2>
+                <p className="text-sm max-w-xs leading-relaxed text-[#5a6600]">
                   Select a conversation on the left, or start a new one to connect with the community.
                 </p>
               </div>
               <div className="flex gap-3">
                 <button id="empty-new-dm-btn" onClick={() => setShowStartConv(true)}
-                  className={`px-5 py-2.5 ${tw.accentBtn} text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all`}>
+                  className="px-5 py-2.5 bg-gradient-to-r from-[#C26100] to-[#E07A1B] text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all">
                   New Message
                 </button>
                 <button id="empty-create-group-btn" onClick={() => setShowCreateGroup(true)}

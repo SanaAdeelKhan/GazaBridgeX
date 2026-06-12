@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 // frontend/src/components/LoadingScreen.jsx
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
@@ -10,7 +11,7 @@ export default function LoadingScreen() {
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-[#F2DDD8] via-white to-[#E8E0D0]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-[${colors.pageBg}] via-white to-[#E8E0D0]"
     >
       <div className="text-center">
         <motion.div
@@ -26,8 +27,8 @@ export default function LoadingScreen() {
         >
           {/* 🖼️ Logo - Circle with Orange-Cream border */}
           <div className="w-full h-full rounded-full overflow-hidden border-4" style={{ 
-            borderColor: '#F2DDD8',
-            backgroundColor: '#F2DDD8',
+            borderColor: colors.pageBg,
+            backgroundColor: colors.pageBg,
             boxShadow: '0 0 20px rgba(224, 122, 95, 0.3)'
           }}>
             <img 

@@ -60,6 +60,7 @@ import AdminPosts from './pages/admin/AdminPosts';
 import AdminCourses from './pages/admin/AdminCourses';
 import AdminLiveSections from './pages/admin/AdminLiveSections';
 import AdminUserList from './pages/admin/AdminUserList';
+import UserPublicProfile from './pages/UserPublicProfile';
 import Unauthorized from './pages/Unauthorized';
 
 // Helper function to check if user is admin
@@ -213,6 +214,7 @@ function AppRoutes() {
             <Route path="/live-sections" element={<PageTransition><LiveSections /></PageTransition>} />
             <Route path="/live-sections/:id" element={<PageTransition><LiveSectionDetail /></PageTransition>} />
             <Route path="/chat" element={<Chat />} />
+            <Route path="/users/:id" element={<PageTransition><UserPublicProfile /></PageTransition>} />
             <Route path="/unauthorized" element={<PageTransition><Unauthorized /></PageTransition>} />
 
             {/* Admin Routes */}

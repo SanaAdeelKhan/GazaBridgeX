@@ -1,4 +1,3 @@
-// frontend/src/components/layout/Sidebar.jsx
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
@@ -18,7 +17,6 @@ export default function Sidebar({ onClose }) {
 
   return (
     <div className="py-6 flex flex-col h-full">
-      {/* Logo */}
       <div className="px-6 mb-8 flex items-center gap-3">
         <div className="w-16 h-16 rounded-full bg-[#F2DDD8] flex items-center justify-center shadow-md flex-shrink-0">
           <img src="/gb-logo.png" alt="GazaBridge" className="w-12 h-12 object-contain" />
@@ -26,12 +24,10 @@ export default function Sidebar({ onClose }) {
         <span className="font-bold text-lg text-white">GazaBridge</span>
       </div>
 
-      {/* Section label */}
       <div className="px-6 mb-3">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-[#CBD5E1]">Main Menu</h2>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 space-y-0.5 px-3">
         {navItems.map((item) => {
           const isActive =
@@ -49,7 +45,6 @@ export default function Sidebar({ onClose }) {
                 : { color: '#D1D5DB' }
               }
             >
-              {/* Active indicator bar */}
               {isActive && (
                 <motion.div
                   layoutId="activeSidebar"
@@ -57,19 +52,10 @@ export default function Sidebar({ onClose }) {
                   style={{ background: 'linear-gradient(to bottom, #FFD166, #C26100)' }}
                 />
               )}
-
-              {/* Icon */}
-              <span
-                className="flex-shrink-0"
-                style={isActive ? { color: '#FFD166' } : {}}
-              >
+              <span className="flex-shrink-0" style={isActive ? { color: '#E07A1B' } : {}}>
                 {item.icon}
               </span>
-
-              {/* Label */}
               <span>{item.label}</span>
-
-              {/* Hover glow (inactive only) */}
               {!isActive && (
                 <span className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity bg-white/10" />
               )}

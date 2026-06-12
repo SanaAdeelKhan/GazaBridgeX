@@ -15,7 +15,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
       <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }} onClick={(e) => e.stopPropagation()}
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-[#C26100] to-[#E07A1B]'}`} />
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.accentEnd}]'}`} />
         <div className="p-6">
           <div className="flex justify-center mb-4">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
@@ -25,14 +25,14 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-[#C26100]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8 text-[${colors.accentStart}]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
             </motion.div>
           </div>
-          <h3 className="text-xl font-bold text-center text-[#1e3a5f] mb-2">{title}</h3>
-          <p className="text-[#2d4a2d] text-center mb-6">{message}</p>
+          <h3 className="text-xl font-bold text-center text-[${colors.bannerStart}] mb-2">{title}</h3>
+          <p className="text-[${colors.body}] text-center mb-6">{message}</p>
           <div className="flex gap-3">
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={onClose}
               className={`flex-1 px-4 py-2.5 font-medium rounded-xl transition-colors ${tw.cancelBtn} hover:bg-[#e8c5bf]`}>
@@ -136,7 +136,7 @@ export default function LiveSections() {
 
   const getLiveSectionTitle = () => liveSections.find(ls => ls.id === deleteModal.liveSectionId)?.title || 'this live section';
 
-  const selectClass = 'px-4 py-2 rounded-xl border border-[#a8bc6a] text-sm font-medium text-[#1e3a5f] bg-white focus:ring-2 focus:ring-[#C26100] outline-none';
+  const selectClass = 'px-4 py-2 rounded-xl border border-[#a8bc6a] text-sm font-medium text-[${colors.bannerStart}] bg-white focus:ring-2 focus:ring-[${colors.accentStart}] outline-none';
 
   return (
     <div className={`pt-24 min-h-screen ${tw.pageBg}`}>
@@ -160,12 +160,12 @@ export default function LiveSections() {
           <div className={tw.filterCard}>
             <form onSubmit={handleSearch} className="flex gap-3 mb-4">
               <div className="flex-1 relative">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#2d4a2d]/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[${colors.body}]/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
                   placeholder="Search live sections..."
-                  className="w-full pl-12 pr-4 py-3 border border-[#a8bc6a] bg-white rounded-xl focus:ring-2 focus:ring-[#C26100] focus:border-[#C26100] transition-all outline-none text-[#1e3a5f]" />
+                  className="w-full pl-12 pr-4 py-3 border border-[#a8bc6a] bg-white rounded-xl focus:ring-2 focus:ring-[${colors.accentStart}] focus:border-[${colors.accentStart}] transition-all outline-none text-[${colors.bannerStart}]" />
               </div>
               <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 className={`px-6 py-3 ${tw.accentBtn} font-semibold rounded-xl shadow-md hover:shadow-lg transition-all`}>
@@ -225,7 +225,7 @@ export default function LiveSections() {
               <div className="text-center mt-12">
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                   onClick={handleLoadMore} disabled={loading}
-                  className={`px-8 py-3 ${tw.cancelBtn} border border-[#a8bc6a] font-medium rounded-xl hover:border-[#C26100] hover:text-[#C26100] transition-all shadow-sm disabled:opacity-50`}>
+                  className={`px-8 py-3 ${tw.cancelBtn} border border-[#a8bc6a] font-medium rounded-xl hover:border-[${colors.accentStart}] hover:text-[${colors.accentStart}] transition-all shadow-sm disabled:opacity-50`}>
                   {loading ? 'Loading...' : 'Load More'}
                 </motion.button>
               </div>

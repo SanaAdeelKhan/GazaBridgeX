@@ -20,7 +20,7 @@ const TimeAgo = ({ date }) => {
     if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
     return d.toLocaleDateString();
   };
-  return <span className="text-xs text-[#2d4a2d]/60">{getTimeAgo(date)}</span>;
+  return <span className="text-xs text-[${colors.body}]/60">{getTimeAgo(date)}</span>;
 };
 
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete' }) => {
@@ -31,7 +31,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
       <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }} onClick={(e) => e.stopPropagation()}
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-[#C26100] to-[#E07A1B]'}`} />
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.accentEnd}]'}`} />
         <div className="p-6">
           <div className="flex justify-center mb-4">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
@@ -41,14 +41,14 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-[#C26100]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8 text-[${colors.accentStart}]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
             </motion.div>
           </div>
-          <h3 className="text-xl font-bold text-center text-[#1e3a5f] mb-2">{title}</h3>
-          <p className="text-[#2d4a2d] text-center mb-6">{message}</p>
+          <h3 className="text-xl font-bold text-center text-[${colors.bannerStart}] mb-2">{title}</h3>
+          <p className="text-[${colors.body}] text-center mb-6">{message}</p>
           <div className="flex gap-3">
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={onClose}
               className={`flex-1 px-4 py-2.5 font-medium rounded-xl transition-colors ${tw.cancelBtn} hover:bg-[#e8c5bf]`}>
@@ -83,8 +83,8 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
         exit={{ opacity: 0, x: -100 }} layout onClick={handleClick}
         className={`relative p-6 rounded-2xl border cursor-pointer transition-all duration-300 group ${
           notification.is_read
-            ? 'bg-[#d4e0a0] border-[#a8bc6a] hover:border-[#C26100]'
-            : 'bg-gradient-to-r from-[#C26100] to-[#E07A1B] border-[#C26100] shadow-md'
+            ? 'bg-[#d4e0a0] border-[#a8bc6a] hover:border-[${colors.accentStart}]'
+            : 'bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.accentEnd}] border-[${colors.accentStart}] shadow-md'
         }`}>
         <div className="flex items-start gap-4">
           <div className="flex-shrink-0 w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
@@ -98,7 +98,7 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
                     notification.type === 'urgent' ? 'bg-red-100 text-red-700' :
                     notification.type === 'alert' ? 'bg-yellow-100 text-yellow-700' :
                     notification.type === 'announcement' ? 'bg-blue-100 text-blue-700' :
-                    'bg-white/60 text-[#1e3a5f]'
+                    'bg-white/60 text-[${colors.bannerStart}]'
                   }`}>
                     {notification.type.charAt(0).toUpperCase() + notification.type.slice(1)}
                   </span>
@@ -107,11 +107,11 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
               </div>
               <TimeAgo date={notification.created_at} />
             </div>
-            <p className={`text-sm leading-relaxed ${notification.is_read ? 'text-[#2d4a2d]' : 'text-white font-medium'}`}>
+            <p className={`text-sm leading-relaxed ${notification.is_read ? 'text-[${colors.body}]' : 'text-white font-medium'}`}>
               {notification.content}
             </p>
             {notification.sender_email && (
-              <p className={`text-xs mt-2 ${notification.is_read ? 'text-[#2d4a2d]/60' : 'text-white/70'}`}>
+              <p className={`text-xs mt-2 ${notification.is_read ? 'text-[${colors.body}]/60' : 'text-white/70'}`}>
                 From: {notification.sender_email}
               </p>
             )}
@@ -212,7 +212,7 @@ export default function Notifications() {
           <div className="text-center mt-8">
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={loadMore} disabled={loading}
-              className={`px-8 py-3 ${tw.cancelBtn} border border-[#a8bc6a] font-medium rounded-xl hover:border-[#C26100] hover:text-[#C26100] transition-all shadow-sm disabled:opacity-50`}>
+              className={`px-8 py-3 ${tw.cancelBtn} border border-[#a8bc6a] font-medium rounded-xl hover:border-[${colors.accentStart}] hover:text-[${colors.accentStart}] transition-all shadow-sm disabled:opacity-50`}>
               {loading ? (
                 <span className="flex items-center gap-2">
                   <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">

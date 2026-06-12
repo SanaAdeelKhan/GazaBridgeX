@@ -1,3 +1,4 @@
+import { tw, colors } from '../theme/colors';
 // frontend/src/pages/Register.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -195,7 +196,7 @@ export default function Register() {
           required
           value={formData.email}
           onChange={handleChange}
-          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
+          className="w-full px-4 py-3 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100]"
           placeholder="you@example.com"
         />
       </div>
@@ -212,13 +213,13 @@ export default function Register() {
             required
             value={formData.password}
             onChange={handleChange}
-            className="w-full px-4 py-3 pr-12 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
+            className="w-full px-4 py-3 pr-12 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100]"
             placeholder="At least 8 characters"
           />
           <button
             type="button"
             onClick={() => setShowPassword(prev => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#808000] transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[${colors.title}] transition-colors"
             aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
             {showPassword ? (
@@ -247,13 +248,13 @@ export default function Register() {
             required
             value={formData.confirmPassword}
             onChange={handleChange}
-            className="w-full px-4 py-3 pr-12 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
+            className="w-full px-4 py-3 pr-12 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100]"
             placeholder="Repeat your password"
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword(prev => !prev)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[#808000] transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-[${colors.title}] transition-colors"
             aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
           >
             {showConfirmPassword ? (
@@ -291,7 +292,7 @@ export default function Register() {
             required
             value={formData.first_name}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
+            className="w-full px-4 py-3 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100]"
           />
         </div>
         <div>
@@ -305,7 +306,7 @@ export default function Register() {
             required
             value={formData.last_name}
             onChange={handleChange}
-            className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
+            className="w-full px-4 py-3 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100]"
           />
         </div>
       </div>
@@ -320,8 +321,8 @@ export default function Register() {
               key={role.value}
               className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${
                 formData.roles.includes(role.value)
-                  ? 'border-[#808000] bg-[#808000]/5'
-                  : 'border-[#808000]/20 hover:border-[#808000]/40'
+                  ? 'border-[${colors.title}] bg-[${colors.title}]/5'
+                  : 'border-[${colors.title}]/20 hover:border-[${colors.title}]/40'
               }`}
             >
               <input
@@ -330,7 +331,7 @@ export default function Register() {
                 value={role.value}
                 checked={formData.roles.includes(role.value)}
                 onChange={handleChange}
-                className="mt-0.5 h-4 w-4 text-[#808000] focus:ring-[#808000] border-[#808000]/30 rounded"
+                className="mt-0.5 h-4 w-4 text-[${colors.title}] focus:ring-[${colors.title}] border-[${colors.title}]/30 rounded"
               />
               <div className="ml-3">
                 <div className="text-sm font-medium text-[#111100]">{role.label}</div>
@@ -351,7 +352,7 @@ export default function Register() {
           required
           value={formData.country}
           onChange={handleChange}
-          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
+          className="w-full px-4 py-3 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100]"
         >
           <option value="">Select your country</option>
           {COUNTRIES.map(country => (
@@ -370,7 +371,7 @@ export default function Register() {
           required
           value={formData.gender}
           onChange={handleChange}
-          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
+          className="w-full px-4 py-3 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100]"
         >
           <option value="">Select gender</option>
           {GENDERS.map(gender => (
@@ -391,7 +392,7 @@ export default function Register() {
           value={formData.linkedin}
           onChange={handleChange}
           placeholder="https://linkedin.com/in/yourprofile"
-          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
+          className="w-full px-4 py-3 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100]"
         />
       </div>
 
@@ -405,8 +406,8 @@ export default function Register() {
               key={language.code}
               className={`flex items-center p-2 rounded-lg border cursor-pointer transition-all ${
                 formData.languages.includes(language.code)
-                  ? 'border-[#808000] bg-[#808000]/5'
-                  : 'border-[#808000]/20 hover:border-[#808000]/40'
+                  ? 'border-[${colors.title}] bg-[${colors.title}]/5'
+                  : 'border-[${colors.title}]/20 hover:border-[${colors.title}]/40'
               }`}
             >
               <input
@@ -415,7 +416,7 @@ export default function Register() {
                 value={language.code}
                 checked={formData.languages.includes(language.code)}
                 onChange={handleChange}
-                className="h-4 w-4 text-[#808000] focus:ring-[#808000] border-[#808000]/30 rounded"
+                className="h-4 w-4 text-[${colors.title}] focus:ring-[${colors.title}] border-[${colors.title}]/30 rounded"
               />
               <span className="ml-2 text-sm text-[#111100]">{language.label}</span>
             </label>
@@ -434,7 +435,7 @@ export default function Register() {
           value={formData.whatsapp_number}
           onChange={handleChange}
           placeholder="+1234567890"
-          className="w-full px-4 py-3 border border-[#808000]/10 rounded-xl focus:ring-2 focus:ring-[#808000] focus:border-[#808000] transition-all outline-none text-[#111100]"
+          className="w-full px-4 py-3 border border-[${colors.title}]/10 rounded-xl focus:ring-2 focus:ring-[${colors.title}] focus:border-[${colors.title}] transition-all outline-none text-[#111100]"
         />
       </div>
     </motion.div>
@@ -449,7 +450,7 @@ export default function Register() {
       <motion.div
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 0.5 }}
-        className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#808000] to-[#6b6b00] rounded-full flex items-center justify-center"
+        className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[${colors.title}] to-[#6b6b00] rounded-full flex items-center justify-center"
       >
         <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -463,14 +464,14 @@ export default function Register() {
         Didn't receive the email? Check your spam folder or{' '}
         <button
           onClick={() => usersAPI.resendVerification(formData.email)}
-          className="text-[#808000] hover:text-[#6b6b00] font-semibold"
+          className="text-[${colors.title}] hover:text-[#6b6b00] font-semibold"
         >
           click here to resend
         </button>
       </p>
       <Link
         to="/login"
-        className="inline-block px-8 py-3 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+        className="inline-block px-8 py-3 bg-gradient-to-r from-[${colors.title}] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
       >
         Go to Login
       </Link>
@@ -480,7 +481,7 @@ export default function Register() {
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
       {/* Background - Cream/Beige */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F2DDD8] via-white to-[#E8E0D0]" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[${colors.pageBg}] via-white to-[#E8E0D0]" />
       
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -522,7 +523,7 @@ export default function Register() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 border border-[#808000]/10">
+        <div className="bg-white rounded-3xl shadow-xl p-8 border border-[${colors.title}]/10">
           {/* Progress Steps - Olive */}
           {step < 3 && (
             <div className="mb-8">
@@ -531,19 +532,19 @@ export default function Register() {
                   <div key={stepName} className="flex items-center">
                     <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${
                       index + 1 <= step
-                        ? 'bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white'
-                        : 'bg-[#808000]/10 text-[#555500]'
+                        ? 'bg-gradient-to-r from-[${colors.title}] to-[#6b6b00] text-white'
+                        : 'bg-[${colors.title}]/10 text-[#555500]'
                     }`}>
                       {index + 1 < step ? '✓' : index + 1}
                     </div>
                     <span className={`ml-2 text-sm font-medium hidden sm:block ${
-                      index + 1 <= step ? 'text-[#808000]' : 'text-gray-400'
+                      index + 1 <= step ? 'text-[${colors.title}]' : 'text-gray-400'
                     }`}>
                       {stepName}
                     </span>
                     {index < STEPS.length - 1 && (
                       <div className={`w-12 sm:w-20 h-0.5 mx-2 ${
-                        index + 1 < step ? 'bg-[#808000]' : 'bg-[#808000]/10'
+                        index + 1 < step ? 'bg-[${colors.title}]' : 'bg-[${colors.title}]/10'
                       }`} />
                     )}
                   </div>
@@ -558,7 +559,7 @@ export default function Register() {
               <GoogleLoginButton className="mb-6" />
               <div className="relative mb-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#808000]/10" />
+                  <div className="w-full border-t border-[${colors.title}]/10" />
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-4 bg-white text-[#555500]">or continue with email</span>
@@ -597,7 +598,7 @@ export default function Register() {
                     onClick={handleBack}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 py-3 border-2 border-[#808000]/20 text-[#808000] font-semibold rounded-xl hover:bg-[#808000]/5 transition-colors"
+                    className="flex-1 py-3 border-2 border-[${colors.title}]/20 text-[${colors.title}] font-semibold rounded-xl hover:bg-[${colors.title}]/5 transition-colors"
                   >
                     Back
                   </motion.button>
@@ -608,7 +609,7 @@ export default function Register() {
                     onClick={handleNext}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex-1 py-3 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[#808000]/25 hover:shadow-[#808000]/40 transition-all"
+                    className="flex-1 py-3 bg-gradient-to-r from-[${colors.title}] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[${colors.title}]/25 hover:shadow-[${colors.title}]/40 transition-all"
                   >
                     Continue
                   </motion.button>
@@ -618,7 +619,7 @@ export default function Register() {
                     disabled={loading}
                     whileHover={{ scale: loading ? 1 : 1.02 }}
                     whileTap={{ scale: loading ? 1 : 0.98 }}
-                    className="flex-1 py-3 bg-gradient-to-r from-[#808000] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[#808000]/25 hover:shadow-[#808000]/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 py-3 bg-gradient-to-r from-[${colors.title}] to-[#6b6b00] text-white font-semibold rounded-xl shadow-lg shadow-[${colors.title}]/25 hover:shadow-[${colors.title}]/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? (
                       <div className="flex items-center justify-center gap-2">
@@ -642,7 +643,7 @@ export default function Register() {
         {step < 3 && (
           <p className="text-center mt-6 text-[#555500]">
             Already have an account?{' '}
-            <Link to="/login" className="text-[#808000] hover:text-[#6b6b00] font-semibold">
+            <Link to="/login" className="text-[${colors.title}] hover:text-[#6b6b00] font-semibold">
               Sign in
             </Link>
           </p>

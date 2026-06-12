@@ -56,7 +56,7 @@ export default function OfferDetail() {
 
   if (loading) return (
     <div className={`pt-24 min-h-screen flex items-center justify-center ${tw.pageBg}`}>
-      <div className="animate-spin w-12 h-12 border-4 border-[#C26100] border-t-transparent rounded-full" />
+      <div className="animate-spin w-12 h-12 border-4 border-[${colors.accentStart}] border-t-transparent rounded-full" />
     </div>
   );
 
@@ -64,7 +64,7 @@ export default function OfferDetail() {
     <div className={`pt-24 min-h-screen flex items-center justify-center ${tw.pageBg}`}>
       <div className="text-center">
         <h2 className={`text-2xl font-bold mb-4 ${tw.titleText}`}>Offer not found</h2>
-        <Link to="/posts" className="text-[#C26100] font-semibold">← Back to Posts</Link>
+        <Link to="/posts" className="text-[${colors.accentStart}] font-semibold">← Back to Posts</Link>
       </div>
     </div>
   );
@@ -72,7 +72,7 @@ export default function OfferDetail() {
   return (
     <div className={`pt-24 min-h-screen ${tw.pageBg}`}>
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link to="/posts" className="inline-flex items-center gap-2 text-[#C26100] font-semibold mb-6">
+        <Link to="/posts" className="inline-flex items-center gap-2 text-[${colors.accentStart}] font-semibold mb-6">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -87,14 +87,14 @@ export default function OfferDetail() {
                 <div className="flex items-center gap-3 mb-4">
                   <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold border border-blue-200">🙌 Offer</span>
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                    offer.status === 'active' ? 'bg-[#E07A1B] text-white border-[#C26100]' :
+                    offer.status === 'active' ? 'bg-[${colors.accentEnd}] text-white border-[${colors.accentStart}]' :
                     offer.status === 'inactive' ? 'bg-gray-100 text-gray-700 border-gray-200' :
                     'bg-red-100 text-red-700 border-red-200'}`}>
                     {offer.status}
                   </span>
                 </div>
                 <h1 className={`text-3xl font-bold mb-2 ${tw.titleText}`}>{offer.offer_name}</h1>
-                <div className="flex items-center gap-2 text-[#2d4a2d] mb-4">
+                <div className="flex items-center gap-2 text-[${colors.body}] mb-4">
                   <span className="text-2xl">{CATEGORY_ICONS[offer.category]}</span>
                   <span>{CATEGORY_LABELS[offer.category] || offer.category}</span>
                 </div>
@@ -119,11 +119,11 @@ export default function OfferDetail() {
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="p-4 bg-white/60 rounded-xl">
-                <div className="text-sm text-[#2d4a2d]/70">Availability</div>
+                <div className="text-sm text-[${colors.body}]/70">Availability</div>
                 <div className={`font-semibold ${tw.titleText}`}>{AVAILABILITY_LABELS[offer.availability] || offer.availability}</div>
               </div>
               <div className="p-4 bg-white/60 rounded-xl">
-                <div className="text-sm text-[#2d4a2d]/70">Posted</div>
+                <div className="text-sm text-[${colors.body}]/70">Posted</div>
                 <div className={`font-semibold ${tw.titleText}`}>{new Date(offer.created_at).toLocaleDateString()}</div>
               </div>
             </div>
@@ -134,7 +134,7 @@ export default function OfferDetail() {
               </div>
               <div>
                 <div className={`font-medium ${tw.titleText}`}>{offer.user_full_name}</div>
-                <div className="text-sm text-[#2d4a2d]/70">{offer.user_email}</div>
+                <div className="text-sm text-[${colors.body}]/70">{offer.user_email}</div>
               </div>
             </div>
           </div>
@@ -155,7 +155,7 @@ export default function OfferDetail() {
                 <div className="text-4xl mb-4">📚</div>
                 <p className={tw.bodyText}>No courses linked to this offer yet.</p>
                 {canLink && (
-                  <button onClick={() => setShowLinkModal(true)} className="mt-4 text-[#C26100] font-semibold text-sm hover:text-[#E07A1B]">
+                  <button onClick={() => setShowLinkModal(true)} className="mt-4 text-[${colors.accentStart}] font-semibold text-sm hover:text-[${colors.accentEnd}]">
                     Link a course →
                   </button>
                 )}
@@ -167,16 +167,16 @@ export default function OfferDetail() {
                     className="block p-4 bg-white/60 rounded-xl hover:bg-white/90 transition-colors group">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className={`font-semibold group-hover:text-[#C26100] transition-colors ${tw.titleText}`}>{course.title}</h3>
+                        <h3 className={`font-semibold group-hover:text-[${colors.accentStart}] transition-colors ${tw.titleText}`}>{course.title}</h3>
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            course.status === 'active' ? 'bg-[#E07A1B] text-white' : 'bg-gray-100 text-gray-600'}`}>
+                            course.status === 'active' ? 'bg-[${colors.accentEnd}] text-white' : 'bg-gray-100 text-gray-600'}`}>
                             {course.status}
                           </span>
-                          <span className="text-xs text-[#2d4a2d]/60">by {course.user_email}</span>
+                          <span className="text-xs text-[${colors.body}]/60">by {course.user_email}</span>
                         </div>
                       </div>
-                      <svg className="w-5 h-5 text-[#a8bc6a] group-hover:text-[#C26100] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-5 h-5 text-[#a8bc6a] group-hover:text-[${colors.accentStart}] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
@@ -217,12 +217,12 @@ export default function OfferDetail() {
                         <h3 className={`font-semibold group-hover:text-purple-600 transition-colors ${tw.titleText}`}>{ls.title}</h3>
                         <div className="flex items-center gap-2 mt-1">
                           <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            ls.effective_status === 'active' ? 'bg-[#E07A1B] text-white' : 'bg-gray-100 text-gray-600'}`}>
+                            ls.effective_status === 'active' ? 'bg-[${colors.accentEnd}] text-white' : 'bg-gray-100 text-gray-600'}`}>
                             {ls.effective_status}
                           </span>
-                          <span className="text-xs text-[#2d4a2d]/60">by {ls.user_email}</span>
-                          <span className="text-xs text-[#2d4a2d]/60">•</span>
-                          <span className="text-xs text-[#2d4a2d]/60">Ends: {new Date(ls.ending_date).toLocaleDateString()}</span>
+                          <span className="text-xs text-[${colors.body}]/60">by {ls.user_email}</span>
+                          <span className="text-xs text-[${colors.body}]/60">•</span>
+                          <span className="text-xs text-[${colors.body}]/60">Ends: {new Date(ls.ending_date).toLocaleDateString()}</span>
                         </div>
                       </div>
                       <svg className="w-5 h-5 text-[#a8bc6a] group-hover:text-purple-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
