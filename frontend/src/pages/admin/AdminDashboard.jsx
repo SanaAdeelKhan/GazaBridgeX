@@ -1,5 +1,4 @@
 // frontend/src/pages/admin/AdminDashboard.jsx
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -13,14 +12,12 @@ const quickActions = [
 
 export default function AdminDashboard() {
   const { user } = useAuth();
-
   return (
     <div className="max-w-7xl mx-auto">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <h1 className="text-3xl font-bold text-[#3d4a00] mb-1">Admin Dashboard</h1>
         <p className="text-[#5a6600]">Manage resources, posts, and community content</p>
       </motion.div>
-
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         {quickActions.map((item, i) => (
           <motion.div key={item.to} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
