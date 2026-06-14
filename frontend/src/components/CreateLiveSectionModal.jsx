@@ -49,7 +49,7 @@ export default function CreateLiveSectionModal({ onClose, onCreated }) {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="p-8">
-          <div className="flex items-center justify-between mb-6"><h2 className="text-2xl font-bold text-gray-900">Create Live Section</h2><button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl">✕</button></div>
+          <div className="flex items-center justify-between mb-6"><h2 className="text-2xl font-bold text-gray-900">{t('admin.createLiveSection')}</h2><button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl">✕</button></div>
           {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"><p className="text-sm text-red-700">{error}</p></div>}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div><label className="block text-sm font-medium text-gray-700 mb-2">Title *</label><input type="text" name="title" value={formData.title} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all outline-none" placeholder="e.g., Live Python Workshop" /></div>

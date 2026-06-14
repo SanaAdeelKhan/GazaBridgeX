@@ -154,7 +154,7 @@ export default function Courses() {
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              Create Course
+              {t('admin.createCourse')}
             </motion.button>
           </div>
 
@@ -171,7 +171,7 @@ export default function Courses() {
               </div>
               <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 className={`px-6 py-3 ${tw.accentBtn} font-semibold rounded-xl shadow-md hover:shadow-lg transition-all`}>
-                Search
+                {t('common.search')}
               </motion.button>
               {filters.search && (
                 <motion.button type="button" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -191,7 +191,7 @@ export default function Courses() {
                 <select key={val} value={filters[val]}
                   onChange={(e) => setFilters(prev => ({ ...prev, [val]: e.target.value }))}
                   className={selectClass}>
-                  {opts.map(o => <option key={o.value} value={o.value}>{o.icon ? `${o.icon} ` : ''}{o.label}</option>)}
+                  {opts.map(o => <option key={o.value} value={o.value}>{o.icon ? `${o.icon} ` : ''}{o.label === 'All Statuses' ? t('posts.allStatuses') : o.label === 'All Languages' ? t('posts.allLanguages') : o.label === 'All Levels' ? t('posts.allLevels') : o.label === 'All Categories' ? t('posts.allCategories') : o.label === 'All Availability' ? t('posts.allAvailability') : o.label}</option>)}
                 </select>
               ))}
             </div>

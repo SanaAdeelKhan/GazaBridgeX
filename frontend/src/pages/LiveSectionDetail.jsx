@@ -144,8 +144,8 @@ export default function LiveSectionDetail() {
                 </div>
               </div>
               <div className="flex gap-2">
-                {canEdit && <button onClick={() => setShowEditModal(true)} className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl font-semibold text-sm hover:bg-yellow-200 transition-colors">Edit</button>}
-                {canDelete && <button onClick={() => setDeleteLiveSectionModal({ isOpen: true })} className="px-4 py-2 bg-red-100 text-red-700 rounded-xl font-semibold text-sm hover:bg-red-200 transition-colors">Delete</button>}
+                {canEdit && <button onClick={() => setShowEditModal(true)} className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl font-semibold text-sm hover:bg-yellow-200 transition-colors">{t('common.edit')}</button>}
+                {canDelete && <button onClick={() => setDeleteLiveSectionModal({ isOpen: true })} className="px-4 py-2 bg-red-100 text-red-700 rounded-xl font-semibold text-sm hover:bg-red-200 transition-colors">{t('common.delete')}</button>}
               </div>
             </div>
 

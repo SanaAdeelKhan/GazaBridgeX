@@ -70,7 +70,7 @@ export default function CreateResourceModal({ onClose, onCreated }) {
       >
         <div className="p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Add Resource</h2>
+            <h2 className="text-2xl font-bold text-gray-900">{t('admin.createResource')}</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-xl transition-colors"

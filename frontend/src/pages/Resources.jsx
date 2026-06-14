@@ -80,7 +80,7 @@ export default function Resources() {
               </div>
               <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 className={`px-6 py-3 ${tw.accentBtn} font-semibold rounded-xl shadow-md hover:shadow-lg transition-all`}>
-                Search
+                {t('common.search')}
               </motion.button>
               {filters.search && (
                 <motion.button type="button" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}

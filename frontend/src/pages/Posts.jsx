@@ -24,8 +24,8 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
           <h3 className="text-xl font-bold text-center mb-2" style={{ color: colors.bannerStart }}>{title}</h3>
           <p className="text-gray-600 text-center mb-6">{message}</p>
           <div className="flex gap-3">
-            <button onClick={onClose} className={`flex-1 px-4 py-2.5 font-medium rounded-xl transition-colors ${tw.cancelBtn}`}>Cancel</button>
-            <button onClick={onConfirm} className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${type === 'delete' ? 'bg-gradient-to-r from-red-500 to-red-600' : tw.accentBtn}`}>Confirm</button>
+            <button onClick={onClose} className={`flex-1 px-4 py-2.5 font-medium rounded-xl transition-colors ${tw.cancelBtn}`}>{t('common.cancel')}</button>
+            <button onClick={onConfirm} className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${type === 'delete' ? 'bg-gradient-to-r from-red-500 to-red-600' : tw.accentBtn}`}>{t('common.confirm')}</button>
           </div>
         </div>
       </motion.div>
@@ -365,10 +365,10 @@ export default function Posts() {
                   style={{ color: colors.title }} />
               </div>
               <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                className={`px-5 py-2.5 font-semibold rounded-xl shadow-md text-sm ${tw.accentBtn}`}>Search</motion.button>
+                className={`px-5 py-2.5 font-semibold rounded-xl shadow-md text-sm ${tw.accentBtn}`}>{t('common.search')}</motion.button>
               {filters.search && (
                 <button type="button" onClick={() => { setSearchInput(''); setFilters(prev => ({ ...prev, search: '' })); }}
-                  className="px-4 py-2.5 text-gray-600 font-medium rounded-xl border border-gray-300 text-sm">Clear</button>
+                  className="px-4 py-2.5 text-gray-600 font-medium rounded-xl border border-gray-300 text-sm">{t('posts.clearFilters')}</button>
               )}
             </form>
             <div className="flex flex-wrap gap-2">
