@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import Sidebar from './Sidebar';
@@ -9,6 +9,7 @@ import HeaderBar from './HeaderBar';
 export default function DashboardLayout() {
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
   const adminRoles = ['manager', 'admin', 'superuser'];
   const isAdmin = user?.roles?.some(r => adminRoles.includes(r)) || user?.is_staff || user?.is_superuser;
@@ -29,9 +30,17 @@ export default function DashboardLayout() {
 
   if (isChatPage) {
     return (
-      <div className="min-h-screen bg-[#F2DDD8]">
-        <HeaderBar sidebarOpen={sidebarOpen} onToggleSidebar={() => setSidebarOpen(o => !o)} />
-        <Outlet />
+      <div className="h-screen flex flex-col bg-[#F2DDD8] overflow-hidden">
+        {/* On mobile: show back arrow instead of sidebar toggle */}
+        <HeaderBar
+          sidebarOpen={sidebarOpen}
+          onToggleSidebar={() => navigate(-1)}
+          isChatPage={true}
+        />
+        {/* Outlet fills exactly the remaining height — no scrolling at layout level */}
+        <div className="flex-1 overflow-hidden">
+          <Outlet />
+        </div>
       </div>
     );
   }
