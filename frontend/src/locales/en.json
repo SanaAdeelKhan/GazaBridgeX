@@ -113,7 +113,9 @@
     "totalPosts": "Total Posts",
     "totalUsers": "Total Users",
     "totalCourses": "Total Courses",
-    "activeVolunteers": "Active Volunteers"
+    "activeVolunteers": "Active Volunteers",
+    "welcomeBack": "Welcome back",
+    "noPosts": "No posts yet. Create your first offer or request!"
   },
   "posts": {
     "title": "Posts",

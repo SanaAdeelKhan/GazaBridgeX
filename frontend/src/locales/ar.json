@@ -113,7 +113,9 @@
     "totalPosts": "إجمالي المنشورات",
     "totalUsers": "إجمالي المستخدمين",
     "totalCourses": "إجمالي الدورات",
-    "activeVolunteers": "المتطوعون النشطون"
+    "activeVolunteers": "المتطوعون النشطون",
+    "welcomeBack": "مرحباً بعودتك",
+    "noPosts": "لا توجد منشورات بعد. أنشئ أول عرض أو طلب!"
   },
   "posts": {
     "title": "المنشورات",

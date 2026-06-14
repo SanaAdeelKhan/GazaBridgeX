@@ -1,5 +1,6 @@
 // frontend/src/pages/dashboard/UserDashboard.jsx
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -9,6 +10,7 @@ import { coursesAPI } from '../../api/courses';
 
 export default function UserDashboard() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { profile } = useUser();
   const [stats, setStats] = useState({ offers: 0, requests: 0, courses: 0, liveSections: 0 });
   const [recentPosts, setRecentPosts] = useState([]);
@@ -47,10 +49,10 @@ export default function UserDashboard() {
   };
 
   const statCards = [
-    { label: 'Offers', value: stats.offers, icon: '🙌', path: '/posts' },
-    { label: 'Requests', value: stats.requests, icon: '🌟', path: '/posts' },
-    { label: 'Courses', value: stats.courses, icon: '📚', path: '/courses' },
-    { label: 'Live Sections', value: stats.liveSections, icon: '📡', path: '/live-sections' },
+    { label: t('posts.offers'), value: stats.offers, icon: '🙌', path: '/posts' },
+    { label: t('posts.requests'), value: stats.requests, icon: '🌟', path: '/posts' },
+    { label: t('courses.title'), value: stats.courses, icon: '📚', path: '/courses' },
+    { label: t('liveSections.title'), value: stats.liveSections, icon: '📡', path: '/live-sections' },
   ];
 
   return (
@@ -66,7 +68,7 @@ export default function UserDashboard() {
             </div>
             <div>
               <h1 className="text-3xl font-bold text-[#1e3a5f]">
-                Welcome back, {profile?.first_name || user?.first_name || 'User'}!
+                {t('dashboard.welcomeBack')}, {profile?.first_name || user?.first_name || 'User'}!
               </h1>
               <p className="text-[#5a6600] mt-1">{user?.email}</p>
               <div className="flex gap-2 mt-3">
@@ -100,7 +102,7 @@ export default function UserDashboard() {
         {/* Recent Posts */}
         <div className="bg-[#d8e4f0] border border-[#a8c4dc] rounded-3xl shadow-lg p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-[#1e3a5f]">Recent Posts</h2>
+            <h2 className="text-xl font-bold text-[#1e3a5f]">{t('dashboard.recentPosts')}</h2>
             <Link to="/posts" className="text-[#C26100] hover:text-[#E07A1B] font-semibold text-sm transition-colors">
               View All →
             </Link>
@@ -118,8 +120,8 @@ export default function UserDashboard() {
           ) : recentPosts.length === 0 ? (
             <div className="text-center py-8 text-[#5a6600]">
               <div className="text-4xl mb-4">📝</div>
-              <p>No posts yet. Create your first offer or request!</p>
-              <Link to="/posts" className="text-[#C26100] font-semibold mt-2 inline-block">Create Post →</Link>
+              <p>{t('dashboard.noPosts')}</p>
+              <Link to="/posts" className="text-[#C26100] font-semibold mt-2 inline-block">{t('posts.newPost')} →</Link>
             </div>
           ) : (
             <div className="space-y-3">
@@ -131,7 +133,7 @@ export default function UserDashboard() {
                       ? 'bg-[#F2DDD8] text-[#C26100] border border-[#e8b4b0]'
                       : 'bg-[#1e3a5f] text-white'
                   }`}>
-                    {post.postType === 'offer' ? 'Offer' : 'Request'}
+                    {post.postType === 'offer' ? t('posts.offer') : t('posts.request')}
                   </span>
                   <div className="flex-1">
                     <h3 className="font-semibold text-[#1e3a5f]">
