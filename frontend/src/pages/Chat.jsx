@@ -1,5 +1,6 @@
 // frontend/src/pages/Chat.jsx
 import { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { chatAPI } from '../api/chat';
@@ -10,6 +11,7 @@ import StartConversationModal from '../components/chat/StartConversationModal';
 
 export default function Chat() {
   const { user } = useAuth();
+  const location = useLocation();
   const [conversations, setConversations] = useState([]);
   const [groups, setGroups]               = useState([]);
   const [activeChat, setActiveChat]       = useState(null);
@@ -31,6 +33,14 @@ export default function Chat() {
   }, []);
 
   useEffect(() => { loadChats(); }, [loadChats]);
+
+  // Auto-open DM passed from UserPublicProfile
+  useEffect(() => {
+    if (location.state?.openDM) {
+      setActiveChat(location.state.openDM);
+      setSidebarOpen(false);
+    }
+  }, [location.state]);
 
   const selectConversation = (conv) => {
     setActiveChat({ type: 'dm', id: conv.id, otherUser: conv.other_user });
