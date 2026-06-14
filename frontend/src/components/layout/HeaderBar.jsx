@@ -50,12 +50,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
               </svg>
             </button>
           )}
-          <Link to={isAdmin ? '/admin' : '/dashboard'} className="flex items-center gap-2">
-            <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-[#F2DDD8] flex items-center justify-center shadow-sm flex-shrink-0">
-              <img src="/gb-logo.png" alt="GazaBridge" className="w-8 h-8 sm:w-12 sm:h-12 object-contain" />
-            </div>
-            <span className="text-base sm:text-xl font-bold hidden sm:block text-white">GazaBridge</span>
-          </Link>
+          <Link to={isAdmin ? '/admin' : '/dashboard'} />
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
