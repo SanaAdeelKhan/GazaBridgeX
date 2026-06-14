@@ -18,10 +18,12 @@ export default function Sidebar({ onClose }) {
   return (
     <div className="py-6 flex flex-col h-full">
       <div className="px-6 mb-8 flex items-center gap-3">
-        <div className="w-16 h-16 rounded-full bg-[#F2DDD8] flex items-center justify-center shadow-md flex-shrink-0">
-          <img src="/gb-logo.png" alt="GazaBridge" className="w-12 h-12 object-contain" />
+        <div className="flex flex-col items-center w-full gap-2">
+          <div className="w-36 h-36 rounded-full bg-[#F2DDD8] flex items-center justify-center shadow-md flex-shrink-0">
+            <img src="/gb-logo.png" alt="GazaBridge" className="w-32 h-32 object-contain rounded-full" />
+          </div>
+          <span className="font-bold text-lg text-white">GazaBridge</span>
         </div>
-        <span className="font-bold text-lg text-white">GazaBridge</span>
       </div>
 
       <div className="px-6 mb-3">
