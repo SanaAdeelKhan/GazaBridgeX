@@ -1,5 +1,6 @@
 // frontend/src/pages/Notifications.jsx
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotifications } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
@@ -23,7 +24,7 @@ const TimeAgo = ({ date }) => {
   return <span className="text-xs text-[${colors.body}]/60">{getTimeAgo(date)}</span>;
 };
 
-const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete' }) => {
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete', t }) => {
   if (!isOpen) return null;
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -127,14 +128,15 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
         </div>
       </motion.div>
       <ConfirmationModal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleDelete} title="Delete Notification"
-        message="Are you sure you want to delete this notification? This action cannot be undone." type="delete" />
+        onConfirm={handleDelete} title={t('notifications.deleteOne')}
+        message={t('notifications.deleteOneMsg')} type="delete" />
     </>
   );
 }
 
 export default function Notifications() {
   const { notifications, loading, error, hasMore, loadMore, markAsRead, markAllAsRead, deleteNotification, deleteAllNotifications } = useNotifications();
+  const { t } = useTranslation();
   const [filter, setFilter] = useState('all');
   const [actionLoading, setActionLoading] = useState(false);
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
@@ -154,8 +156,8 @@ export default function Notifications() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className={`text-3xl md:text-4xl font-bold ${tw.titleText}`}>Notifications</h1>
-              <p className={`mt-1 ${tw.bodyText}`}>Stay updated with your activity</p>
+              <h1 className={`text-3xl md:text-4xl font-bold ${tw.titleText}`}>{t('notifications.title')}</h1>
+              <p className={`mt-1 ${tw.bodyText}`}>{t('notifications.subtitle')}</p>
             </div>
             <div className="flex gap-2">
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -173,7 +175,7 @@ export default function Notifications() {
 
           {/* Filter tabs */}
           <div className="flex gap-2">
-            {[{ value: 'all', label: 'All' }, { value: 'unread', label: 'Unread' }, { value: 'urgent', label: 'Urgent' }].map(f => (
+            {[{ value: 'all', label: t('notifications.all') }, { value: 'unread', label: t('notifications.unread') }, { value: 'urgent', label: t('notifications.urgent') }].map(f => (
               <button key={f.value} onClick={() => setFilter(f.value)}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                   filter === f.value ? tw.tabActive + ' shadow-lg' : tw.tabInactive
@@ -203,8 +205,8 @@ export default function Notifications() {
         {!loading && filteredNotifications.length === 0 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
             <div className="text-6xl mb-6">🔔</div>
-            <h3 className={`text-2xl font-bold mb-2 ${tw.titleText}`}>No notifications</h3>
-            <p className={tw.bodyText}>{filter !== 'all' ? 'No notifications match your filter.' : "You're all caught up!"}</p>
+            <h3 className={`text-2xl font-bold mb-2 ${tw.titleText}`}>{t('notifications.noNotifications')}</h3>
+            <p className={tw.bodyText}>{filter !== 'all' ? t('notifications.noMatch') : t('notifications.allCaughtUp')}</p>
           </motion.div>
         )}
 
@@ -219,17 +221,17 @@ export default function Notifications() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  Loading...
+                  {t('common.loading')}
                 </span>
-              ) : 'Load More'}
+              ) : t('posts.loadMore')}
             </motion.button>
           </div>
         )}
       </div>
 
-      <ConfirmationModal isOpen={showDeleteAllModal} onClose={() => setShowDeleteAllModal(false)}
-        onConfirm={handleDeleteAll} title="Delete All Notifications"
-        message="Are you sure you want to delete all notifications? This action cannot be undone." type="delete" />
+      <ConfirmationModal t={t} isOpen={showDeleteAllModal} onClose={() => setShowDeleteAllModal(false)}
+        onConfirm={handleDeleteAll} title={t('notifications.deleteAll')}
+        message={t('notifications.deleteAllMsg')} type="delete" />
     </div>
   );
 }

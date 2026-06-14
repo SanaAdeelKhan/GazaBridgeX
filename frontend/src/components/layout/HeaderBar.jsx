@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
+import LanguageToggle from '../LanguageToggle';
 import { useNotifications } from '../../context/NotificationContext';
 
 export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -54,6 +57,8 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
+          <LanguageToggle />
+
           <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/notifications')}
             className="relative p-2 hover:bg-white/10 rounded-xl transition-colors">

@@ -1,5 +1,6 @@
 // frontend/src/pages/Resources.jsx
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useResources } from '../context/ResourceContext';
 import { useAuth } from '../context/AuthContext';
@@ -21,6 +22,7 @@ const CATEGORIES = [
 
 export default function Resources() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const { resources, loading, error, pagination, filters, fetchResources, deleteResource, updateFilters } = useResources();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -51,8 +53,8 @@ export default function Resources() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className={`text-4xl md:text-5xl font-bold mb-2 ${tw.titleText}`}>Resources</h1>
-              <p className={tw.bodyText}>Discover opportunities, scholarships, jobs, and more</p>
+              <h1 className={`text-4xl md:text-5xl font-bold mb-2 ${tw.titleText}`}>{t('resources.title')}</h1>
+              <p className={tw.bodyText}>{t('resources.subtitle')}</p>
             </div>
             {canManage && (
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -73,7 +75,7 @@ export default function Resources() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
-                  placeholder="Search resources..."
+                  placeholder={t('resources.searchPlaceholder')}
                   className="w-full pl-12 pr-4 py-3 border border-[#a8bc6a] bg-white rounded-xl focus:ring-2 focus:ring-[${colors.accentStart}] focus:border-[${colors.accentStart}] transition-all outline-none text-[${colors.bannerStart}]" />
               </div>
               <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -129,9 +131,9 @@ export default function Resources() {
         ) : resources.length === 0 ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
             <div className="text-6xl mb-6">📚</div>
-            <h3 className={`text-2xl font-bold mb-2 ${tw.titleText}`}>No resources found</h3>
+            <h3 className={`text-2xl font-bold mb-2 ${tw.titleText}`}>{t('resources.noResources')}</h3>
             <p className={`mb-6 ${tw.bodyText}`}>
-              {filters.search || filters.category ? 'Try adjusting your search or filters.' : 'Resources will appear here once they are added.'}
+              {filters.search || filters.category ? t('courses.adjustFilters') : t('resources.empty')}
             </p>
             {(filters.search || filters.category) && (
               <button onClick={() => { setSearchInput(''); setSelectedCategory(''); updateFilters({ search: '', category: '' }); }}
@@ -161,14 +163,14 @@ export default function Resources() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                       </svg>
-                      Loading...
+                      {t('common.loading')}
                     </span>
-                  ) : `Load More (${pagination.totalPages - pagination.page} pages remaining)`}
+                  ) : t('posts.loadMore')}
                 </motion.button>
               </div>
             )}
             <div className={`text-center mt-4 text-sm ${tw.bodyText}`}>
-              Showing {resources.length} of {pagination.totalCount} resources
+              {t('resources.showing', { count: resources.length, total: pagination.totalCount })}
             </div>
           </>
         )}

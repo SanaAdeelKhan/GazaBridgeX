@@ -1,5 +1,6 @@
 // frontend/src/pages/Courses.jsx
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -8,7 +9,7 @@ import CourseCard from '../components/CourseCard';
 import CreateCourseModal from '../components/CreateCourseModal';
 import { tw } from '../theme/colors';
 
-const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete' }) => {
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete', t }) => {
   if (!isOpen) return null;
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -84,6 +85,7 @@ const STATUS_OPTIONS = [
 export default function Courses() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -143,8 +145,8 @@ export default function Courses() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className={`text-4xl md:text-5xl font-bold mb-2 ${tw.titleText}`}>Courses</h1>
-              <p className={tw.bodyText}>Discover and enroll in courses created by the community</p>
+              <h1 className={`text-4xl md:text-5xl font-bold mb-2 ${tw.titleText}`}>{t('courses.title')}</h1>
+              <p className={tw.bodyText}>{t('courses.subtitle')}</p>
             </div>
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setShowCreateModal(true)}
@@ -164,7 +166,7 @@ export default function Courses() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
-                  placeholder="Search courses..."
+                  placeholder={t('courses.searchPlaceholder')}
                   className="w-full pl-12 pr-4 py-3 border border-[#a8bc6a] bg-white rounded-xl focus:ring-2 focus:ring-[${colors.accentStart}] focus:border-[${colors.accentStart}] transition-all outline-none text-[${colors.bannerStart}]" />
               </div>
               <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -215,9 +217,9 @@ export default function Courses() {
         ) : courses.length === 0 ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
             <div className="text-6xl mb-6">📚</div>
-            <h3 className={`text-2xl font-bold mb-2 ${tw.titleText}`}>No courses found</h3>
+            <h3 className={`text-2xl font-bold mb-2 ${tw.titleText}`}>{t('courses.noCourses')}</h3>
             <p className={`mb-6 ${tw.bodyText}`}>
-              {filters.search || filters.category || filters.status ? 'Try adjusting your search or filters.' : 'Be the first to create a course!'}
+              {filters.search || filters.category || filters.status ? t('courses.adjustFilters') : t('courses.beFirst')}
             </p>
             {!filters.search && !filters.category && !filters.status && (
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -243,12 +245,12 @@ export default function Courses() {
                 <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                   onClick={handleLoadMore} disabled={loading}
                   className={`px-8 py-3 ${tw.cancelBtn} border border-[#a8bc6a] font-medium rounded-xl hover:border-[${colors.accentStart}] hover:text-[${colors.accentStart}] transition-all shadow-sm disabled:opacity-50`}>
-                  {loading ? 'Loading...' : 'Load More'}
+                  {loading ? t('common.loading') : t('posts.loadMore')}
                 </motion.button>
               </div>
             )}
             <div className={`text-center mt-4 text-sm ${tw.bodyText}`}>
-              Showing {courses.length} of {pagination.totalCount} courses
+              {t('courses.showing', { count: courses.length, total: pagination.totalCount })}
             </div>
           </>
         )}
@@ -258,10 +260,10 @@ export default function Courses() {
         {showCreateModal && <CreateCourseModal onClose={() => setShowCreateModal(false)}
           onCreated={() => { setShowCreateModal(false); fetchCourses(1, false); }} />}
       </AnimatePresence>
-      <ConfirmationModal isOpen={deleteModal.isOpen}
+      <ConfirmationModal t={t} isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, courseId: null })}
-        onConfirm={handleDelete} title="Delete Course"
-        message="Are you sure you want to delete this course? This will also delete all contents and unlink from offers. This action cannot be undone."
+        onConfirm={handleDelete} title={t('courses.deleteCourse')}
+        message={t('courses.deleteMsg')}
         type="delete" />
     </div>
   );

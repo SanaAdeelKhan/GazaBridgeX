@@ -1,5 +1,6 @@
 // frontend/src/pages/Posts.jsx - Compact list layout, expandable rows, clickable user profiles
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -67,6 +68,7 @@ const STATUS = [
 
 // ── Post Row (compact + expandable) ───────────────────────────────────────────
 function PostRow({ post, type, canEdit, canDelete, onEdit, onDelete }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
   const name = type === 'offer' ? post.offer_name : post.request_name;
@@ -233,6 +235,7 @@ function PostRow({ post, type, canEdit, canDelete, onEdit, onDelete }) {
 // ── Main Posts Page ────────────────────────────────────────────────────────────
 export default function Posts() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('offers');
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -321,8 +324,8 @@ export default function Posts() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-4xl font-bold mb-1" style={{ color: colors.title }}>Community Posts</h1>
-              <p className="text-sm" style={{ color: colors.body }}>Browse offers and requests from the community</p>
+              <h1 className="text-4xl font-bold mb-1" style={{ color: colors.title }}>{t('posts.title')}</h1>
+              <p className="text-sm" style={{ color: colors.body }}>{t('posts.browseSubtitle')}</p>
             </div>
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setShowCreateModal(true)}
@@ -330,7 +333,7 @@ export default function Posts() {
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
-              Create Post
+              {t('posts.newPost')}
             </motion.button>
           </div>
 
@@ -462,7 +465,7 @@ export default function Posts() {
       <AnimatePresence>
         {editingPost && <EditPostModal post={editingPost} type={activeTab === 'offers' ? 'offer' : 'request'} onClose={() => setEditingPost(null)} onUpdated={handleUpdate} />}
       </AnimatePresence>
-      <ConfirmationModal isOpen={deleteModal.isOpen} onClose={() => setDeleteModal({ isOpen: false, postId: null })}
+      <ConfirmationModal t={t} isOpen={deleteModal.isOpen} onClose={() => setDeleteModal({ isOpen: false, postId: null })}
         onConfirm={handleDelete} title={`Delete ${activeTab === 'offers' ? 'Offer' : 'Request'}`}
         message={`Are you sure you want to delete this ${activeTab === 'offers' ? 'offer' : 'request'}? This action cannot be undone.`}
         type="delete" />

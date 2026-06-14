@@ -1,5 +1,6 @@
 // frontend/src/pages/Login.jsx
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -7,6 +8,7 @@ import GoogleLoginButton from '../components/GoogleLoginButton';
 
 export default function Login() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { login } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
@@ -56,8 +58,8 @@ export default function Login() {
               </div>
             </div>
           </Link>
-          <h2 className="text-3xl font-bold" style={{ color: '#3d4a00', fontFamily: "'Instrument Serif', Georgia, serif" }}>Welcome back</h2>
-          <p className="mt-2" style={{ color: '#5a6600' }}>Sign in to your account to continue</p>
+          <h2 className="text-3xl font-bold" style={{ color: '#3d4a00', fontFamily: "'Instrument Serif', Georgia, serif" }}>{t('auth.welcomeBack')}</h2>
+          <p className="mt-2" style={{ color: '#5a6600' }}>{t('auth.signInSubtitle')}</p>
         </div>
 
         {/* Card */}
@@ -69,7 +71,7 @@ export default function Login() {
               <div className="w-full border-t" style={{ borderColor: '#a8c4dc' }} />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4" style={{ backgroundColor: '#d8e4f0', color: '#5a6600' }}>or continue with email</span>
+              <span className="px-4" style={{ backgroundColor: '#d8e4f0', color: '#5a6600' }}>{t('auth.orEmail')}</span>
             </div>
           </div>
 
@@ -94,7 +96,7 @@ export default function Login() {
                 value={formData.email} onChange={handleChange}
                 className="w-full px-4 py-3 rounded-xl outline-none transition-all"
                 style={{ backgroundColor: '#eaf1f8', border: '1.5px solid #a8c4dc', color: '#1e3a5f' }}
-                placeholder="you@example.com" />
+                placeholder={t('auth.enterEmail')} />
             </div>
 
             <div>
@@ -107,7 +109,7 @@ export default function Login() {
                   value={formData.password} onChange={handleChange}
                   className="w-full px-4 py-3 pr-12 rounded-xl outline-none transition-all"
                   style={{ backgroundColor: '#eaf1f8', border: '1.5px solid #a8c4dc', color: '#1e3a5f' }}
-                  placeholder="Enter your password" />
+                  placeholder={t('auth.enterPassword')} />
                 <button type="button" onClick={() => setShowPassword(p => !p)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-colors"
                   style={{ color: '#5a6600' }}>
@@ -140,16 +142,16 @@ export default function Login() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  Signing in...
+                  {t('common.loading')}
                 </div>
-              ) : 'Sign in'}
+              ) : t('auth.signIn')}
             </motion.button>
           </form>
         </div>
 
         <p className="text-center mt-6" style={{ color: '#5a6600' }}>
-          Don't have an account?{' '}
-          <Link to="/register" className="font-semibold" style={{ color: '#C26100' }}>Create one free</Link>
+          {t('auth.dontHaveAccount')}{' '}
+          <Link to="/register" className="font-semibold" style={{ color: '#C26100' }}>{t('auth.createFree')}</Link>
         </p>
       </motion.div>
     </div>

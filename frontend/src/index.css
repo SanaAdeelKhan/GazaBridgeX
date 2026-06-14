@@ -31,3 +31,7 @@
   --color-orange-600: #C26100;
   --color-orange: #D86F0A;
 }
+
+[lang="ar"] * {
+  font-family: 'Cairo', sans-serif !important;
+}

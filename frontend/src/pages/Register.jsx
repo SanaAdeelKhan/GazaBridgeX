@@ -1,5 +1,6 @@
 // frontend/src/pages/Register.jsx
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { usersAPI } from '../api/users';
@@ -36,13 +37,15 @@ const ROLES = [
   { value: 'seeker', label: '🎓 I want to learn new skills', description: 'Get help from experienced volunteers' },
 ];
 
-const STEPS = ['Account', 'Profile', 'Verification'];
+const STEPS = () => { const { t } = useTranslation(); return [t('auth.stepAccount'), t('auth.stepProfile'), t('auth.stepVerification')]; };
 
 const inputStyle = { backgroundColor: '#eaf1f8', border: '1.5px solid #a8c4dc', color: '#1e3a5f' };
 const labelStyle = { color: '#1e3a5f' };
 
 export default function Register() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const steps = STEPS();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -129,25 +132,25 @@ export default function Register() {
   const renderStep1 = () => (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
       <div>
-        <label className="block text-sm font-semibold mb-2" style={labelStyle}>Email address <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-semibold mb-2" style={labelStyle}>{t('auth.email')} <span className="text-red-500">*</span></label>
         <input name="email" type="email" required value={formData.email} onChange={handleChange}
-          className="w-full px-4 py-3 rounded-xl outline-none transition-all" style={inputStyle} placeholder="you@example.com" />
+          className="w-full px-4 py-3 rounded-xl outline-none transition-all" style={inputStyle} placeholder={t('auth.enterEmail')} />
       </div>
       <div>
-        <label className="block text-sm font-semibold mb-2" style={labelStyle}>Password <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-semibold mb-2" style={labelStyle}>{t('auth.password')} <span className="text-red-500">*</span></label>
         <div className="relative">
           <input name="password" type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={handleChange}
-            className="w-full px-4 py-3 pr-12 rounded-xl outline-none transition-all" style={inputStyle} placeholder="At least 8 characters" />
+            className="w-full px-4 py-3 pr-12 rounded-xl outline-none transition-all" style={inputStyle} placeholder={t('auth.passwordHint')} />
           <button type="button" onClick={() => setShowPassword(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1" style={{ color: '#5a6600' }}>
             {showPassword ? <EyeOff /> : <EyeOpen />}
           </button>
         </div>
       </div>
       <div>
-        <label className="block text-sm font-semibold mb-2" style={labelStyle}>Confirm Password <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-semibold mb-2" style={labelStyle}>{t('auth.confirmPassword')} <span className="text-red-500">*</span></label>
         <div className="relative">
           <input name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} required value={formData.confirmPassword} onChange={handleChange}
-            className="w-full px-4 py-3 pr-12 rounded-xl outline-none transition-all" style={inputStyle} placeholder="Repeat your password" />
+            className="w-full px-4 py-3 pr-12 rounded-xl outline-none transition-all" style={inputStyle} placeholder={t('auth.repeatPassword')} />
           <button type="button" onClick={() => setShowConfirmPassword(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1" style={{ color: '#5a6600' }}>
             {showConfirmPassword ? <EyeOff /> : <EyeOpen />}
           </button>
@@ -160,19 +163,19 @@ export default function Register() {
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-semibold mb-2" style={labelStyle}>First Name <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-semibold mb-2" style={labelStyle}>{t('auth.firstName')} <span className="text-red-500">*</span></label>
           <input name="first_name" type="text" required value={formData.first_name} onChange={handleChange}
             className="w-full px-4 py-3 rounded-xl outline-none transition-all" style={inputStyle} />
         </div>
         <div>
-          <label className="block text-sm font-semibold mb-2" style={labelStyle}>Last Name <span className="text-red-500">*</span></label>
+          <label className="block text-sm font-semibold mb-2" style={labelStyle}>{t('auth.lastName')} <span className="text-red-500">*</span></label>
           <input name="last_name" type="text" required value={formData.last_name} onChange={handleChange}
             className="w-full px-4 py-3 rounded-xl outline-none transition-all" style={inputStyle} />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-semibold mb-3" style={labelStyle}>I want to... <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-semibold mb-3" style={labelStyle}>{t('auth.iWantTo')} <span className="text-red-500">*</span></label>
         <div className="space-y-3">
           {ROLES.map(role => (
             <label key={role.value} className="flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all"
@@ -191,32 +194,32 @@ export default function Register() {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold mb-2" style={labelStyle}>Country <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-semibold mb-2" style={labelStyle}>{t('profile.location')} <span className="text-red-500">*</span></label>
         <select name="country" required value={formData.country} onChange={handleChange}
           className="w-full px-4 py-3 rounded-xl outline-none transition-all" style={inputStyle}>
-          <option value="">Select your country</option>
+          <option value="">{t('auth.selectCountry')}</option>
           {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
 
       <div>
-        <label className="block text-sm font-semibold mb-2" style={labelStyle}>Gender <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-semibold mb-2" style={labelStyle}>{t('auth.gender')} <span className="text-red-500">*</span></label>
         <select name="gender" required value={formData.gender} onChange={handleChange}
           className="w-full px-4 py-3 rounded-xl outline-none transition-all" style={inputStyle}>
-          <option value="">Select gender</option>
+          <option value="">{t('auth.selectGender')}</option>
           {GENDERS.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
         </select>
       </div>
 
       <div>
-        <label className="block text-sm font-semibold mb-2" style={labelStyle}>LinkedIn Profile <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-semibold mb-2" style={labelStyle}>{t('auth.linkedin')} <span className="text-red-500">*</span></label>
         <input name="linkedin" type="url" required value={formData.linkedin} onChange={handleChange}
           placeholder="https://linkedin.com/in/yourprofile"
           className="w-full px-4 py-3 rounded-xl outline-none transition-all" style={inputStyle} />
       </div>
 
       <div>
-        <label className="block text-sm font-semibold mb-3" style={labelStyle}>Languages you speak</label>
+        <label className="block text-sm font-semibold mb-3" style={labelStyle}>{t('auth.languages')}</label>
         <div className="grid grid-cols-2 gap-2">
           {LANGUAGES.map(lang => (
             <label key={lang.code} className="flex items-center p-2 rounded-lg border cursor-pointer transition-all"
@@ -233,7 +236,7 @@ export default function Register() {
 
       <div>
         <label className="block text-sm font-semibold mb-2" style={labelStyle}>
-          WhatsApp Number <span style={{ color: '#5a6600' }}>(optional)</span>
+          {t('auth.whatsapp')} <span style={{ color: '#5a6600' }}>({t('auth.optional')})</span>
         </label>
         <input name="whatsapp_number" type="tel" value={formData.whatsapp_number} onChange={handleChange}
           placeholder="+1234567890" className="w-full px-4 py-3 rounded-xl outline-none transition-all" style={inputStyle} />
@@ -250,14 +253,14 @@ export default function Register() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
         </svg>
       </motion.div>
-      <h3 className="text-2xl font-bold mb-4" style={{ color: '#3d4a00', fontFamily: "'Instrument Serif', Georgia, serif" }}>Check Your Email</h3>
+      <h3 className="text-2xl font-bold mb-4" style={{ color: '#3d4a00', fontFamily: "'Instrument Serif', Georgia, serif" }}>{t('auth.checkEmail')}</h3>
       <p className="mb-6" style={{ color: '#5a6600' }}>
         {successMessage || "We've sent a verification link to your email. Please verify to activate your account."}
       </p>
       <p className="text-sm mb-8" style={{ color: '#5a6600' }}>
-        Didn't receive it? Check your spam or{' '}
+        {t('auth.didntReceive')}{' '}
         <button onClick={() => usersAPI.resendVerification(formData.email)} className="font-semibold" style={{ color: '#C26100' }}>
-          click here to resend
+          {t('auth.resend')}
         </button>
       </p>
       <Link to="/login" className="inline-block px-8 py-3 text-white font-semibold rounded-xl shadow-lg transition-all"
@@ -289,8 +292,8 @@ export default function Register() {
               </div>
             </div>
           </Link>
-          <h2 className="text-3xl font-bold" style={{ color: '#3d4a00', fontFamily: "'Instrument Serif', Georgia, serif" }}>Create your account</h2>
-          <p className="mt-2" style={{ color: '#5a6600' }}>Join our community of learners and volunteers</p>
+          <h2 className="text-3xl font-bold" style={{ color: '#3d4a00', fontFamily: "'Instrument Serif', Georgia, serif" }}>{t('auth.createAccount')}</h2>
+          <p className="mt-2" style={{ color: '#5a6600' }}>{t('auth.createSubtitle')}</p>
         </div>
 
         {/* Card */}
@@ -300,7 +303,7 @@ export default function Register() {
           {step < 3 && (
             <div className="mb-8">
               <div className="flex items-center justify-between">
-                {STEPS.map((stepName, index) => (
+                {steps.map((stepName, index) => (
                   <div key={stepName} className="flex items-center">
                     <div className="flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold"
                       style={index + 1 <= step
@@ -329,7 +332,7 @@ export default function Register() {
                   <div className="w-full border-t" style={{ borderColor: '#a8c4dc' }} />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-4" style={{ backgroundColor: '#d8e4f0', color: '#5a6600' }}>or continue with email</span>
+                  <span className="px-4" style={{ backgroundColor: '#d8e4f0', color: '#5a6600' }}>{t('auth.orEmail')}</span>
                 </div>
               </div>
             </>
@@ -379,9 +382,9 @@ export default function Register() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
-                        Creating account...
+                        {t('auth.creatingAccount')}
                       </div>
-                    ) : 'Create Account'}
+                    ) : t('auth.createAccount')}
                   </motion.button>
                 )}
               </div>
@@ -391,8 +394,8 @@ export default function Register() {
 
         {step < 3 && (
           <p className="text-center mt-6" style={{ color: '#5a6600' }}>
-            Already have an account?{' '}
-            <Link to="/login" className="font-semibold" style={{ color: '#C26100' }}>Sign in</Link>
+            {t('auth.alreadyHaveAccount')}{' '}
+            <Link to="/login" className="font-semibold" style={{ color: '#C26100' }}>{t('auth.signIn')}</Link>
           </p>
         )}
       </motion.div>
