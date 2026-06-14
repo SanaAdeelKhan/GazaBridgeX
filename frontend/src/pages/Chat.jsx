@@ -19,10 +19,12 @@ export default function Chat() {
   const [activeChat, setActiveChat]       = useState(null);
   const [activeTab, setActiveTab]         = useState('all');
   const [loadingList, setLoadingList]     = useState(true);
-  const [sidebarOpen, setSidebarOpen]     = useState(true);
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [showStartConv, setShowStartConv]    = useState(false);
   const [searchQuery, setSearchQuery]        = useState('');
+
+  // On mobile: 'list' shows conversation list, 'chat' shows chat window
+  const [mobileView, setMobileView] = useState('list');
 
   const loadChats = useCallback(async () => {
     setLoadingList(true);
@@ -40,23 +42,24 @@ export default function Chat() {
   useEffect(() => {
     if (location.state?.openDM) {
       setActiveChat(location.state.openDM);
-      setSidebarOpen(false);
+      setMobileView('chat');
     }
   }, [location.state]);
 
   const selectConversation = (conv) => {
     setActiveChat({ type: 'dm', id: conv.id, otherUser: conv.other_user });
-    setSidebarOpen(false);
+    setMobileView('chat');
     setTimeout(loadChats, 1500);
   };
 
   const selectGroup = (group) => {
     setActiveChat({ type: 'group', id: group.id, group: { id: group.id, name: group.name, description: group.description, member_count: group.member_count } });
-    setSidebarOpen(false);
+    setMobileView('chat');
   };
 
   const handleNewConversation = (chatObj) => {
-    setActiveChat(chatObj); setSidebarOpen(false);
+    setActiveChat(chatObj);
+    setMobileView('chat');
     setTimeout(loadChats, 1500);
   };
 
@@ -64,7 +67,13 @@ export default function Chat() {
     setShowCreateGroup(false);
     const chatObj = { type: 'group', id: newGroup.id, group: { id: newGroup.id, name: newGroup.name, description: newGroup.description, member_count: newGroup.member_count } };
     setGroups((prev) => [newGroup, ...prev]);
-    setActiveChat(chatObj); setSidebarOpen(false);
+    setActiveChat(chatObj);
+    setMobileView('chat');
+  };
+
+  const handleBackToList = () => {
+    setMobileView('list');
+    setActiveChat(null);
   };
 
   const q = searchQuery.toLowerCase();
@@ -74,18 +83,25 @@ export default function Chat() {
   });
   const filteredGroups = groups.filter((g) => g.name?.toLowerCase().includes(q) || g.description?.toLowerCase().includes(q));
 
+  const chatName = activeChat?.type === 'dm'
+    ? `${activeChat.otherUser?.first_name ?? ''} ${activeChat.otherUser?.last_name ?? ''}`.trim() || activeChat.otherUser?.email
+    : (activeChat?.group?.name ?? 'Group');
+
   return (
     <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-[#F2DDD8]" id="chat-page">
 
-      {/* Sidebar */}
-      <aside className={`flex flex-col bg-[#4B5563] border-r border-[#374151] shadow-sm transition-all duration-300
-          ${sidebarOpen ? 'w-80 min-w-[20rem]' : 'w-0 overflow-hidden min-w-0'}
-          md:w-80 md:min-w-[20rem] md:overflow-visible`}>
+      {/* ── SIDEBAR / CONVERSATION LIST ── */}
+      {/* Desktop: always visible. Mobile: full-screen when mobileView === 'list' */}
+      <aside className={`
+        flex flex-col bg-[#4B5563] border-r border-[#374151] shadow-sm
+        w-full md:w-80 md:min-w-[20rem] md:flex
+        ${mobileView === 'list' ? 'flex' : 'hidden md:flex'}
+      `}>
 
         <div className="px-4 pt-5 pb-3 border-b border-[#374151]">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-bold text-white">{t('chat.title')}</h1>
-            <div className="flex gap-1">
+            <div className="flex gap-1 items-center">
               <button id="new-dm-btn" onClick={() => setShowStartConv(true)}
                 className="p-2 hover:bg-white/10 rounded-xl transition-colors text-[#D1D5DB]" title="New conversation">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -141,15 +157,28 @@ export default function Chat() {
         </div>
       </aside>
 
-      {/* Main Panel */}
-      <main className="flex-1 flex flex-col min-w-0 relative">
-        {!sidebarOpen && (
-          <button id="chat-back-btn" onClick={() => setSidebarOpen(true)}
-            className="md:hidden absolute top-4 left-4 z-10 p-2 bg-[#F2DDD8] text-[#3d4a00] rounded-xl shadow-md hover:bg-[#e8c8c0]">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+      {/* ── MAIN PANEL / CHAT WINDOW ── */}
+      {/* Desktop: always visible. Mobile: full-screen when mobileView === 'chat' */}
+      <main className={`
+        flex-1 flex flex-col min-w-0 relative
+        ${mobileView === 'chat' ? 'flex' : 'hidden md:flex'}
+      `}>
+
+        {/* Mobile top bar: back arrow + chat name */}
+        {activeChat && (
+          <div className="md:hidden flex items-center gap-3 px-3 py-3 border-b bg-[#d8e4f0] border-[#a8c4dc]">
+            <button
+              onClick={handleBackToList}
+              className="flex items-center gap-1.5 text-[#1e3a5f] hover:opacity-70 transition-opacity"
+              title="Back to conversations"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span className="text-sm font-medium">Chats</span>
+            </button>
+            <span className="flex-1 text-sm font-semibold text-[#1e3a5f] truncate">{chatName}</span>
+          </div>
         )}
 
         <AnimatePresence mode="wait">
@@ -159,7 +188,7 @@ export default function Chat() {
               initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
               <ChatWindow chat={activeChat} onNewConversation={handleNewConversation}
-                onUpdate={() => { loadChats(); setActiveChat(null); }} />
+                onUpdate={() => { loadChats(); setActiveChat(null); setMobileView('list'); }} />
             </motion.div>
           ) : (
             <motion.div key="empty" className="flex-1 flex flex-col items-center justify-center text-center p-8 gap-6"
