@@ -226,7 +226,8 @@
     "subtitle": "Discover opportunities, scholarships, jobs, and more",
     "searchPlaceholder": "Search resources...",
     "empty": "Resources will appear here once they are added.",
-    "showing": "Showing {{count}} of {{total}} resources"
+    "showing": "Showing {{count}} of {{total}} resources",
+    "deleteMsg": "Are you sure you want to delete this resource? This action cannot be undone."
   },
   "chat": {
     "title": "Chat",

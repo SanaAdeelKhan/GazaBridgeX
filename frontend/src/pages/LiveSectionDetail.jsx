@@ -1,4 +1,5 @@
 // frontend/src/pages/LiveSectionDetail.jsx
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -224,11 +225,11 @@ export default function LiveSectionDetail() {
         {showAddContentModal && <AddLiveSectionContentModal lsId={id} onClose={() => setShowAddContentModal(false)} onAdded={fetchLiveSection} />}
       </AnimatePresence>
       <ConfirmationModal isOpen={deleteLiveSectionModal.isOpen} onClose={() => setDeleteLiveSectionModal({ isOpen: false })}
-        onConfirm={handleDeleteLiveSection} title="Delete Live Section"
+        onConfirm={handleDeleteLiveSection} title={t("liveSections.deleteTitle")}
         message={`Are you sure you want to delete "${liveSection?.title}"? This action cannot be undone.`} type="delete" />
       <ConfirmationModal isOpen={deleteContentModal.isOpen}
         onClose={() => setDeleteContentModal({ isOpen: false, contentId: null, contentTitle: '' })}
-        onConfirm={handleDeleteContent} title="Delete Content"
+        onConfirm={handleDeleteContent} title={t("common.delete")}
         message={`Are you sure you want to delete "${getContentTitle()}"? This action cannot be undone.`} type="delete" />
     </div>
   );

@@ -1,4 +1,5 @@
 // frontend/src/pages/CourseDetail.jsx
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -215,7 +216,7 @@ export default function CourseDetail() {
       </AnimatePresence>
       <ConfirmationModal isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, contentId: null })}
-        onConfirm={handleDeleteContent} title="Delete Content"
+        onConfirm={handleDeleteContent} title={t("common.delete")}
         message={`Are you sure you want to delete "${getContentTitle()}"? This action cannot be undone.`}
         type="delete" />
     </div>

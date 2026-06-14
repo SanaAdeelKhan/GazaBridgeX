@@ -1,4 +1,5 @@
 // frontend/src/pages/admin/AdminResources.jsx
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -243,7 +244,7 @@ export default function AdminResources() {
         )}
       </AnimatePresence>
       <ConfirmationModal isOpen={deleteModal.isOpen} onClose={() => setDeleteModal({ isOpen: false, resourceId: null })}
-        onConfirm={handleDelete} title="Delete Resource" message="Are you sure you want to delete this resource? This action cannot be undone." />
+        onConfirm={handleDelete} title={t("common.delete")} message={t("resources.deleteMsg")} />
     </div>
   );
 }

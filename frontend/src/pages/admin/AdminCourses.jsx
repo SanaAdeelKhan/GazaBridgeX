@@ -1,4 +1,5 @@
 // frontend/src/pages/admin/AdminCourses.jsx
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -293,8 +294,8 @@ export default function AdminCourses() {
       </AnimatePresence>
 
       <ConfirmationModal isOpen={deleteModal.isOpen} onClose={() => setDeleteModal({ isOpen: false, courseId: null })}
-        onConfirm={handleDelete} title="Delete Course"
-        message="Delete this course? This will also delete all contents and unlink from offers. This action cannot be undone."
+        onConfirm={handleDelete} title={t("courses.deleteCourse")}
+        message={t("courses.deleteMsg")}
         type="delete" />
     </div>
   );
