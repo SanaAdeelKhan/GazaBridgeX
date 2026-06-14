@@ -23,7 +23,7 @@ export default function StartConversationModal({ onClose, onStarted }) {
     setResults([]);
     try {
       const res = await usersAPI.getUsers({ search: query.trim(), page_size: 10 });
-      const data = res.data?.results || res.data || [];
+      const data = res.data?.users || res.data?.results || res.data || [];
       setResults(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('User search error:', err);

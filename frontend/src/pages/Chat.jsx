@@ -35,6 +35,7 @@ export default function Chat() {
   const selectConversation = (conv) => {
     setActiveChat({ type: 'dm', id: conv.id, otherUser: conv.other_user });
     setSidebarOpen(false);
+    setTimeout(loadChats, 1500);
   };
 
   const selectGroup = (group) => {
