@@ -242,7 +242,11 @@
     "today": "اليوم",
     "yesterday": "أمس",
     "noMessages": "لا توجد رسائل بعد. قل مرحباً!",
-    "searchConversations": "ابحث في المحادثات..."
+    "searchConversations": "ابحث في المحادثات...",
+    "yourMessages": "رسائلك",
+    "selectConversation": "اختر محادثة من اليسار، أو ابدأ محادثة جديدة للتواصل مع المجتمع.",
+    "newMessage": "رسالة جديدة",
+    "createGroup": "إنشاء مجموعة"
   },
   "notifications": {
     "title": "الإشعارات",

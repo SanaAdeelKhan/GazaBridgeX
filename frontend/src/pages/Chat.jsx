@@ -1,5 +1,6 @@
 // frontend/src/pages/Chat.jsx
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -11,6 +12,7 @@ import StartConversationModal from '../components/chat/StartConversationModal';
 
 export default function Chat() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const location = useLocation();
   const [conversations, setConversations] = useState([]);
   const [groups, setGroups]               = useState([]);
@@ -82,7 +84,7 @@ export default function Chat() {
 
         <div className="px-4 pt-5 pb-3 border-b border-[#374151]">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-bold text-white">Messages</h1>
+            <h1 className="text-xl font-bold text-white">{t('chat.title')}</h1>
             <div className="flex gap-1">
               <button id="new-dm-btn" onClick={() => setShowStartConv(true)}
                 className="p-2 hover:bg-white/10 rounded-xl transition-colors text-[#D1D5DB]" title="New conversation">
@@ -105,7 +107,7 @@ export default function Chat() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input id="chat-search" type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search conversations…"
+              placeholder={t('chat.searchConversations')}
               className="w-full pl-9 pr-4 py-2 bg-white/10 rounded-xl text-sm text-white placeholder-[#D1D5DB] outline-none focus:bg-white/20 focus:ring-2 focus:ring-[#C26100] transition-all" />
           </div>
 
@@ -167,7 +169,7 @@ export default function Chat() {
                 💬
               </div>
               <div>
-                <h2 className="text-2xl font-bold mb-2 text-[#3d4a00]">Your Messages</h2>
+                <h2 className="text-2xl font-bold mb-2 text-[#3d4a00]">{t('chat.yourMessages')}</h2>
                 <p className="text-sm max-w-xs leading-relaxed text-[#5a6600]">
                   Select a conversation on the left, or start a new one to connect with the community.
                 </p>

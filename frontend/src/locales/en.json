@@ -242,7 +242,11 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "noMessages": "No messages yet. Say hello!",
-    "searchConversations": "Search conversations..."
+    "searchConversations": "Search conversations...",
+    "yourMessages": "Your Messages",
+    "selectConversation": "Select a conversation on the left, or start a new one to connect with the community.",
+    "newMessage": "New Message",
+    "createGroup": "Create Group"
   },
   "notifications": {
     "title": "Notifications",
