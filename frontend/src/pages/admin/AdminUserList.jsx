@@ -48,7 +48,7 @@ export default function AdminUserList() {
     try {
       const response = await fetchFn({ page, page_size: 20 });
       setUsers(response.data.results || response.data);
-      setTotalPages(response.data.total_pages || 1);
+      setTotalPages(response.data.pagination?.total_pages || 1);
     } catch (err) {
       console.error('Failed to fetch users:', err);
     } finally {
