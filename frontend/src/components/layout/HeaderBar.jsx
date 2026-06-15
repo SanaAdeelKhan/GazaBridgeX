@@ -43,16 +43,24 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen, isChatPage }) 
         <div className="flex items-center gap-2 sm:gap-4">
           {onToggleSidebar && (
             isChatPage ? (
-              /* Back arrow on chat page — navigates back */
-              <button
-                onClick={onToggleSidebar}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
-                aria-label="Go back"
-              >
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
+              /* Back arrow + logo on chat page */
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onToggleSidebar}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
+                  aria-label="Go back"
+                >
+                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                {/* Logo badge */}
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: '#F2DDD8' }}>
+                  <img src="/gb-logo.png" alt="GazaBridgeX" className="w-5 h-5 object-contain" />
+                </div>
+                <span className="text-white font-semibold text-sm hidden sm:block">GazaBridgeX</span>
+              </div>
             ) : (
               /* Hamburger / X on all other pages */
               <button
