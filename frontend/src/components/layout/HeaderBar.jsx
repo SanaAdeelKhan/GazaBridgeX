@@ -55,11 +55,11 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen, isChatPage }) 
                   </svg>
                 </button>
                 {/* Logo badge */}
-                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                <div className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: '#F2DDD8' }}>
-                  <img src="/gb-logo.png" alt="GazaBridgeX" className="w-7 h-7 object-contain" />
+                  <img src="/gb-logo.png" alt="GazaBridgeX" className="w-14 h-14 object-contain" />
                 </div>
-                <span className="text-white font-semibold text-sm hidden sm:block">GazaBridgeX</span>
+                <span className="text-white font-semibold text-sm hidden sm:block">GazaBridge</span>
               </div>
             ) : (
               /* Hamburger / X on all other pages */
