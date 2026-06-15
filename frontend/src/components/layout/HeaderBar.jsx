@@ -55,9 +55,9 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen, isChatPage }) 
                   </svg>
                 </button>
                 {/* Logo badge */}
-                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
                   style={{ backgroundColor: '#F2DDD8' }}>
-                  <img src="/gb-logo.png" alt="GazaBridgeX" className="w-5 h-5 object-contain" />
+                  <img src="/gb-logo.png" alt="GazaBridgeX" className="w-7 h-7 object-contain" />
                 </div>
                 <span className="text-white font-semibold text-sm hidden sm:block">GazaBridgeX</span>
               </div>
