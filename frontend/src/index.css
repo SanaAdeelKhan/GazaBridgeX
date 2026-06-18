@@ -1,37 +1,52 @@
 @import "tailwindcss";
 
-@theme {
-  --color-gaza-page-bg: #F2DDD8;
-  --color-gaza-sidebar: #4B5563;
-  --color-gaza-sidebar-border: #374151;
-
-  --color-gaza-card: #d8e4f0;
-  --color-gaza-card-border: #a8c4dc;
-
-  --color-gaza-dropdown: #FDF8F5;
-  --color-gaza-dropdown-border: #E8B4B0;
-
-  /* Text — olive */
-  --color-gaza-title: #3d4a00;
-  --color-gaza-body: #5a6600;
-  --color-gaza-white: #FFFFFF;
-  --color-gaza-secondary: #D1D5DB;
-  --color-gaza-muted: #CBD5E1;
-
-  --color-gaza-accent-start: #C26100;
-  --color-gaza-accent-end: #E07A1B;
-
-  --color-gaza-badge: #EC4899;
-
-  --color-gaza-banner-start: #1e3a5f;
-  --color-gaza-banner-end: #2d5a8e;
-
-  --color-orange-400: #E07A1B;
-  --color-orange-500: #D86F0A;
-  --color-orange-600: #C26100;
-  --color-orange: #D86F0A;
+@layer base {
+  :root {
+    --gb-page:             #F2DDD8;
+    --gb-sidebar:          #4B5563;
+    --gb-sidebar-dark:     #374151;
+    --gb-card:             #d4e0a0;
+    --gb-card-title:       #1e3a5f;
+    --gb-card-body:        #2d4a2d;
+    --gb-card-white:       #ffffff;
+    --gb-card-border:      #b8cc80;
+    --gb-primary:          #C26100;
+    --gb-primary-hover:    #E07A1B;
+    --gb-primary-light:    #FFF3E0;
+    --gb-nav-active:       rgba(255,255,255,0.12);
+    --gb-nav-indicator:    #FFD166;
+    --gb-tab-active:       #1e3a5f;
+    --gb-banner-start:     #1e3a5f;
+    --gb-banner-end:       #2d5a8e;
+    --gb-banner-underline: #C26100;
+    --gb-badge-active:     #E07A1B;
+    --gb-badge-inactive:   #6B7280;
+    --gb-badge-closed:     #EF4444;
+    --gb-text-primary:     #1e3a5f;
+    --gb-text-secondary:   #374151;
+    --gb-text-muted:       #6B7280;
+    --gb-text-on-dark:     #F9FAFB;
+    --gb-border:           #d1c4b8;
+  }
 }
 
-[lang="ar"] * {
-  font-family: 'Cairo', sans-serif !important;
+@layer components {
+  .gb-page        { background-color: var(--gb-page); min-height: 100vh; }
+  .gb-sidebar     { background-color: var(--gb-sidebar); color: var(--gb-text-on-dark); }
+  .gb-card        { background-color: var(--gb-card); border: 1px solid var(--gb-card-border); border-radius: 0.75rem; color: var(--gb-card-body); }
+  .gb-card-white  { background-color: var(--gb-card-white); border: 1px solid var(--gb-border); border-radius: 0.75rem; }
+  .gb-card-title  { color: var(--gb-card-title); font-weight: 700; }
+  .gb-btn-primary { background-color: var(--gb-primary); color: #fff; border-radius: 0.5rem; padding: 0.5rem 1.25rem; font-weight: 600; transition: background-color 0.2s ease; cursor: pointer; }
+  .gb-btn-primary:hover { background-color: var(--gb-primary-hover); }
+  .gb-btn-outline { background-color: transparent; border: 2px solid var(--gb-primary); color: var(--gb-primary); border-radius: 0.5rem; padding: 0.5rem 1.25rem; font-weight: 600; transition: all 0.2s ease; cursor: pointer; }
+  .gb-btn-outline:hover { background-color: var(--gb-primary); color: #fff; }
+  .gb-badge-active   { background-color: var(--gb-badge-active); color: #fff; border-radius: 9999px; padding: 0.15rem 0.65rem; font-size: 0.75rem; font-weight: 600; }
+  .gb-badge-inactive { background-color: var(--gb-badge-inactive); color: #fff; border-radius: 9999px; padding: 0.15rem 0.65rem; font-size: 0.75rem; font-weight: 600; }
+  .gb-badge-closed   { background-color: var(--gb-badge-closed); color: #fff; border-radius: 9999px; padding: 0.15rem 0.65rem; font-size: 0.75rem; font-weight: 600; }
+  .gb-banner      { background: linear-gradient(135deg, var(--gb-banner-start), var(--gb-banner-end)); }
+  .gb-tab-underline { border-bottom: 3px solid var(--gb-banner-underline); }
+  .gb-nav-active  { background-color: var(--gb-nav-active); border-left: 3px solid var(--gb-nav-indicator); }
+  .gb-heading     { color: var(--gb-text-primary); font-weight: 700; }
+  .gb-subheading  { color: var(--gb-text-secondary); }
+  .gb-muted       { color: var(--gb-text-muted); }
 }

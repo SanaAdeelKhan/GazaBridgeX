@@ -68,7 +68,7 @@ const StatCard = ({ stat, index }) => {
       transition={{ delay: index * 0.15, duration: 0.5 }}
       className="text-center p-8"
     >
-      <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent mb-2">
+      <div className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#1a2e1a] to-[#e18f23] bg-clip-text text-transparent mb-2">
         {count}{stat.suffix}
       </div>
       <div className="text-gray-600 font-medium">{stat.label}</div>
@@ -81,9 +81,9 @@ export default function TrustUs() {
   const isInView = useInView(ref, { once: true });
 
   return (
-    <section id="trust-us" className="relative py-12 md:py-24 overflow-hidden">
+    <section id="trust-us" className="relative py-24 overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-orange-500">
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
             backgroundImage: 'radial-gradient(circle at 2px 2px, #fff 1px, transparent 0)',
@@ -92,14 +92,14 @@ export default function TrustUs() {
         </div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 md:px-6">
+      <div className="relative max-w-7xl mx-auto px-6">
         {/* Stats Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12 md:mb-20"
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-20"
         >
           {stats.map((stat, index) => (
             <StatCard key={stat.label} stat={stat} index={index} />
@@ -118,12 +118,12 @@ export default function TrustUs() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
             transition={{ delay: 0.2 }}
-            className="inline-block px-4 py-2 bg-orange-500/20 text-orange-600 rounded-full text-sm font-semibold mb-4 border border-orange-400/30"
+            className="inline-block px-4 py-2 bg-[#fdf3e3]0/20 text-emerald-300 rounded-full text-sm font-semibold mb-4 border border-[#C97B1A]/30"
           >
             Trust & Transparency
           </motion.span>
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-            Why Trust <span className="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">GazaBridge?</span>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Why Trust <span className="bg-gradient-to-r from-[#e18f23] to-teal-400 bg-clip-text text-transparent">GazaBridge?</span>
           </h2>
           <p className="text-xl text-gray-300 max-w-2xl mx-auto">
             We're committed to providing free, quality education with complete transparency
@@ -131,7 +131,7 @@ export default function TrustUs() {
         </motion.div>
 
         {/* Trust Points */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 md:mb-20">
+        <div className="grid md:grid-cols-3 gap-8 mb-20">
           {[
             {
               title: '100% Free Forever',
@@ -156,12 +156,12 @@ export default function TrustUs() {
               transition={{ delay: index * 0.2, duration: 0.5 }}
               viewport={{ once: true }}
               whileHover={{ y: -5 }}
-              className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-orange-400/30 transition-all duration-500 group"
+              className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-[#C97B1A]/30 transition-all duration-500 group"
             >
               <div className="text-4xl mb-4">{point.icon}</div>
               <h3 className="text-xl font-bold text-white mb-3">{point.title}</h3>
               <p className="text-gray-400 leading-relaxed">{point.description}</p>
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-600/0 to-orange-500/0 group-hover:from-orange-600/5 group-hover:to-orange-500/5 rounded-2xl transition-all duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#e18f23]/0 to-[#E8920F]/0 group-hover:from-[#e18f23]/5 group-hover:to-[#E8920F]/5 rounded-2xl transition-all duration-500" />
             </motion.div>
           ))}
         </div>
@@ -178,7 +178,7 @@ export default function TrustUs() {
           <p className="text-gray-400">Real stories from real people whose lives we've touched</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.name}
@@ -187,10 +187,10 @@ export default function TrustUs() {
               transition={{ delay: 0.4 + index * 0.15, duration: 0.5 }}
               viewport={{ once: true }}
               whileHover={{ y: -5 }}
-              className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-orange-400/30 transition-all duration-500"
+              className="relative p-8 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-[#C97B1A]/30 transition-all duration-500"
             >
               {/* Avatar */}
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-600 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-lg mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white font-bold text-lg mb-4">
                 {testimonial.avatar}
               </div>
 
@@ -209,7 +209,7 @@ export default function TrustUs() {
               {/* Author */}
               <div className="border-t border-white/10 pt-4">
                 <div className="font-semibold text-white">{testimonial.name}</div>
-                <div className="text-sm text-orange-600">{testimonial.role}</div>
+                <div className="text-sm text-emerald-400">{testimonial.role}</div>
               </div>
             </motion.div>
           ))}

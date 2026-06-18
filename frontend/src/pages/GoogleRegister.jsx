@@ -124,7 +124,7 @@ export default function GoogleRegister() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-600 via-white to-orange-500" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]" />
       
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -134,8 +134,8 @@ export default function GoogleRegister() {
       >
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-orange-600 to-orange-500 rounded-xl rotate-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-xl rotate-12" />
+            <span className="text-3xl font-bold bg-gradient-to-r from-[#1a2e1a] to-[#e18f23] bg-clip-text text-transparent">
               GazaBridge
             </span>
           </Link>
@@ -173,7 +173,7 @@ export default function GoogleRegister() {
                     key={role.value}
                     className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${
                       formData.roles.includes(role.value)
-                        ? 'border-orange-400 bg-orange-500'
+                        ? 'border-[#C97B1A] bg-[#fdf3e3]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -183,7 +183,7 @@ export default function GoogleRegister() {
                       value={role.value}
                       checked={formData.roles.includes(role.value)}
                       onChange={handleChange}
-                      className="mt-0.5 h-4 w-4 text-orange-600 focus:ring-orange-400 border-gray-300 rounded"
+                      className="mt-0.5 h-4 w-4 text-[#C97B1A] focus:ring-emerald-500 border-gray-300 rounded"
                     />
                     <div className="ml-3">
                       <div className="text-sm font-medium text-gray-900">{role.label}</div>
@@ -205,7 +205,7 @@ export default function GoogleRegister() {
                 required
                 value={formData.country}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
               >
                 <option value="">Select your country</option>
                 {COUNTRIES.map(country => (
@@ -225,7 +225,7 @@ export default function GoogleRegister() {
                 required
                 value={formData.gender}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
               >
                 <option value="">Select gender</option>
                 {GENDERS.map(gender => (
@@ -247,7 +247,7 @@ export default function GoogleRegister() {
                 value={formData.linkedin}
                 onChange={handleChange}
                 placeholder="https://linkedin.com/in/yourprofile"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
               />
             </div>
 
@@ -262,7 +262,7 @@ export default function GoogleRegister() {
                     key={language.code}
                     className={`flex items-center p-2 rounded-lg border cursor-pointer transition-all ${
                       formData.languages.includes(language.code)
-                        ? 'border-orange-400 bg-orange-500'
+                        ? 'border-[#C97B1A] bg-[#fdf3e3]'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
@@ -272,7 +272,7 @@ export default function GoogleRegister() {
                       value={language.code}
                       checked={formData.languages.includes(language.code)}
                       onChange={handleChange}
-                      className="h-4 w-4 text-orange-600 focus:ring-orange-400 border-gray-300 rounded"
+                      className="h-4 w-4 text-[#C97B1A] focus:ring-emerald-500 border-gray-300 rounded"
                     />
                     <span className="ml-2 text-sm text-gray-700">{language.label}</span>
                   </label>
@@ -292,7 +292,7 @@ export default function GoogleRegister() {
                 value={formData.whatsapp_number}
                 onChange={handleChange}
                 placeholder="+1234567890"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 transition-all outline-none"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
               />
             </div>
 
@@ -301,7 +301,7 @@ export default function GoogleRegister() {
               disabled={loading}
               whileHover={{ scale: loading ? 1 : 1.02 }}
               whileTap={{ scale: loading ? 1 : 0.98 }}
-              className="w-full py-3.5 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">

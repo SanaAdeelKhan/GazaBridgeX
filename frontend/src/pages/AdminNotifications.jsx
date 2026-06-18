@@ -30,10 +30,11 @@ export default function AdminNotifications() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    
     if (type === 'checkbox') {
       setFormData(prev => ({
         ...prev,
-        [name]: checked
+        [name]: checked 
           ? [...prev[name], value]
           : prev[name].filter(item => item !== value),
       }));
@@ -46,21 +47,29 @@ export default function AdminNotifications() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (formData.target_groups.length === 0) {
       setError('Please select at least one target group.');
       return;
     }
+    
     if (!formData.content.trim()) {
       setError('Please enter notification content.');
       return;
     }
+    
     setLoading(true);
     setError('');
     setMessage('');
+
     try {
       const response = await notificationsAPI.sendAdminNotification(formData);
       setMessage(response.data.detail);
-      setFormData({ content: '', type: 'normal', target_groups: [] });
+      setFormData({
+        content: '',
+        type: 'normal',
+        target_groups: [],
+      });
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to send notifications');
     } finally {
@@ -69,25 +78,27 @@ export default function AdminNotifications() {
   };
 
   return (
-    <div className="pt-24 min-h-screen" style={{ backgroundColor: '#F2DDD8' }}>
+    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]">
       <div className="max-w-2xl mx-auto px-6 py-12">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-3xl font-bold mb-2" style={{ color: '#3d4a00' }}>Send Notification</h1>
-          <p className="mb-8" style={{ color: '#5a6600' }}>Send bulk notifications to user groups</p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Send Notification</h1>
+          <p className="text-gray-600 mb-8">Send bulk notifications to user groups</p>
 
-          <div className="rounded-3xl shadow-xl p-8 border" style={{ backgroundColor: '#d8e4f0', borderColor: '#a8c4dc' }}>
+          <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
             {message && (
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 rounded-xl border"
-                style={{ backgroundColor: '#d1fae5', borderColor: '#6ee7b7' }}
+                className="mb-6 p-4 bg-[#fdf3e3] border border-emerald-200 rounded-xl"
               >
                 <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5" style={{ color: '#065f46' }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  <p className="text-sm font-medium" style={{ color: '#065f46' }}>{message}</p>
+                  <p className="text-sm text-[#1a2e1a]">{message}</p>
                 </div>
               </motion.div>
             )}
@@ -96,29 +107,27 @@ export default function AdminNotifications() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mb-6 p-4 rounded-xl border"
-                style={{ backgroundColor: '#fee2e2', borderColor: '#fca5a5' }}
+                className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"
               >
-                <p className="text-sm" style={{ color: '#991b1b' }}>{error}</p>
+                <p className="text-sm text-red-700">{error}</p>
               </motion.div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Target Groups */}
               <div>
-                <label className="block text-sm font-medium mb-3" style={{ color: '#1e3a5f' }}>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
                   Target Groups <span className="text-red-500">*</span>
                 </label>
                 <div className="space-y-2">
                   {TARGET_GROUPS.map(group => (
                     <label
                       key={group.value}
-                      className="flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all"
-                      style={
+                      className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${
                         formData.target_groups.includes(group.value)
-                          ? { borderColor: '#C26100', backgroundColor: '#fde8d0' }
-                          : { borderColor: '#a8c4dc', backgroundColor: '#eaf1f8' }
-                      }
+                          ? 'border-[#C97B1A] bg-[#fdf3e3]'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
                     >
                       <input
                         type="checkbox"
@@ -126,10 +135,9 @@ export default function AdminNotifications() {
                         value={group.value}
                         checked={formData.target_groups.includes(group.value)}
                         onChange={handleChange}
-                        className="h-4 w-4 rounded"
-                        style={{ accentColor: '#C26100' }}
+                        className="h-4 w-4 text-[#C97B1A] focus:ring-emerald-500 border-gray-300 rounded"
                       />
-                      <span className="ml-3 text-sm font-medium" style={{ color: '#1e3a5f' }}>{group.label}</span>
+                      <span className="ml-3 text-sm font-medium text-gray-900">{group.label}</span>
                     </label>
                   ))}
                 </div>
@@ -137,19 +145,18 @@ export default function AdminNotifications() {
 
               {/* Notification Type */}
               <div>
-                <label className="block text-sm font-medium mb-3" style={{ color: '#1e3a5f' }}>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
                   Type
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {NOTIFICATION_TYPES.map(type => (
                     <label
                       key={type.value}
-                      className="flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all"
-                      style={
+                      className={`flex items-center p-3 rounded-xl border-2 cursor-pointer transition-all ${
                         formData.type === type.value
-                          ? { borderColor: '#C26100', backgroundColor: '#fde8d0' }
-                          : { borderColor: '#a8c4dc', backgroundColor: '#eaf1f8' }
-                      }
+                          ? 'border-[#C97B1A] bg-[#fdf3e3]'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
                     >
                       <input
                         type="radio"
@@ -157,10 +164,9 @@ export default function AdminNotifications() {
                         value={type.value}
                         checked={formData.type === type.value}
                         onChange={handleChange}
-                        className="h-4 w-4"
-                        style={{ accentColor: '#C26100' }}
+                        className="h-4 w-4 text-[#C97B1A] focus:ring-emerald-500 border-gray-300"
                       />
-                      <span className="ml-3 text-sm font-medium" style={{ color: '#1e3a5f' }}>{type.label}</span>
+                      <span className="ml-3 text-sm font-medium text-gray-900">{type.label}</span>
                     </label>
                   ))}
                 </div>
@@ -168,7 +174,7 @@ export default function AdminNotifications() {
 
               {/* Content */}
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: '#1e3a5f' }}>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
                   Content <span className="text-red-500">*</span>
                 </label>
                 <textarea
@@ -177,8 +183,7 @@ export default function AdminNotifications() {
                   value={formData.content}
                   onChange={handleChange}
                   placeholder="Enter notification message..."
-                  className="w-full px-4 py-3 rounded-xl outline-none resize-none border-2 transition-all"
-                  style={{ backgroundColor: '#eaf1f8', borderColor: '#a8c4dc', color: '#1e3a5f' }}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none resize-none"
                 />
               </div>
 
@@ -187,8 +192,7 @@ export default function AdminNotifications() {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="w-full py-3.5 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50"
-                style={{ background: 'linear-gradient(to right, #C26100, #E07A1B)' }}
+                className="w-full py-3.5 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">

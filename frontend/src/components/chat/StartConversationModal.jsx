@@ -23,7 +23,8 @@ export default function StartConversationModal({ onClose, onStarted }) {
     setResults([]);
     try {
       const res = await usersAPI.getUsers({ search: query.trim(), page_size: 10 });
-      const data = res.data?.users || res.data?.results || res.data || [];
+      // Use 'in' check — res.data?.users could be an empty array [] which is falsy in JS
+      const data = 'users' in (res.data || {}) ? res.data.users : (res.data?.results ?? res.data ?? []);
       setResults(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('User search error:', err);
@@ -96,13 +97,13 @@ export default function StartConversationModal({ onClose, onStarted }) {
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); setSearchDone(false); }}
                 placeholder="Search by name or email..."
-                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none"
+                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] outline-none"
                 autoFocus
               />
               <button
                 type="submit"
                 disabled={searching || !query.trim()}
-                className="px-4 py-2.5 bg-gradient-to-r from-orange-600 to-orange-500 text-white text-sm font-semibold rounded-xl disabled:opacity-50 hover:shadow-md transition-all"
+                className="px-4 py-2.5 bg-[#e18f23] hover:bg-[#c97a18] text-white text-sm font-semibold rounded-xl disabled:opacity-50 hover:shadow-md transition-all"
               >
                 {searching ? (
                   <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
@@ -118,7 +119,7 @@ export default function StartConversationModal({ onClose, onStarted }) {
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-gradient-to-br from-orange-600 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-9 h-9 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white font-bold text-sm">
                       {u.first_name?.[0] || u.email?.[0]?.toUpperCase() || '?'}
                     </div>
                     <div>
@@ -131,7 +132,7 @@ export default function StartConversationModal({ onClose, onStarted }) {
                   <button
                     onClick={() => handleStartChat(u)}
                     disabled={starting === u.id}
-                    className="px-3 py-1.5 bg-orange-500 text-white text-xs font-semibold rounded-lg hover:bg-orange-500 transition-colors disabled:opacity-50"
+                    className="px-3 py-1.5 bg-[#fdf3e3]0 text-white text-xs font-semibold rounded-lg hover:bg-[#1a2e1a] transition-colors disabled:opacity-50"
                   >
                     {starting === u.id ? '...' : 'Chat'}
                   </button>

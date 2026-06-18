@@ -60,7 +60,6 @@ import AdminPosts from './pages/admin/AdminPosts';
 import AdminCourses from './pages/admin/AdminCourses';
 import AdminLiveSections from './pages/admin/AdminLiveSections';
 import AdminUserList from './pages/admin/AdminUserList';
-import UserPublicProfile from './pages/UserPublicProfile';
 import Unauthorized from './pages/Unauthorized';
 
 // Helper function to check if user is admin
@@ -88,7 +87,7 @@ function HomeRedirect() {
 }
 
 // Protect public routes from authenticated users
-function PublicOnlyRoute({ children }) { 
+function PublicOnlyRoute({ children }) {
   const { isAuthenticated, user, loading } = useAuth();
 
   if (loading) return <LoadingScreen />;
@@ -170,10 +169,10 @@ function AppRoutes() {
   console.log('isAuthPath:', isAuthPath);
 
   return (
-<div className="min-h-screen bg-gradient-to-b from-[#F2DDD8] via-white to-[#F2DDD8]/30">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-emerald-50/30">
       {showPublicLayout && (
         <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
-<div className="h-full bg-gradient-to-r from-[#C26100] to-[#E07A1B] transition-all duration-300" />
+          <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-300" />
         </div>
       )}
       
@@ -214,7 +213,6 @@ function AppRoutes() {
             <Route path="/live-sections" element={<PageTransition><LiveSections /></PageTransition>} />
             <Route path="/live-sections/:id" element={<PageTransition><LiveSectionDetail /></PageTransition>} />
             <Route path="/chat" element={<Chat />} />
-            <Route path="/users/:id" element={<PageTransition><UserPublicProfile /></PageTransition>} />
             <Route path="/unauthorized" element={<PageTransition><Unauthorized /></PageTransition>} />
 
             {/* Admin Routes */}

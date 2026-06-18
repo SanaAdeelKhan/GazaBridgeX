@@ -1,4 +1,3 @@
-import { tw, colors } from '../theme/colors';
 // frontend/src/components/ScrollToTop.jsx
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -31,7 +30,7 @@ export default function ScrollToTop() {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.accentStart}] text-white rounded-full shadow-lg shadow-[${colors.accentStart}]/25 hover:shadow-[${colors.accentStart}]/40 transition-shadow flex items-center justify-center"
+          className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-[#e18f23] hover:bg-[#c97a18] text-white rounded-full shadow-lg shadow-emerald-500/25 hover:shadow-xl transition-shadow flex items-center justify-center"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />

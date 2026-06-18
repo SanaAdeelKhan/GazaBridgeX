@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gaza-page-bg: #F2DDD8;
+  --color-gaza-sidebar: #4B5563;
+  --color-gaza-sidebar-border: #374151;
+
+  --color-gaza-card: #d8e4f0;
+  --color-gaza-card-border: #a8c4dc;
+
+  --color-gaza-dropdown: #FDF8F5;
+  --color-gaza-dropdown-border: #E8B4B0;
+
+  /* Text — olive */
+  --color-gaza-title: #3d4a00;
+  --color-gaza-body: #5a6600;
+  --color-gaza-white: #FFFFFF;
+  --color-gaza-secondary: #D1D5DB;
+  --color-gaza-muted: #CBD5E1;
+
+  --color-gaza-accent-start: #C26100;
+  --color-gaza-accent-end: #E07A1B;
+
+  --color-gaza-badge: #EC4899;
+
+  --color-gaza-banner-start: #1e3a5f;
+  --color-gaza-banner-end: #2d5a8e;
+
+  --color-orange-400: #E07A1B;
+  --color-orange-500: #D86F0A;
+  --color-orange-600: #C26100;
+  --color-orange: #D86F0A;
+}
+
+[lang="ar"] * {
+  font-family: 'Cairo', sans-serif !important;
+}

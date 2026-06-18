@@ -1,55 +1,69 @@
-// src/theme/colors.js
-// ── GazaBridgeX Design System ─────────────────────────────────────────────────
+// src/theme/colors.js — GazaBridgeX Design System (solid colors, logo-matched)
 
 export const colors = {
-  // Page & Layout
-  pageBg:          '#F2DDD8',
-  sidebar:         '#4B5563',
-  sidebarBorder:   '#374151',
+  sidebar:          '#374151',
+  sidebarBorder:    '#4B5563',
+  header:           '#374151',
+  navText:          '#D1D5DB',
+  navActive:        '#ffffff',
+  navSection:       '#9CA3AF',
 
-  // Cards (light navy-blue)
-  card:            '#d8e4f0',
-  cardBorder:      '#a8c4dc',
+  pageBg:           '#f5f0e8',
+  card:             '#ffffff',
+  cardBorder:       '#e8dfd2',
+  cardAlt:          '#faf8f4',
 
-  // Dropdown (header only)
-  dropdown:        '#FDF8F5',
-  dropdownBorder:  '#E8B4B0',
+  title:            '#1c1a17',
+  body:             '#3a3028',
+  muted:            '#6b5e52',
+  white:            '#ffffff',
+  secondary:        '#a09485',
 
-  // Text — olive as seen in UI
-  title:           '#3d4a00', // dark olive — headings, card titles
-  body:            '#5a6600', // medium olive — body text
-  white:           '#FFFFFF',
-  secondary:       '#D1D5DB',
-  muted:           '#CBD5E1',
+  // Solid amber — primary actions (NO gradient)
+  primary:          '#e18f23',
+  primaryHover:     '#c97a18',
+  primaryLight:     '#fdf3e3',
 
-  // Accent
-  accentStart:     '#C26100',
-  accentEnd:       '#E07A1B',
+  // Solid olive — secondary accents (NO gradient)
+  olive:            '#626223',
+  oliveHover:       '#4d4d1c',
+  oliveLight:       '#f0efe0',
 
-  // Badges
-  badge:           '#EC4899',
+  badgeOpen:        '#e18f23',
+  badgeOpenText:    '#fff8ee',
+  badgeClosed:      '#8B1A1A',
+  badgeClosedText:  '#fde8e8',
+  badgeNew:         '#626223',
+  badgeNewText:     '#f0efe0',
 
-  // Profile banner
-  bannerStart:     '#1e3a5f',
-  bannerEnd:       '#2d5a8e',
-};
+  statPositive:     '#626223',
+  statPositiveBg:   '#f0efe0',
 
-export const gradients = {
-  accent:  `linear-gradient(to right, ${colors.accentStart}, ${colors.accentEnd})`,
-  banner:  `linear-gradient(to right, ${colors.bannerStart}, ${colors.bannerEnd})`,
-  avatar:  `linear-gradient(to bottom right, ${colors.accentStart}, ${colors.accentEnd})`,
+  bannerStart:      '#626223',
+  bannerEnd:        '#626223',
+
+  tabActiveBg:        '#626223',
+  tabActiveText:      '#ffffff',
+  tabActiveUnderline: '#e18f23',
+  tabInactiveBg:      '#f0ece4',
+  tabInactiveText:    '#6b5e52',
 };
 
 export const tw = {
-  pageBg:       'bg-[#F2DDD8]',
-  card:         'bg-[#d8e4f0] border border-[#a8c4dc]',
-  accentBtn:    'bg-gradient-to-r from-[#C26100] to-[#E07A1B] text-white',
-  cancelBtn:    'bg-[#F2DDD8] text-[#3d4a00]',
-  titleText:    'text-[#3d4a00]',
-  bodyText:     'text-[#5a6600]',
-  tabActive:    'bg-[#1e3a5f] text-white',
-  tabInactive:  'bg-[#d8e4f0] text-[#3d4a00]',
-  filterCard:   'bg-[#d8e4f0] border border-[#a8c4dc] rounded-2xl shadow-lg p-6',
+  pageBg:        'bg-[#f5f0e8]',
+  card:          'bg-white border border-[#e8dfd2]',
+  cardAlt:       'bg-[#faf8f4] border border-[#e8dfd2]',
+  accentBtn:     'bg-[#e18f23] text-white hover:bg-[#c97a18]',
+  oliveBtn:      'bg-[#626223] text-white hover:bg-[#4d4d1c]',
+  cancelBtn:     'bg-[#f5f0e8] text-[#3a3028] border border-[#e8dfd2]',
+  titleText:     'text-[#1c1a17]',
+  bodyText:      'text-[#3a3028]',
+  mutedText:     'text-[#6b5e52]',
+  tabActive:     'text-[#e18f23] border-b-2 border-[#e18f23]',
+  tabInactive:   'text-[#6b5e52]',
+  badgeOpen:     'bg-[#e18f23] text-[#fff8ee]',
+  badgeClosed:   'bg-[#8B1A1A] text-[#fde8e8]',
+  badgeNew:      'bg-[#f0efe0] text-[#626223]',
 };
 
 export default colors;

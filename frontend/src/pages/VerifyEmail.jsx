@@ -27,7 +27,7 @@ export default function VerifyEmail() {
   }, [token]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-600 via-white to-orange-500">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -38,7 +38,7 @@ export default function VerifyEmail() {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-orange-600 to-orange-500 rounded-full flex items-center justify-center"
+              className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-full flex items-center justify-center"
             >
               <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -54,7 +54,7 @@ export default function VerifyEmail() {
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 0.5 }}
-              className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-orange-600 to-orange-500 rounded-full flex items-center justify-center"
+              className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-full flex items-center justify-center"
             >
               <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
@@ -64,7 +64,7 @@ export default function VerifyEmail() {
             <p className="text-gray-600 mb-8">{message}</p>
             <Link
               to="/login"
-              className="inline-block px-8 py-3 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="inline-block px-8 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
             >
               Sign In Now
             </Link>
@@ -82,7 +82,7 @@ export default function VerifyEmail() {
             <p className="text-gray-600 mb-8">{message}</p>
             <Link
               to="/login"
-              className="inline-block px-8 py-3 bg-gradient-to-r from-orange-600 to-orange-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="inline-block px-8 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
             >
               Go to Login
             </Link>

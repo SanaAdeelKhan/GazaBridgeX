@@ -1,4 +1,3 @@
-import { tw, colors } from '../theme/colors';
 // frontend/src/components/CourseCard.jsx
 import { motion } from 'framer-motion';
 import { useState } from "react";
@@ -25,12 +24,16 @@ const CATEGORY_LABELS = {
 };
 
 const SKILL_LEVEL_COLORS = {
-  beginner: 'bg-[${colors.cardBorder}] text-[${colors.bannerStart}]',
-  intermediate: 'bg-[${colors.pageBg}] text-[${colors.accentStart}]',
-  advanced: 'bg-[${colors.sidebar}] text-white',
+  beginner: 'bg-[#fdf3e3] text-green-700',
+  intermediate: 'bg-yellow-100 text-yellow-700',
+  advanced: 'bg-red-100 text-red-700',
 };
 
-const STATUS_COLORS = {  active: 'bg-[${colors.accentEnd}] text-white border-[${colors.accentStart}]',  inactive: 'bg-gray-100 text-gray-700 border-gray-200',  closed: 'bg-red-100 text-red-700 border-red-200',};
+const STATUS_COLORS = {
+  active: 'bg-[#fdf3e3] text-[#1a2e1a] border-emerald-200',
+  inactive: 'bg-gray-100 text-gray-700 border-gray-200',
+  closed: 'bg-red-100 text-red-700 border-red-200',
+};
 
 const LANGUAGE_LABELS = {
   en: 'English', ur: 'Urdu', ar: 'Arabic', fr: 'French',
@@ -51,7 +54,7 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.5 }}
       whileHover={{ y: -5 }}
-      className="group relative bg-[${colors.card}] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-[${colors.cardBorder}] overflow-hidden hover:bg-[${colors.card}]"
+      className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden"
     >
       {/* Status Badge */}
       <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold border ${STATUS_COLORS[course.status] || STATUS_COLORS.active}`}>
@@ -66,27 +69,27 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
 
         {/* Title */}
         <Link to={`/courses/${course.id}`}>
-          <h3 className="text-xl font-bold text-[${colors.bannerStart}] mb-2 group-hover:text-[${colors.title}] transition-colors">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#C97B1A] transition-colors">
             {course.title}
           </h3>
         </Link>
 
         {/* Category */}
         <div className="mb-3">
-          <span className="text-sm text-[${colors.title}] font-semibold">
+          <span className="text-sm text-gray-500">
             {CATEGORY_LABELS[course.category] || course.category}
           </span>
         </div>
 
         {/* Description */}
         <div className="mb-4">
-          <p className="text-[${colors.body}] font-medium text-sm leading-relaxed">
+          <p className="text-gray-600 text-sm leading-relaxed">
             {isExpanded ? course.description : truncatedDescription}
           </p>
           {course.description?.length > 120 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-[${colors.title}] hover:text-[${colors.body}] text-sm font-medium mt-1 transition-colors"
+              className="text-[#C97B1A] hover:text-[#1a2e1a] text-sm font-medium mt-1 transition-colors"
             >
               {isExpanded ? 'Show less' : 'Read more'}
             </button>
@@ -107,7 +110,7 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
         </div>
 
         {/* Stats */}
-        <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-100 text-sm text-[${colors.title}] font-semibold">
+        <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-100 text-sm text-gray-500">
           <div className="flex items-center gap-1">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -123,23 +126,23 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
         </div>
 
         {/* Author & Actions */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-orange-600 to-orange-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-8 h-8 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white text-xs font-bold">
               {course.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
             </div>
             <div>
-              <p className="text-sm font-semibold text-[${colors.bannerStart}]">{course.user_full_name}</p>
-              <p className="text-xs text-[${colors.title}] font-semibold">
+              <p className="text-sm font-medium text-gray-900">{course.user_full_name}</p>
+              <p className="text-xs text-gray-500">
                 {new Date(course.created_at).toLocaleDateString()}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2">
             <Link
               to={`/courses/${course.id}`}
-              className="flex-1 sm:flex-none text-center px-4 py-2 bg-gradient-to-r from-[${colors.accentStart}] to-[${colors.accentEnd}] text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+              className="px-4 py-2 bg-[#e18f23] hover:bg-[#c97a18] text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
             >
               View Course
             </Link>

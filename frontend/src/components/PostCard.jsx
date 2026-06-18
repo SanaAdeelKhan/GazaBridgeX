@@ -1,4 +1,3 @@
-import { tw, colors } from '../theme/colors';
 // frontend/src/components/PostCard.jsx - Updated with edit functionality and offer links
 import { motion } from 'framer-motion';
 import { useState } from 'react';
@@ -33,7 +32,7 @@ const AVAILABILITY_LABELS = {
 };
 
 const STATUS_COLORS = {
-  active: 'bg-[${colors.accentEnd}] text-white border-[${colors.accentStart}]',
+  active: 'bg-[#fdf3e3] text-[#1a2e1a] border-emerald-200',
   inactive: 'bg-gray-100 text-gray-700 border-gray-200',
   closed: 'bg-red-100 text-red-700 border-red-200',
 };
@@ -53,7 +52,7 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.5 }}
       whileHover={{ y: -5 }}
-      className="group relative bg-[${colors.card}] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-[${colors.cardBorder}] overflow-hidden hover:bg-[${colors.card}]"
+      className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden"
     >
       {/* Status Badge */}
       <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold border ${STATUS_COLORS[post.status] || STATUS_COLORS.active}`}>
@@ -80,32 +79,32 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
         {/* Name */}
         {type === 'offer' ? (
           <Link to={`/offers/${post.id}`}>
-            <h3 className="text-xl font-bold text-[${colors.bannerStart}] mb-2 group-hover:text-orange-600 transition-colors hover:text-orange-600">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#C97B1A] transition-colors hover:text-[#C97B1A]">
               {name}
             </h3>
           </Link>
         ) : (
-          <h3 className="text-xl font-bold text-[${colors.bannerStart}] mb-2 group-hover:text-orange-600 transition-colors">
+          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#C97B1A] transition-colors">
             {name}
           </h3>
         )}
 
         {/* Category */}
         <div className="mb-3">
-          <span className="text-sm text-[${colors.title}] font-semibold">
+          <span className="text-sm text-gray-500">
             {CATEGORY_LABELS[post.category] || post.category}
           </span>
         </div>
 
         {/* Description */}
         <div className="mb-4">
-          <p className="text-[${colors.body}] font-medium text-sm leading-relaxed">
+          <p className="text-gray-600 text-sm leading-relaxed">
             {isExpanded ? post.description : truncatedDescription}
           </p>
           {post.description?.length > 150 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-orange-600 hover:text-orange-600 text-sm font-medium mt-1 transition-colors"
+              className="text-[#C97B1A] hover:text-[#1a2e1a] text-sm font-medium mt-1 transition-colors"
             >
               {isExpanded ? 'Show less' : 'Read more'}
             </button>
@@ -115,10 +114,10 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
         {/* Availability (only for offers) */}
         {type === 'offer' && post.availability && (
           <div className="mb-4 flex items-center gap-2">
-            <svg className="w-4 h-4 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-sm text-[${colors.body}] font-medium">
+            <span className="text-sm text-gray-600">
               {AVAILABILITY_LABELS[post.availability] || post.availability}
             </span>
           </div>
@@ -128,7 +127,7 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
         {type === 'offer' && (
           <Link
             to={`/offers/${post.id}`}
-            className="inline-flex items-center gap-1 text-orange-600 text-sm font-medium hover:text-orange-600 transition-colors mt-3 mb-3"
+            className="inline-flex items-center gap-1 text-[#C97B1A] text-sm font-medium hover:text-[#1a2e1a] transition-colors mt-3 mb-3"
           >
             View Details
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -139,12 +138,12 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
 
         {/* Author */}
         <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-          <div className="w-8 h-8 bg-gradient-to-br from-[${colors.accentStart}] to-[${colors.accentEnd}] rounded-full flex items-center justify-center text-white text-xs font-bold">
+          <div className="w-8 h-8 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white text-xs font-bold">
             {post.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-[${colors.bannerStart}]">{post.user_full_name}</p>
-            <p className="text-xs text-[${colors.title}] font-semibold">
+            <p className="text-sm font-medium text-gray-900">{post.user_full_name}</p>
+            <p className="text-xs text-gray-500">
               {new Date(post.created_at).toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',
