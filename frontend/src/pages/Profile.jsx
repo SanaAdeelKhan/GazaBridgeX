@@ -27,6 +27,7 @@ export default function Profile() {
       linkedin: profile?.linkedin || '',
       whatsapp_number: profile?.whatsapp_number || '',
       languages: profile?.languages || [],
+      preferred_language: profile?.preferred_language || 'en',
     });
     setEditMode(true);
   };
@@ -230,6 +231,23 @@ export default function Profile() {
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">💬 Preferred language for receiving messages</label>
+                  <select name="preferred_language" value={formData.preferred_language} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none">
+                    <option value="en">English</option>
+                    <option value="ur">Urdu</option>
+                    <option value="ar">Arabic</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="es">Spanish</option>
+                    <option value="tr">Turkish</option>
+                    <option value="bn">Bengali</option>
+                    <option value="hi">Hindi</option>
+                    <option value="zh">Chinese</option>
+                    <option value="ru">Russian</option>
+                    <option value="pt">Portuguese</option>
+                  </select>
+                </div>
                 <div className="flex gap-4">
                   <motion.button
                     type="submit"
@@ -277,6 +295,10 @@ export default function Profile() {
                   <div>
                     <label className="text-sm text-gray-500">WhatsApp</label>
                     <p className="text-gray-900 font-medium">{profile?.whatsapp_number || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-500">💬 Preferred message language</label>
+                    <p className="text-gray-900 font-medium">{{"en":"English","ur":"Urdu","ar":"Arabic","fr":"French","de":"German","es":"Spanish","tr":"Turkish","hi":"Hindi","zh":"Chinese","ru":"Russian","pt":"Portuguese","ja":"Japanese"}[profile?.preferred_language] || "English"}</p>
                   </div>
                 </div>
                 <button
