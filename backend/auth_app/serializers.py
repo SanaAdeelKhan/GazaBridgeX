@@ -58,6 +58,7 @@ class GoogleRegisterInputSerializer(serializers.Serializer):
         allow_blank=True,
         default="",
     )
+    preferred_language = serializers.ChoiceField(choices=LanguageChoices.choices, required=False, default="en")
 
     def validate_roles(self, value: set) -> list:
         if not value:
