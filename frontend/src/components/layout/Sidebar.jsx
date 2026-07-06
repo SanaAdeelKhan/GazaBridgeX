@@ -82,9 +82,10 @@ export default function Sidebar() {
 
   return (
     <div className="py-6">
-      <div className="px-6 mb-8 flex items-center gap-3">
-        <img src="/logo.png" alt="GazaBridgeX" className="w-10 h-10 rounded-full object-cover" onError={e => e.target.style.display='none'} />
-        <span className="text-lg font-bold text-white">GazaBridge</span>
+      <div className="px-6 pt-4 mb-8 flex items-center gap-3">
+        <div className="rounded-full overflow-hidden border-4 p-2 bg-white inline-flex" style={{ borderColor: '#D4A017' }}>
+          <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-auto object-contain" onError={e => e.target.style.display='none'} />
+        </div>
       </div>
 
       <div className="px-6 mb-3">

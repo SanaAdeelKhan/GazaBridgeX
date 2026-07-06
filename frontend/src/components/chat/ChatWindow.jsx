@@ -6,6 +6,7 @@ import { chatAPI } from '../../api/chat';
 import { useWebSocket } from '../../hooks/useWebSocket';
 import GroupInfoModal from './GroupInfoModal';
 import StartConversationModal from './StartConversationModal';
+import colors from '../../theme/colors';
 
 /**
  * ChatWindow
@@ -20,36 +21,22 @@ import StartConversationModal from './StartConversationModal';
  *   SEND:    { "content": "hello" }
  *   RECEIVE: { "id": 1, "sender_id": 5, "sender_email": "a@b.com", "content": "hello", "created_at": "..." }
  *         OR { "type": "error", "message": "..." }
- *
- * Fixes applied:
- *   - Auto-marks messages as read when chat opens and on every new incoming WS message
- *   - Scroll uses scrollTop on the container ref (NOT scrollIntoView which jumps the page)
- *
- * Auth: JWT sent as query param ?token=<access_token>  (see ws_auth.py)
  */
 export default function ChatWindow({ chat, onNewConversation, onUpdate, onConversationCreated }) {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(true);
-  const [wsStatus, setWsStatus] = useState('connecting'); // 'connecting' | 'open' | 'closed'
+  const [wsStatus, setWsStatus] = useState('connecting');
   const [showGroupInfo, setShowGroupInfo] = useState(false);
   const [showStartConv, setShowStartConv] = useState(false);
-  // Use container ref for scroll — direct scrollTop avoids scrollIntoView jumping the window
   const messagesContainerRef = useRef(null);
   const inputRef = useRef(null);
 
-  // ── WebSocket URL ──────────────────────────────────────────────────────────
-  // DM:    /ws/chat/<other_user_id>/
-  // Group: /ws/chat/group/<group_id>/
   const wsPath = chat?.type === 'dm'
     ? `/ws/chat/${chat.otherUser?.id}/`
     : `/ws/chat/group/${chat?.id}/`;
 
-  /**
-   * markUnread — fire-and-forget read receipts for a list of messages.
-   * Only marks messages NOT sent by the current user.
-   */
   const markUnread = useCallback((msgs, isGroup) => {
     msgs.forEach((msg) => {
       const senderId = msg.sender_id ?? msg.sender;
@@ -68,18 +55,13 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
       console.error('[Chat] WS error from server:', data.message);
       return;
     }
-    // Append new real-time message
     setMessages((prev) => {
-      // Deduplicate by id in case REST load and WS overlap
       if (data.id && prev.some((m) => m.id === data.id)) return prev;
       return [...prev, data];
     });
-    // If this is a brand-new DM (chat.id was null), the first WS message means
-    // the conversation now exists in DB — tell the parent to reload the sidebar.
     if (data.id && chat?.type === 'dm' && !chat?.id) {
       onConversationCreated?.();
     }
-    // Auto-mark incoming message as read (user is actively in this chat)
     const senderId = data.sender_id ?? data.sender;
     if (data.id && senderId !== user?.id) {
       const isGroup = chat?.type === 'group';
@@ -99,10 +81,8 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
     onError: () => setWsStatus('closed'),
   });
 
-  // ── Load historical messages via REST ─────────────────────────────────────
   useEffect(() => {
     if (!chat) return;
-
     let cancelled = false;
     setMessages([]);
     setLoading(true);
@@ -115,16 +95,13 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
         } else if (chat.type === 'group') {
           res = await chatAPI.getGroupMessages(chat.id, { page_size: 50 });
         } else {
-          // Brand-new DM — no history yet
           if (!cancelled) setLoading(false);
           return;
         }
-
         if (!cancelled) {
           const data = res.data;
           const msgs = Array.isArray(data) ? data : (data.results || []);
           setMessages(msgs);
-          // ── Auto-mark all unread messages as read ─────────────────────
           markUnread(msgs, chat.type === 'group');
         }
       } catch (err) {
@@ -138,33 +115,24 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
     return () => { cancelled = true; };
   }, [chat?.id, chat?.type, markUnread]);
 
-  // ── Auto-scroll (use scrollTop, NOT scrollIntoView — scrollIntoView jumps the page) ──
   useEffect(() => {
     const el = messagesContainerRef.current;
     if (!el) return;
-    // Use requestAnimationFrame so the DOM has painted before we measure scrollHeight
-    requestAnimationFrame(() => {
-      el.scrollTop = el.scrollHeight;
-    });
+    requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
   }, [messages]);
 
-  // ── Focus input ───────────────────────────────────────────────────────────
   useEffect(() => {
     inputRef.current?.focus();
   }, [chat?.id, chat?.type]);
 
-  // ── Send ──────────────────────────────────────────────────────────────────
   const handleSend = (e) => {
     e.preventDefault();
     const text = input.trim();
     if (!text) return;
-
-    // Send over WebSocket (consumers.py saves & broadcasts)
     sendMessage({ content: text });
     setInput('');
   };
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
   const formatTime = (dateString) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -178,7 +146,6 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
   const isSameDay = (a, b) =>
     new Date(a).toDateString() === new Date(b).toDateString();
 
-  // ── Render ────────────────────────────────────────────────────────────────
   const chatName = chat?.type === 'dm'
     ? `${chat.otherUser?.first_name ?? ''} ${chat.otherUser?.last_name ?? ''}`.trim() || chat.otherUser?.email
     : (chat?.group?.name ?? 'Group');
@@ -187,41 +154,60 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
     ? (chat.otherUser?.first_name?.[0] || '?').toUpperCase()
     : (chat?.group?.name?.[0] || 'G').toUpperCase();
 
+  // WS status dot color
+  const wsStatusColor = wsStatus === 'open'
+    ? colors.gold
+    : wsStatus === 'connecting'
+      ? colors.warning
+      : colors.error;
+
   return (
-    <div className="flex-1 flex flex-col h-full bg-white" id="chat-window">
+    <div className="flex-1 flex flex-col h-full" style={{ backgroundColor: colors.white }} id="chat-window">
+
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-white shadow-sm">
+      <div
+        className="flex items-center justify-between px-5 py-4 shadow-sm"
+        style={{ borderBottom: `1px solid ${colors.divider}`, backgroundColor: colors.white }}
+      >
         <div className="flex items-center gap-3">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md ${
-            chat?.type === 'dm'
-              ? 'bg-gradient-to-br from-[#e18f23] to-[#E8920F]'
-              : 'bg-gradient-to-br from-purple-400 to-pink-500'
-          }`}>
+          <div
+            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md"
+            style={{
+              backgroundColor: chat?.type === 'dm' ? colors.gold : colors.primary
+            }}
+          >
             {avatarLetter}
           </div>
           <div>
-            <h2 className="font-semibold text-gray-900 leading-tight">{chatName}</h2>
+            <h2 className="font-semibold leading-tight" style={{ color: colors.title }}>{chatName}</h2>
             <div className="flex items-center gap-1.5">
-              <span className={`inline-block w-2 h-2 rounded-full ${
-                wsStatus === 'open' ? 'bg-[#C97B1A]' : wsStatus === 'connecting' ? 'bg-amber-400 animate-pulse' : 'bg-red-400'
-              }`} />
-              <span className="text-xs text-gray-400">
+              <span
+                className="inline-block w-2 h-2 rounded-full"
+                style={{
+                  backgroundColor: wsStatusColor,
+                  animation: wsStatus === 'connecting' ? 'pulse 1.5s infinite' : 'none'
+                }}
+              />
+              <span className="text-xs" style={{ color: colors.muted }}>
                 {wsStatus === 'open' ? 'Connected' : wsStatus === 'connecting' ? 'Connecting…' : 'Disconnected'}
               </span>
               {chat?.type === 'group' && (
-                <span className="text-xs text-gray-400 ml-2">· {chat?.group?.member_count ?? 0} members</span>
+                <span className="text-xs ml-2" style={{ color: colors.muted }}>
+                  · {chat?.group?.member_count ?? 0} members
+                </span>
               )}
             </div>
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-1">
           {chat?.type === 'dm' && (
             <button
-              id="start-new-conv-btn"
               onClick={() => setShowStartConv(true)}
-              className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-500"
+              className="p-2 rounded-xl transition-colors"
+              style={{ color: colors.muted }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = colors.primaryLight}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
               title="New conversation"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -231,9 +217,11 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
           )}
           {chat?.type === 'group' && (
             <button
-              id="group-info-btn"
               onClick={() => setShowGroupInfo(true)}
-              className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-500"
+              className="p-2 rounded-xl transition-colors"
+              style={{ color: colors.muted }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = colors.primaryLight}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
               title="Group info"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -245,16 +233,25 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
       </div>
 
       {/* ── Messages Area ──────────────────────────────────────────────── */}
-      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-1 bg-gradient-to-b from-[#f5f0e8]/50 to-white" id="messages-area">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-1"
+        style={{ backgroundColor: colors.pageBg }}
+        id="messages-area"
+      >
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <div className="animate-spin w-8 h-8 border-4 border-[#C97B1A] border-t-transparent rounded-full" />
+            <div
+              className="animate-spin w-8 h-8 border-4 border-t-transparent rounded-full"
+              style={{ borderColor: colors.primary, borderTopColor: 'transparent' }}
+            />
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-3">
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center text-3xl ${
-              chat?.type === 'dm' ? 'bg-[#fdf3e3]' : 'bg-purple-50'
-            }`}>
+          <div className="flex flex-col items-center justify-center h-full gap-3" style={{ color: colors.muted }}>
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center text-3xl"
+              style={{ backgroundColor: colors.primaryLight }}
+            >
               {chat?.type === 'dm' ? '💬' : '👥'}
             </div>
             <p className="text-sm">No messages yet. Start the conversation!</p>
@@ -268,10 +265,12 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
 
             return (
               <div key={msg.id ?? `msg-${index}`}>
-                {/* Date separator */}
                 {showDate && (
                   <div className="flex items-center justify-center my-4">
-                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-500">
+                    <span
+                      className="px-3 py-1 rounded-full text-xs"
+                      style={{ backgroundColor: colors.cardAlt, color: colors.muted }}
+                    >
                       {formatDate(msg.created_at)}
                     </span>
                   </div>
@@ -284,20 +283,33 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
                   className={`flex ${isMe ? 'justify-end' : 'justify-start'} mb-1`}
                 >
                   <div className={`max-w-[72%] ${isMe ? 'items-end' : 'items-start'} flex flex-col`}>
-                    {/* Sender name in group */}
                     {!isMe && chat?.type === 'group' && (
-                      <p className="text-xs text-gray-500 mb-1 ml-1">{msg.sender_email}</p>
+                      <p className="text-xs mb-1 ml-1" style={{ color: colors.muted }}>{msg.sender_email}</p>
                     )}
 
-                    <div className={`px-4 py-2.5 rounded-2xl text-sm whitespace-pre-wrap break-words leading-relaxed shadow-sm ${
-                      isMe
-                        ? 'bg-gradient-to-br from-[#e18f23] to-[#e18f23] text-white rounded-br-sm'
-                        : 'bg-white border border-gray-200 text-gray-900 rounded-bl-sm'
-                    }`}>
+                    <div
+                      className="px-4 py-2.5 rounded-2xl text-sm whitespace-pre-wrap break-words leading-relaxed shadow-sm"
+                      style={isMe
+                        ? {
+                            backgroundColor: colors.primary,
+                            color: colors.white,
+                            borderBottomRightRadius: '4px'
+                          }
+                        : {
+                            backgroundColor: colors.white,
+                            color: colors.body,
+                            border: `1px solid ${colors.divider}`,
+                            borderBottomLeftRadius: '4px'
+                          }
+                      }
+                    >
                       {msg.content}
                     </div>
 
-                    <p className={`text-xs text-gray-400 mt-1 ${isMe ? 'text-right mr-1' : 'text-left ml-1'}`}>
+                    <p
+                      className={`text-xs mt-1 ${isMe ? 'text-right mr-1' : 'text-left ml-1'}`}
+                      style={{ color: colors.muted }}
+                    >
                       {formatTime(msg.created_at)}
                     </p>
                   </div>
@@ -311,7 +323,8 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
       {/* ── Input Area ─────────────────────────────────────────────────── */}
       <form
         onSubmit={handleSend}
-        className="px-4 py-3 border-t border-gray-100 bg-white"
+        className="px-4 py-3"
+        style={{ borderTop: `1px solid ${colors.divider}`, backgroundColor: colors.white }}
         id="chat-input-form"
       >
         <div className="flex gap-2 items-end">
@@ -329,7 +342,15 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
             }}
             placeholder={wsStatus === 'open' ? 'Type a message…' : 'Connecting…'}
             disabled={wsStatus !== 'open'}
-            className="flex-1 px-4 py-3 border border-gray-200 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none bg-gray-50 placeholder:text-gray-400 disabled:opacity-60"
+            className="flex-1 px-4 py-3 rounded-2xl text-sm transition-all outline-none disabled:opacity-60"
+            style={{
+              border: `1px solid ${colors.inputBorder}`,
+              backgroundColor: colors.pageBg,
+              color: colors.body,
+              '--placeholder-color': colors.muted,
+            }}
+            onFocus={e => e.currentTarget.style.borderColor = colors.inputBorderFocus}
+            onBlur={e => e.currentTarget.style.borderColor = colors.inputBorder}
           />
           <motion.button
             id="chat-send-btn"
@@ -337,7 +358,10 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             disabled={!input.trim() || wsStatus !== 'open'}
-            className="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-gradient-to-br from-[#e18f23] to-[#e18f23] text-white rounded-2xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-shrink-0 w-11 h-11 flex items-center justify-center rounded-2xl shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: colors.primary, color: colors.white }}
+            onMouseEnter={e => { if (input.trim() && wsStatus === 'open') e.currentTarget.style.backgroundColor = colors.primaryHover; }}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = colors.primary}
           >
             <svg className="w-5 h-5 rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

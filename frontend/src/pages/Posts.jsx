@@ -1,4 +1,4 @@
-// frontend/src/pages/Posts.jsx - Updated with beautiful confirmation modal
+// frontend/src/pages/Posts.jsx
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
@@ -6,8 +6,9 @@ import { postsAPI } from '../api/posts';
 import PostCard from '../components/PostCard';
 import CreatePostModal from '../components/CreatePostModal';
 import EditPostModal from '../components/EditPostModal';
+import colors from '../theme/colors';
 
-// Beautiful Confirmation Modal Component
+// ── Confirmation Modal ─────────────────────────────────────────────────────
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete' }) => {
   if (!isOpen) return null;
 
@@ -24,41 +25,45 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
+        className="relative max-w-md w-full rounded-2xl shadow-2xl overflow-hidden"
+        style={{ backgroundColor: colors.white }}
       >
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-[#e18f23]'}`} />
-        
+        {/* Top accent bar */}
+        <div style={{ height: 4, backgroundColor: type === 'delete' ? colors.error : colors.gold }} />
+
         <div className="p-6">
           <div className="flex justify-center mb-4">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-              className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                type === 'delete' ? 'bg-red-100' : 'bg-[#fdf3e3]'
-              }`}
+              transition={{ delay: 0.1, type: 'spring', stiffness: 200 }}
+              className="w-16 h-16 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: type === 'delete' ? colors.errorBg : colors.goldLight }}
             >
               {type === 'delete' ? (
-                <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: colors.error }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-[#C97B1A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: colors.gold }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
             </motion.div>
           </div>
 
-          <h3 className="text-xl font-bold text-center text-gray-900 mb-2">{title}</h3>
-          <p className="text-gray-600 text-center mb-6">{message}</p>
+          <h3 className="text-xl font-bold text-center mb-2" style={{ color: colors.title }}>{title}</h3>
+          <p className="text-center mb-6" style={{ color: colors.muted }}>{message}</p>
 
           <div className="flex gap-3">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+              className="flex-1 px-4 py-2.5 font-medium rounded-xl transition-colors"
+              style={{ backgroundColor: colors.white, color: colors.body, border: `1px solid ${colors.divider}` }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = colors.cardAlt}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = colors.pageBg}
             >
               Cancel
             </motion.button>
@@ -66,11 +71,13 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onConfirm}
-              className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
-                type === 'delete'
-                  ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  : 'bg-[#e18f23] hover:bg-[#c97a18]'
-              }`}
+              className="flex-1 px-4 py-2.5 font-medium rounded-xl transition-colors"
+              style={{
+                backgroundColor: type === 'delete' ? colors.error : colors.gold,
+                color: colors.white,
+              }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = type === 'delete' ? '#922B21' : colors.goldHover}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = type === 'delete' ? colors.error : colors.gold}
             >
               Confirm
             </motion.button>
@@ -81,6 +88,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
   );
 };
 
+// ── Constants ──────────────────────────────────────────────────────────────
 const CATEGORIES = [
   { value: '', label: 'All Categories', icon: '📚' },
   { value: 'learn_language', label: 'Learn a Language', icon: '🗣️' },
@@ -101,11 +109,12 @@ const AVAILABILITY = [
 ];
 
 const STATUS = [
-  { value: 'active', label: 'Active', color: 'bg-[#fdf3e3] text-[#1a2e1a]' },
-  { value: 'inactive', label: 'Inactive', color: 'bg-gray-100 text-gray-700' },
-  { value: 'closed', label: 'Closed', color: 'bg-red-100 text-red-700' },
+  { value: 'active', label: 'Active' },
+  { value: 'inactive', label: 'Inactive' },
+  { value: 'closed', label: 'Closed' },
 ];
 
+// ── Main Component ─────────────────────────────────────────────────────────
 export default function Posts() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('offers');
@@ -128,31 +137,23 @@ export default function Posts() {
   const fetchPosts = useCallback(async (page = 1, append = false) => {
     setLoading(true);
     setError(null);
-
     try {
-      const params = {
-        page,
-        page_size: 12,
-        ordering: filters.ordering,
-      };
-      
+      const params = { page, page_size: 12, ordering: filters.ordering };
       if (filters.category) params.category = filters.category;
       if (filters.search) params.search = filters.search;
       if (filters.status) params.status = filters.status;
       if (activeTab === 'offers' && filters.availability) params.availability = filters.availability;
 
-      const response = activeTab === 'offers' 
+      const response = activeTab === 'offers'
         ? await postsAPI.getOffers(params)
         : await postsAPI.getRequests(params);
-      
-      const data = response.data;
 
+      const data = response.data;
       if (append) {
         setPosts(prev => [...prev, ...(data.results || data)]);
       } else {
         setPosts(data.results || data);
       }
-
       setPagination({
         page: data.page || page,
         totalPages: data.total_pages || 1,
@@ -160,15 +161,12 @@ export default function Posts() {
       });
     } catch (err) {
       setError(err.response?.data?.detail || `Failed to load ${activeTab}`);
-      console.error(`Error fetching ${activeTab}:`, err);
     } finally {
       setLoading(false);
     }
   }, [filters, activeTab]);
 
-  useEffect(() => {
-    fetchPosts(1, false);
-  }, [fetchPosts]);
+  useEffect(() => { fetchPosts(1, false); }, [fetchPosts]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -198,10 +196,6 @@ export default function Posts() {
     }
   };
 
-  const handleEdit = (post) => {
-    setEditingPost(post);
-  };
-
   const handleUpdate = (updatedPost) => {
     setPosts(prev => prev.map(p => p.id === updatedPost.id ? updatedPost : p));
     setEditingPost(null);
@@ -213,46 +207,52 @@ export default function Posts() {
     }
   };
 
-  // Permission checks
   const canEditPost = (post) => {
     if (!user) return false;
-    if (post.user === user.id) return true;
-    if (user.is_staff || user.is_superuser) return true;
-    return false;
+    return post.user === user.id || user.is_staff || user.is_superuser;
   };
 
   const canDeletePost = (post) => {
     if (!user) return false;
-    if (post.user === user.id) return true;
-    if (user.is_staff || user.is_superuser) return true;
-    if (user.roles?.some(r => r.name === 'manager')) return true;
-    return false;
+    return post.user === user.id || user.is_staff || user.is_superuser || user.roles?.some(r => r.name === 'manager');
+  };
+
+  // select / input shared style
+  const selectStyle = {
+    padding: '8px 16px',
+    borderRadius: 12,
+    border: `1.5px solid ${colors.inputBorder}`, boxShadow: '0 1px 4px rgba(26,82,118,0.08)',
+    fontSize: 14,
+    fontWeight: 500,
+    color: colors.body,
+    backgroundColor: colors.white,
+    outline: 'none',
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]">
+    <div className="min-h-screen" style={{ backgroundColor: colors.pageBg }}>
       <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
+
+        {/* ── Page Header ───────────────────────────────────────────── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+              <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: colors.headingDark }}>
                 Community Posts
               </h1>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg" style={{ color: colors.muted }}>
                 Browse offers and requests from the community
               </p>
             </div>
-            
+
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+              style={{ backgroundColor: colors.gold, color: colors.white }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = colors.goldHover}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = colors.gold}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -261,10 +261,10 @@ export default function Posts() {
             </motion.button>
           </div>
 
-          {/* Tabs */}
+          {/* ── Tabs ──────────────────────────────────────────────── */}
           <div className="flex gap-2 mb-6">
             {[
-              { value: 'offers', label: '🙌 Offers', description: 'What people are offering' },
+              { value: 'offers',   label: '🙌 Offers',   description: 'What people are offering' },
               { value: 'requests', label: '🌟 Requests', description: 'What people need' },
             ].map(tab => (
               <motion.button
@@ -272,25 +272,33 @@ export default function Posts() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleTabChange(tab.value)}
-                className={`flex-1 p-4 rounded-2xl text-left transition-all ${
-                  activeTab === tab.value
-                    ? tab.value === 'offers'
-                      ? 'bg-white shadow-lg border-2 border-[#e18f23]'
-                      : 'bg-white shadow-lg border-2 border-[#626223]'
-                    : 'bg-white/50 border-2 border-transparent hover:border-[#e8dfd2]'
-                }`}
+                className="flex-1 p-4 rounded-2xl text-left transition-all"
+                style={{
+                  backgroundColor: colors.white,
+                  border: `2px solid ${activeTab === tab.value
+                    ? (tab.value === 'offers' ? colors.gold : colors.primary)
+                    : 'transparent'}`,
+                  boxShadow: activeTab === tab.value ? '0 4px 16px rgba(0,0,0,0.08)' : 'none',
+                }}
               >
-                <div className="text-lg font-semibold text-gray-900">{tab.label}</div>
-                <div className="text-sm text-gray-500">{tab.description}</div>
+                <div className="text-lg font-semibold" style={{ color: colors.title }}>{tab.label}</div>
+                <div className="text-sm" style={{ color: colors.muted }}>{tab.description}</div>
               </motion.button>
             ))}
           </div>
 
-          {/* Search and Filters */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          {/* ── Search & Filters ──────────────────────────────────── */}
+          <div
+            className="rounded-2xl shadow-lg p-6"
+            style={{ backgroundColor: colors.white, border: `1px solid ${colors.divider}` }}
+          >
             <form onSubmit={handleSearch} className="flex gap-3 mb-4">
               <div className="flex-1 relative">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                  style={{ color: colors.muted }}
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
@@ -298,14 +306,24 @@ export default function Posts() {
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   placeholder={`Search ${activeTab}...`}
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                  className="w-full pl-12 pr-4 py-3 rounded-xl outline-none transition-all"
+                  style={{
+                    border: `1.5px solid ${colors.inputBorder}`, boxShadow: '0 1px 4px rgba(26,82,118,0.08)',
+                    color: colors.body,
+                    backgroundColor: colors.white,
+                  }}
+                  onFocus={e => e.currentTarget.style.borderColor = colors.inputBorderFocus}
+                  onBlur={e => e.currentTarget.style.borderColor = colors.divider}
                 />
               </div>
               <motion.button
                 type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-[#626223] hover:bg-[#4d4d1c] text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                className="px-6 py-3 font-semibold rounded-xl shadow-md transition-all"
+                style={{ backgroundColor: colors.primary, color: colors.white }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = colors.primaryHover}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = colors.primary}
               >
                 Search
               </motion.button>
@@ -314,11 +332,9 @@ export default function Posts() {
                   type="button"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    setSearchInput('');
-                    setFilters(prev => ({ ...prev, search: '' }));
-                  }}
-                  className="px-4 py-3 text-gray-600 hover:text-gray-900 font-medium rounded-xl border border-gray-300 transition-all"
+                  onClick={() => { setSearchInput(''); setFilters(prev => ({ ...prev, search: '' })); }}
+                  className="px-4 py-3 font-medium rounded-xl transition-all"
+                  style={{ color: colors.muted, border: `1px solid ${colors.divider}` }}
                 >
                   Clear
                 </motion.button>
@@ -329,7 +345,7 @@ export default function Posts() {
               <select
                 value={filters.category}
                 onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none"
+                style={selectStyle}
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.icon} {cat.label}</option>
@@ -339,7 +355,7 @@ export default function Posts() {
               <select
                 value={filters.status}
                 onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none"
+                style={selectStyle}
               >
                 <option value="">All Statuses</option>
                 {STATUS.map(s => (
@@ -351,7 +367,7 @@ export default function Posts() {
                 <select
                   value={filters.availability}
                   onChange={(e) => setFilters(prev => ({ ...prev, availability: e.target.value }))}
-                  className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none"
+                  style={selectStyle}
                 >
                   <option value="">All Availability</option>
                   {AVAILABILITY.map(a => (
@@ -363,28 +379,33 @@ export default function Posts() {
           </div>
         </motion.div>
 
-        {/* Error Message */}
+        {/* ── Error Banner ──────────────────────────────────────────── */}
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"
+            className="mb-6 p-4 rounded-xl"
+            style={{ backgroundColor: colors.errorBg, border: `1px solid ${colors.error}`, color: colors.error }}
           >
-            <p className="text-sm text-red-700">{error}</p>
+            <p className="text-sm">{error}</p>
           </motion.div>
         )}
 
-        {/* Posts Grid */}
+        {/* ── Posts Grid ────────────────────────────────────────────── */}
         {loading && posts.length === 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl p-6 shadow-lg animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-4" />
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-6" />
+              <div
+                key={i}
+                className="rounded-2xl p-6 shadow-lg animate-pulse"
+                style={{ backgroundColor: colors.white }}
+              >
+                <div className="h-4 rounded w-3/4 mb-4" style={{ backgroundColor: colors.divider }} />
+                <div className="h-4 rounded w-1/2 mb-6" style={{ backgroundColor: colors.divider }} />
                 <div className="space-y-2">
-                  <div className="h-3 bg-gray-200 rounded" />
-                  <div className="h-3 bg-gray-200 rounded" />
-                  <div className="h-3 bg-gray-200 rounded w-5/6" />
+                  <div className="h-3 rounded" style={{ backgroundColor: colors.divider }} />
+                  <div className="h-3 rounded" style={{ backgroundColor: colors.divider }} />
+                  <div className="h-3 rounded w-5/6" style={{ backgroundColor: colors.divider }} />
                 </div>
               </div>
             ))}
@@ -396,10 +417,10 @@ export default function Posts() {
             className="text-center py-20"
           >
             <div className="text-6xl mb-6">{activeTab === 'offers' ? '🙌' : '🌟'}</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl font-bold mb-2" style={{ color: colors.title }}>
               No {activeTab} found
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-6" style={{ color: colors.muted }}>
               {filters.search || filters.category || filters.status
                 ? 'Try adjusting your search or filters.'
                 : `Be the first to create a ${activeTab === 'offers' ? 'offer' : 'request'}!`}
@@ -410,7 +431,8 @@ export default function Posts() {
                   setSearchInput('');
                   setFilters({ category: '', search: '', availability: '', status: '', ordering: '-created_at' });
                 }}
-                className="px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors"
+                className="px-6 py-3 font-medium rounded-xl transition-colors"
+                style={{ backgroundColor: colors.white, color: colors.body, border: `1px solid ${colors.divider}` }}
               >
                 Clear Filters
               </button>
@@ -420,7 +442,8 @@ export default function Posts() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg"
+                className="px-6 py-3 font-semibold rounded-xl shadow-lg"
+                style={{ backgroundColor: colors.gold, color: colors.white }}
               >
                 Create Your First Post
               </motion.button>
@@ -438,7 +461,7 @@ export default function Posts() {
                     index={index}
                     canEdit={canEditPost(post)}
                     canDelete={canDeletePost(post)}
-                    onEdit={handleEdit}
+                    onEdit={() => setEditingPost(post)}
                     onDelete={() => setDeleteModal({ isOpen: true, postId: post.id })}
                   />
                 ))}
@@ -453,34 +476,37 @@ export default function Posts() {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLoadMore}
                   disabled={loading}
-                  className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-emerald-300 hover:text-[#C97B1A] transition-all shadow-sm disabled:opacity-50"
+                  className="px-8 py-3 font-medium rounded-xl transition-all shadow-sm disabled:opacity-50"
+                  style={{
+                    backgroundColor: colors.white,
+                    color: colors.body,
+                    border: `1.5px solid ${colors.inputBorder}`, boxShadow: '0 1px 4px rgba(26,82,118,0.08)',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = colors.primary; e.currentTarget.style.color = colors.primary; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = colors.divider; e.currentTarget.style.color = colors.body; }}
                 >
                   {loading ? 'Loading...' : `Load More (${pagination.totalPages - pagination.page} pages)`}
                 </motion.button>
               </div>
             )}
 
-            <div className="text-center mt-4 text-sm text-gray-500">
+            <div className="text-center mt-4 text-sm" style={{ color: colors.muted }}>
               Showing {posts.length} of {pagination.totalCount} {activeTab}
             </div>
           </>
         )}
       </div>
 
-      {/* Create Post Modal */}
+      {/* ── Modals ────────────────────────────────────────────────────── */}
       <AnimatePresence>
         {showCreateModal && (
           <CreatePostModal
             onClose={() => setShowCreateModal(false)}
-            onCreated={() => {
-              setShowCreateModal(false);
-              fetchPosts(1, false);
-            }}
+            onCreated={() => { setShowCreateModal(false); fetchPosts(1, false); }}
           />
         )}
       </AnimatePresence>
 
-      {/* Edit Post Modal */}
       <AnimatePresence>
         {editingPost && (
           <EditPostModal
@@ -492,7 +518,6 @@ export default function Posts() {
         )}
       </AnimatePresence>
 
-      {/* Delete Confirmation Modal */}
       <ConfirmationModal
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, postId: null })}

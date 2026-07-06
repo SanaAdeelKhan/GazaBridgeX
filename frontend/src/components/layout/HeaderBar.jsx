@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
+import colors from '../../theme/colors';
 
 export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
   const { user, logout } = useAuth();
@@ -43,14 +44,17 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                   user?.is_superuser;
 
   return (
-    <header className="sticky top-0 z-20" style={{ backgroundColor: '#374151', borderBottom: '1px solid #4B5563' }}>
+    <header
+      className="sticky top-0 z-20"
+      style={{ backgroundColor: colors.header, borderBottom: `1px solid ${colors.sidebarBorder}` }}
+    >
       <div className="flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-4">
           {onToggleSidebar && (
             <button
               onClick={onToggleSidebar}
               className="p-2 rounded-lg transition-colors"
-              style={{ color: '#D1D5DB' }}
+              style={{ color: colors.navText }}
               onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
             >
@@ -59,19 +63,25 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
               </svg>
             </button>
           )}
-          <Link to={isAdmin ? '/admin' : '/dashboard'} className="flex items-center gap-2">
-            <img src="/logo.png" alt="GazaBridgeX" className="w-8 h-8 rounded-full object-cover" onError={e => e.target.style.display='none'} />
-            <span className="text-lg font-bold text-white hidden sm:block">GazaBridge</span>
+          <Link
+            to={isAdmin ? '/admin' : '/dashboard'}
+            className="px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+            style={{ color: colors.navText }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            Back
           </Link>
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Notifications */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/notifications')}
             className="relative p-2 rounded-xl transition-colors"
-            style={{ color: '#D1D5DB' }}
+            style={{ color: colors.navText }}
             onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
             onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
           >
@@ -79,18 +89,22 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+              <span
+                className="absolute -top-0.5 -right-0.5 w-5 h-5 text-white text-xs font-bold rounded-full flex items-center justify-center"
+                style={{ backgroundColor: colors.error }}
+              >
                 {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
           </motion.button>
 
+          {/* Chat */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate('/chat')}
             className="relative p-2 rounded-xl transition-colors"
-            style={{ color: '#D1D5DB' }}
+            style={{ color: colors.navText }}
             onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
             onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
           >
@@ -99,6 +113,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
             </svg>
           </motion.button>
 
+          {/* Profile Menu */}
           <div className="relative" ref={profileRef}>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -110,12 +125,14 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
             >
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
-                style={{ background: 'linear-gradient(135deg, #C26100, #E07A1B)' }}
+                style={{ backgroundColor: colors.gold }}
               >
                 {getInitials()}
               </div>
-              <span className="text-sm font-medium hidden md:block" style={{ color: '#F9FAFB' }}>{getDisplayName()}</span>
-              <svg className="w-4 h-4 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: '#9CA3AF' }}>
+              <span className="text-sm font-medium hidden md:block" style={{ color: colors.navActive }}>
+                {getDisplayName()}
+              </span>
+              <svg className="w-4 h-4 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: colors.navSection }}>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </motion.button>
@@ -127,26 +144,27 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   className="absolute right-0 mt-2 w-56 rounded-2xl shadow-xl py-2 z-50"
-                  style={{ backgroundColor: '#374151', border: '1px solid #4B5563' }}
+                  style={{ backgroundColor: colors.sidebar, border: `1px solid ${colors.sidebarBorder}` }}
                 >
-                  <div className="px-4 py-3" style={{ borderBottom: '1px solid #4B5563' }}>
-                    <p className="font-semibold text-sm" style={{ color: '#F9FAFB' }}>{getDisplayName()}</p>
-                    <p className="text-xs" style={{ color: '#9CA3AF' }}>{user?.email}</p>
+                  <div className="px-4 py-3" style={{ borderBottom: `1px solid ${colors.sidebarBorder}` }}>
+                    <p className="font-semibold text-sm" style={{ color: colors.white }}>{getDisplayName()}</p>
+                    <p className="text-xs" style={{ color: colors.navSection }}>{user?.email}</p>
                     {user?.roles?.map((role, index) => (
                       <span
                         key={index}
                         className="inline-block px-2 py-0.5 rounded-full text-xs mt-1 mr-1 capitalize"
-                        style={{ backgroundColor: '#C26100', color: '#ffffff' }}
+                        style={{ backgroundColor: colors.gold, color: colors.white }}
                       >
                         {role}
                       </span>
                     ))}
                   </div>
+
                   <Link
                     to="/profile"
                     onClick={() => setShowProfileMenu(false)}
                     className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
-                    style={{ color: '#D1D5DB' }}
+                    style={{ color: colors.navText }}
                     onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.07)'}
                     onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
@@ -155,11 +173,12 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                     </svg>
                     Profile
                   </Link>
+
                   <button
                     onClick={() => { setShowProfileMenu(false); handleLogout(); }}
                     className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors w-full text-left"
-                    style={{ color: '#FCA5A5' }}
-                    onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(239,68,68,0.1)'}
+                    style={{ color: colors.errorBg }}
+                    onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(192,57,43,0.1)'}
                     onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

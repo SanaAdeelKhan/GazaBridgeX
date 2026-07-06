@@ -1,69 +1,161 @@
-// src/theme/colors.js — GazaBridgeX Design System (solid colors, logo-matched)
-
+// src/theme/colors.js — GazaBridge Design System (logo-matched: Blue + Gold + Olive)
 export const colors = {
-  sidebar:          '#374151',
-  sidebarBorder:    '#4B5563',
-  header:           '#374151',
-  navText:          '#D1D5DB',
+
+  // ─── SIDEBAR / HEADER ─────────────────────────────────────────────
+  sidebar:          '#154360',   // Deep navy (dark blue header/sidebar)
+  sidebarBorder:    '#1A5276',   // Brand blue as border
+  header:           '#154360',
+  headingDark:      '#0F3450',   // Custom deep navy — for strong page headings
+  navText:          'rgba(255,255,255,0.80)',
   navActive:        '#ffffff',
-  navSection:       '#9CA3AF',
+  navSection:       'rgba(255,255,255,0.45)',
+  navIndicator:     '#D4A017',   // Gold underline on active nav item
 
-  pageBg:           '#f5f0e8',
+  // ─── PAGE & SURFACE ───────────────────────────────────────────────
+  pageBg:           '#F4F6F7',   // Light grey (logo background)
+  pageBgWarm:       '#FAF3E7',   // warm cream — for hero/heading sections
+  heroBg:           '#F5E9D6',   // deeper cream — hero banners
+  softAccent:       '#D9A491',   // dusty terracotta — sparing elegant accent
   card:             '#ffffff',
-  cardBorder:       '#e8dfd2',
-  cardAlt:          '#faf8f4',
+  cardBorder:       '#E8EAEC',
+  cardAlt:          '#D4E6F1',   // Blue tint — featured cards
+  cardGold:         '#FCF3CF',   // Gold tint — announcement cards
+  cardOlive:        '#A9DFBF',   // Olive tint — success/nature cards
 
-  title:            '#1c1a17',
-  body:             '#3a3028',
-  muted:            '#6b5e52',
+  // ─── TYPOGRAPHY ───────────────────────────────────────────────────
+  title:            '#1A5276',   // Deep blue — h1, h2, h3
+  subheading:       '#154360',   // Navy — h4, h5
+  body:             '#1C2833',   // Charcoal — paragraphs
+  muted:            '#717D7E',   // Grey — captions, meta
   white:            '#ffffff',
-  secondary:        '#a09485',
+  secondary:        '#2E86C1',   // Sky blue — links, icons
+  accent:           '#D4A017',   // Gold — highlights, quotes
 
-  // Solid amber — primary actions (NO gradient)
-  primary:          '#e18f23',
-  primaryHover:     '#c97a18',
-  primaryLight:     '#fdf3e3',
+  // ─── PRIMARY (BLUE) ───────────────────────────────────────────────
+  primary:          '#1A5276',   // Deep blue — primary buttons, nav bg
+  primaryHover:     '#154360',
+  primaryLight:     '#D4E6F1',   // Blue tint bg
 
-  // Solid olive — secondary accents (NO gradient)
-  olive:            '#626223',
-  oliveHover:       '#4d4d1c',
-  oliveLight:       '#f0efe0',
+  // ─── SECONDARY (GOLD) ─────────────────────────────────────────────
+  gold:             '#D4A017',   // Warm gold — CTA, donate, apply
+  goldHover:        '#B7770D',
+  goldLight:        '#FCF3CF',   // Gold tint bg
 
-  badgeOpen:        '#e18f23',
-  badgeOpenText:    '#fff8ee',
-  badgeClosed:      '#8B1A1A',
-  badgeClosedText:  '#fde8e8',
-  badgeNew:         '#626223',
-  badgeNewText:     '#f0efe0',
+  // ─── ACCENT (OLIVE) ───────────────────────────────────────────────
+  olive:            '#2E7D32',   // Olive green — peace accent, branch
+  oliveHover:       '#1B5E20',
+  oliveLight:       '#A9DFBF',   // Olive tint bg
 
-  statPositive:     '#626223',
-  statPositiveBg:   '#f0efe0',
+  // ─── BADGES ───────────────────────────────────────────────────────
+  badgeActive:      '#D4A017',   // Gold bg
+  badgeActiveText:  '#ffffff',
+  badgeOpen:        '#A9DFBF',   // Olive tint bg
+  badgeOpenText:    '#2E7D32',
+  badgePending:     '#FDEBD0',
+  badgePendingText: '#E67E22',
+  badgeClosed:      '#FADBD8',
+  badgeClosedText:  '#C0392B',
+  badgeNeutral:     '#E8EAEC',
+  badgeNeutralText: '#717D7E',
 
-  bannerStart:      '#626223',
-  bannerEnd:        '#626223',
+  // ─── SEMANTIC ─────────────────────────────────────────────────────
+  success:          '#1E8449',
+  successBg:        '#A9DFBF',
+  warning:          '#E67E22',
+  warningBg:        '#FDEBD0',
+  error:            '#C0392B',
+  errorBg:          '#FADBD8',
 
-  tabActiveBg:        '#626223',
+  // ─── STATS ────────────────────────────────────────────────────────
+  statPositive:     '#1E8449',
+  statPositiveBg:   '#A9DFBF',
+
+  // ─── BANNERS (hero / profile) ─────────────────────────────────────
+  bannerStart:      '#1A5276',
+  bannerEnd:        '#2E86C1',
+
+  // ─── TABS ─────────────────────────────────────────────────────────
+  tabActiveBg:        '#1A5276',
   tabActiveText:      '#ffffff',
-  tabActiveUnderline: '#e18f23',
-  tabInactiveBg:      '#f0ece4',
-  tabInactiveText:    '#6b5e52',
+  tabActiveUnderline: '#D4A017',   // Gold underline
+  tabInactiveBg:      '#F4F6F7',
+  tabInactiveText:    '#717D7E',
+
+  // ─── FORMS ────────────────────────────────────────────────────────
+  inputBg:          '#ffffff',
+  inputBorder:      '#B0BEC5',
+  inputBorderFocus: '#1A5276',
+  inputText:        '#1C2833',
+  inputPlaceholder: '#717D7E',
+  label:            '#154360',
+
+  // ─── DIVIDERS ─────────────────────────────────────────────────────
+  divider:          '#E8EAEC',
+  dividerStrong:    '#717D7E',
+
+  // ─── FOOTER ───────────────────────────────────────────────────────
+  footer:           '#1C2833',
+  footerText:       'rgba(255,255,255,0.75)',
 };
 
+// ─── TAILWIND UTILITY CLASSES ──────────────────────────────────────────────
+// Use these in className props — Tailwind needs hardcoded hex values
 export const tw = {
-  pageBg:        'bg-[#f5f0e8]',
-  card:          'bg-white border border-[#e8dfd2]',
-  cardAlt:       'bg-[#faf8f4] border border-[#e8dfd2]',
-  accentBtn:     'bg-[#e18f23] text-white hover:bg-[#c97a18]',
-  oliveBtn:      'bg-[#626223] text-white hover:bg-[#4d4d1c]',
-  cancelBtn:     'bg-[#f5f0e8] text-[#3a3028] border border-[#e8dfd2]',
-  titleText:     'text-[#1c1a17]',
-  bodyText:      'text-[#3a3028]',
-  mutedText:     'text-[#6b5e52]',
-  tabActive:     'text-[#e18f23] border-b-2 border-[#e18f23]',
-  tabInactive:   'text-[#6b5e52]',
-  badgeOpen:     'bg-[#e18f23] text-[#fff8ee]',
-  badgeClosed:   'bg-[#8B1A1A] text-[#fde8e8]',
-  badgeNew:      'bg-[#f0efe0] text-[#626223]',
+
+  // Backgrounds
+  pageBg:        'bg-[#F4F6F7]',
+  card:          'bg-white border border-[#E8EAEC]',
+  cardAlt:       'bg-[#D4E6F1] border border-[#2E86C1]',
+  cardGold:      'bg-[#FCF3CF] border border-[#B7770D]',
+  cardOlive:     'bg-[#A9DFBF] border border-[#1E8449]',
+
+  // Buttons
+  primaryBtn:    'bg-[#1A5276] text-white hover:bg-[#154360]',
+  goldBtn:       'bg-[#D4A017] text-white hover:bg-[#B7770D]',
+  oliveBtn:      'bg-[#2E7D32] text-white hover:bg-[#1B5E20]',
+  ghostBtn:      'bg-transparent text-[#1A5276] border border-[#1A5276] hover:bg-[#D4E6F1]',
+  dangerBtn:     'bg-[#C0392B] text-white hover:bg-[#922B21]',
+  cancelBtn:     'bg-[#F4F6F7] text-[#1C2833] border border-[#E8EAEC]',
+
+  // Typography
+  titleText:     'text-[#1A5276]',
+  subText:       'text-[#154360]',
+  bodyText:      'text-[#1C2833]',
+  mutedText:     'text-[#717D7E]',
+  accentText:    'text-[#D4A017]',
+  linkText:      'text-[#2E86C1] hover:text-[#154360]',
+
+  // Navigation
+  navBg:         'bg-[#1A5276]',
+  navItem:       'text-white/80 hover:bg-white/10',
+  navActive:     'text-white bg-white/15 border-b-2 border-[#D4A017]',
+
+  // Tabs
+  tabActive:     'text-[#1A5276] border-b-2 border-[#D4A017] bg-white',
+  tabInactive:   'text-[#717D7E] hover:text-[#1A5276] bg-[#F4F6F7]',
+
+  // Badges
+  badgeActive:   'bg-[#D4A017] text-white',
+  badgeOpen:     'bg-[#A9DFBF] text-[#2E7D32]',
+  badgePending:  'bg-[#FDEBD0] text-[#E67E22]',
+  badgeClosed:   'bg-[#FADBD8] text-[#C0392B]',
+  badgeNeutral:  'bg-[#E8EAEC] text-[#717D7E]',
+
+  // Banners
+  bannerInfo:    'bg-[#D4E6F1] border-l-4 border-[#2E86C1] text-[#154360]',
+  bannerSuccess: 'bg-[#A9DFBF] border-l-4 border-[#1E8449] text-[#2E7D32]',
+  bannerWarning: 'bg-[#FDEBD0] border-l-4 border-[#E67E22] text-[#7D4A00]',
+  bannerError:   'bg-[#FADBD8] border-l-4 border-[#C0392B] text-[#7B241C]',
+
+  // Sidebar
+  sidebar:       'bg-[#154360] border-r border-[#1A5276]',
+
+  // Forms
+  input:         'bg-white border border-[#E8EAEC] text-[#1C2833] placeholder-[#717D7E] focus:border-[#1A5276] focus:outline-none',
+  label:         'text-[#154360] font-semibold',
+
+  // Divider
+  divider:       'border-[#E8EAEC]',
 };
 
 export default colors;

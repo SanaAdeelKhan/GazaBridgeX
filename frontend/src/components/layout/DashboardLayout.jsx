@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import Sidebar from './Sidebar';
 import AdminSidebar from './AdminSidebar';
 import HeaderBar from './HeaderBar';
+import colors from '../../theme/colors';
 
 export default function DashboardLayout() {
   const { user } = useAuth();
@@ -21,7 +22,7 @@ export default function DashboardLayout() {
 
   if (isChatPage) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: '#F2DDD8' }}>
+      <div className="min-h-screen" style={{ backgroundColor: colors.pageBg }}>
         <HeaderBar />
         <Outlet />
       </div>
@@ -29,7 +30,7 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div className="min-h-screen flex" style={{ backgroundColor: '#F2DDD8' }}>
+    <div className="min-h-screen flex" style={{ backgroundColor: colors.pageBg }}>
       <AnimatePresence>
         {sidebarOpen && (
           <motion.aside
@@ -38,7 +39,7 @@ export default function DashboardLayout() {
             exit={{ x: -280 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="w-64 lg:w-72 flex-shrink-0 h-screen sticky top-0 overflow-y-auto z-30"
-            style={{ backgroundColor: '#374151', borderRight: '1px solid #374151' }}
+            style={{ backgroundColor: colors.sidebar, borderRight: `1px solid ${colors.sidebarBorder}` }}
           >
             {isAdmin ? <AdminSidebar /> : <Sidebar />}
           </motion.aside>
