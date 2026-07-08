@@ -23,13 +23,20 @@ const AVATAR_CYCLE = [colors.primary, colors.gold, colors.olive, colors.primaryH
 // ─────────────────────────────────────────────────────────────────────────────
 function useMagnetic(strength = 0.4) {
   const ref = useRef(null);
+  const restRect = useRef(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
+  // Cache the button's resting position once per hover — measuring on every
+  // mousemove was chasing the button's own (already-offset) position, which
+  // caused a feedback-loop shake instead of a smooth magnetic pull.
   const handleMouseMove = useCallback((e) => {
     const el = ref.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
+    if (!restRect.current) {
+      restRect.current = el.getBoundingClientRect();
+    }
+    const rect = restRect.current;
     const cx = rect.left + rect.width / 2;
     const cy = rect.top + rect.height / 2;
     x.set((e.clientX - cx) * strength);
@@ -39,6 +46,7 @@ function useMagnetic(strength = 0.4) {
   const handleMouseLeave = useCallback(() => {
     x.set(0);
     y.set(0);
+    restRect.current = null;
   }, [x, y]);
 
   return { ref, x, y, handleMouseMove, handleMouseLeave };
@@ -150,7 +158,7 @@ function Hero() {
 
   return (
     <motion.section
-      style={{ opacity, backgroundColor: colors.heroBg }}
+      style={{ opacity, backgroundColor: colors.sidebar }}
       className="relative min-h-screen flex items-center overflow-hidden"
     >
       <NoiseOverlay />
@@ -163,26 +171,29 @@ function Hero() {
           backgroundSize: '90% 75%',
           backgroundPosition: 'center 30%',
           backgroundRepeat: 'no-repeat',
-          opacity: 0.42,
+          opacity: 0.35,
         }}
       />
+
+      {/* Dark navy wash over background photo for legibility */}
+      <div className="absolute inset-0 pointer-events-none" style={{ backgroundColor: colors.sidebar, opacity: 0.55 }} />
 
       {/* Grid lines */}
       <div className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: `linear-gradient(${colors.oliveGlow} 1px, transparent 1px),
-                            linear-gradient(90deg, ${colors.oliveGlow} 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(${colors.onDarkBorder} 1px, transparent 1px),
+                            linear-gradient(90deg, ${colors.onDarkBorder} 1px, transparent 1px)`,
           backgroundSize: '80px 80px',
         }}
       />
 
       {/* Large architectural rings */}
       <motion.div
-        style={{ y, borderColor: colors.divider }}
+        style={{ y, borderColor: colors.onDarkBorder }}
         className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border pointer-events-none"
       />
       <motion.div
-        style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]), borderColor: colors.divider }}
+        style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]), borderColor: colors.onDarkBorder }}
         className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border pointer-events-none"
       />
 
@@ -201,7 +212,7 @@ function Hero() {
           {/* Spinning ring text */}
           <svg className="absolute inset-0 w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 112 112">
             <path id="circle-text" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
-            <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.olive} fontWeight="500" letterSpacing="3">
+            <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.gold} fontWeight="500" letterSpacing="3">
               <textPath href="#circle-text">FREE FOREVER • LEARN TODAY • FREE FOREVER • </textPath>
             </text>
           </svg>
@@ -230,7 +241,7 @@ function Hero() {
                 </span>
                 <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: colors.muted }}>Empowering Gaza</span>
               </div>
-              <div className="h-px flex-1" style={{ backgroundColor: colors.divider }} />
+              <div className="h-px flex-1" style={{ backgroundColor: colors.onDarkBorder }} />
             </motion.div>
 
             {/* HEADLINE — giant serif + word swap */}
@@ -243,7 +254,7 @@ function Hero() {
               >
                 <h1
                   className="text-[clamp(3.2rem,7vw,6.5rem)] font-serif leading-[0.95] tracking-tight"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.white }}
                 >
                   Build Your
                 </h1>
@@ -258,6 +269,21 @@ function Hero() {
                 <div className="relative overflow-hidden"
                   style={{ height: 'clamp(3.2rem,7vw,6.5rem)' }}
                 >
+                  {/* Invisible sizer — reserves width for the longest word so overflow-hidden doesn't clip to zero */}
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      fontFamily: "'Instrument Serif', Georgia, serif",
+                      fontSize: 'clamp(3.2rem,7vw,6.5rem)',
+                      lineHeight: '0.95',
+                      fontStyle: 'italic',
+                      visibility: 'hidden',
+                      whiteSpace: 'nowrap',
+                      display: 'block',
+                    }}
+                  >
+                    Freedom
+                  </span>
                   <AnimatePresence mode="wait">
                     <motion.span
                       key={wordIndex}
@@ -272,7 +298,7 @@ function Hero() {
                         lineHeight: '0.95',
                         display: 'block',
                         fontStyle: 'italic',
-                        color: colors.olive,
+                        color: colors.gold,
                       }}
                     >
                       {words[wordIndex]}
@@ -288,7 +314,7 @@ function Hero() {
               >
                 <h1
                   className="text-[clamp(3.2rem,7vw,6.5rem)] font-serif leading-[0.95] tracking-tight"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.white }}
                 >
                   With Digital Skills
                 </h1>
@@ -301,7 +327,7 @@ function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
               className="text-lg leading-relaxed max-w-lg"
-              style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body }}
+              style={{ fontFamily: "'DM Sans', sans-serif", color: colors.navText }}
             >
               A free platform connecting passionate volunteers worldwide with talented individuals in Gaza.
               Learn digital skills, build your career, and transform your life — at zero cost.
@@ -323,7 +349,6 @@ function Hero() {
               >
                 <Link to="/register">
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     className="group relative px-8 py-4 text-white font-semibold rounded-full overflow-hidden hover:brightness-95 transition-all"
                     style={{ fontFamily: "'DM Sans', sans-serif", backgroundColor: colors.gold }}
@@ -349,7 +374,6 @@ function Hero() {
               >
                 <Link to="/register">
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     className="px-8 py-4 rounded-full border font-semibold transition-colors text-sm tracking-wide hover:border-[#D4A017] hover:text-[#D4A017]"
                     style={{ fontFamily: "'DM Sans', sans-serif", borderColor: colors.divider, backgroundColor: colors.card, color: colors.body }}
@@ -379,8 +403,8 @@ function Hero() {
                   >{l}</motion.div>
                 ))}
               </div>
-              <div className="text-sm" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>
-                <span className="font-semibold" style={{ color: colors.body }}>1,000+</span> learners trust us
+              <div className="text-sm" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.navText }}>
+                <span className="font-semibold" style={{ color: colors.white }}>1,000+</span> learners trust us
               </div>
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
@@ -388,7 +412,7 @@ function Hero() {
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}
-                <span className="text-xs ml-1" style={{ color: colors.muted }}>5.0</span>
+                <span className="text-xs ml-1" style={{ color: colors.navText }}>5.0</span>
               </div>
             </motion.div>
           </div>
@@ -405,13 +429,13 @@ function Hero() {
               animate={{ rotate: [-6, -4, -6] }}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute w-72 h-96 rounded-3xl border"
-              style={{ backgroundColor: colors.oliveLight, borderColor: colors.divider }}
+              style={{ backgroundColor: colors.oliveLight, borderColor: colors.onDarkBorder }}
             />
             <motion.div
               animate={{ rotate: [3, 5, 3] }}
               transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
               className="absolute w-72 h-96 rounded-3xl border"
-              style={{ backgroundColor: colors.goldLight, borderColor: colors.divider }}
+              style={{ backgroundColor: colors.goldLight, borderColor: colors.onDarkBorder }}
             />
 
             <HeroVideo />
@@ -489,14 +513,14 @@ function Hero() {
         transition={{ delay: 2.2 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>scroll</span>
+        <span className="text-[10px] tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.navText }}>scroll</span>
         <motion.div
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.8, repeat: Infinity }}
           className="w-5 h-8 border rounded-full flex items-start justify-center pt-1.5"
-          style={{ borderColor: colors.divider }}
+          style={{ borderColor: colors.onDarkBorder }}
         >
-          <div className="w-1 h-1.5 rounded-full" style={{ backgroundColor: colors.muted }} />
+          <div className="w-1 h-1.5 rounded-full" style={{ backgroundColor: colors.navText }} />
         </motion.div>
       </motion.div>
     </motion.section>
