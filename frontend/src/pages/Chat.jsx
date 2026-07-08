@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { chatAPI } from '../api/chat';
+import colors, { tw } from '../theme/colors';
 import ChatWindow from '../components/chat/ChatWindow';
 import ConversationList from '../components/chat/ConversationList';
 import CreateGroupModal from '../components/chat/CreateGroupModal';
@@ -130,24 +131,30 @@ export default function Chat() {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="flex h-[calc(100vh-4rem)] bg-gray-50 overflow-hidden" id="chat-page">
+    <div
+      className="flex h-[calc(100vh-4rem)] overflow-hidden"
+      style={{ backgroundColor: colors.pageBg }}
+      id="chat-page"
+    >
       {/* ── Sidebar ───────────────────────────────────────────────────────── */}
       <aside
         className={`
-          flex flex-col bg-white border-r border-gray-100 shadow-sm transition-all duration-300
+          flex flex-col border-r shadow-sm transition-all duration-300
           ${sidebarOpen ? 'w-80 min-w-[20rem]' : 'w-0 overflow-hidden min-w-0'}
           md:w-80 md:min-w-[20rem] md:overflow-visible
         `}
+        style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
       >
         {/* Sidebar Header */}
-        <div className="px-4 pt-5 pb-3 border-b border-gray-100">
+        <div className="px-4 pt-5 pb-3 border-b" style={{ borderColor: colors.divider }}>
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-bold text-gray-900">Messages</h1>
+            <h1 className="text-xl font-bold" style={{ color: colors.title }}>Messages</h1>
             <div className="flex gap-1">
               <button
                 id="new-dm-btn"
                 onClick={() => setShowStartConv(true)}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-500"
+                className="p-2 hover:bg-[#F4F6F7] rounded-xl transition-colors"
+                style={{ color: colors.muted }}
                 title="New conversation"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -157,7 +164,8 @@ export default function Chat() {
               <button
                 id="create-group-btn"
                 onClick={() => setShowCreateGroup(true)}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors text-gray-500"
+                className="p-2 hover:bg-[#F4F6F7] rounded-xl transition-colors"
+                style={{ color: colors.muted }}
                 title="Create group"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,7 +177,11 @@ export default function Chat() {
 
           {/* Search */}
           <div className="relative">
-            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4"
+              style={{ color: colors.muted }}
+              fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -178,12 +190,12 @@ export default function Chat() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search conversations…"
-              className="w-full pl-9 pr-4 py-2 bg-gray-100 rounded-xl text-sm text-gray-700 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500 transition-all"
+              className={`w-full pl-9 pr-4 py-2 rounded-xl text-sm outline-none transition-all ${tw.input}`}
             />
           </div>
 
           {/* Tabs */}
-          <div className="flex gap-1 mt-3 p-1 bg-gray-100 rounded-xl">
+          <div className="flex gap-1 mt-3 p-1 rounded-xl" style={{ backgroundColor: colors.pageBg }}>
             {[
               { id: 'all', label: 'All' },
               { id: 'dms', label: 'DMs' },
@@ -194,10 +206,13 @@ export default function Chat() {
                 id={`tab-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                  activeTab === tab.id
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700'
+                  activeTab === tab.id ? 'shadow-sm' : ''
                 }`}
+                style={
+                  activeTab === tab.id
+                    ? { backgroundColor: colors.card, color: colors.title }
+                    : { color: colors.muted }
+                }
               >
                 {tab.label}
               </button>
@@ -209,7 +224,10 @@ export default function Chat() {
         <div className="flex-1 overflow-y-auto">
           {loadingList ? (
             <div className="flex justify-center py-10">
-              <div className="animate-spin w-6 h-6 border-4 border-[#C97B1A] border-t-transparent rounded-full" />
+              <div
+                className="animate-spin w-6 h-6 border-4 border-t-transparent rounded-full"
+                style={{ borderColor: colors.gold, borderTopColor: 'transparent' }}
+              />
             </div>
           ) : (
             <ConversationList
@@ -231,7 +249,8 @@ export default function Chat() {
           <button
             id="chat-back-btn"
             onClick={() => setSidebarOpen(true)}
-            className="md:hidden absolute top-4 left-4 z-10 p-2 bg-white rounded-xl shadow-md text-gray-600 hover:bg-gray-50"
+            className="md:hidden absolute top-4 left-4 z-10 p-2 rounded-xl shadow-md hover:bg-[#F4F6F7]"
+            style={{ backgroundColor: colors.card, color: colors.muted }}
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -267,12 +286,15 @@ export default function Chat() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <div className="w-24 h-24 bg-gradient-to-br from-emerald-100 to-teal-100 rounded-full flex items-center justify-center text-5xl shadow-inner">
+              <div
+                className="w-24 h-24 rounded-full flex items-center justify-center text-5xl shadow-inner"
+                style={{ backgroundColor: colors.oliveLight }}
+              >
                 💬
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">Your Messages</h2>
-                <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
+                <h2 className="text-2xl font-bold mb-2" style={{ color: colors.title }}>Your Messages</h2>
+                <p className="text-sm max-w-xs leading-relaxed" style={{ color: colors.muted }}>
                   Select a conversation on the left, or start a new one to connect with the community.
                 </p>
               </div>
@@ -280,14 +302,16 @@ export default function Chat() {
                 <button
                   id="empty-new-dm-btn"
                   onClick={() => setShowStartConv(true)}
-                  className="px-5 py-2.5 bg-[#e18f23] hover:bg-[#c97a18] text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                  className="px-5 py-2.5 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg hover:brightness-95 transition-all"
+                  style={{ backgroundColor: colors.gold }}
                 >
                   New Message
                 </button>
                 <button
                   id="empty-create-group-btn"
                   onClick={() => setShowCreateGroup(true)}
-                  className="px-5 py-2.5 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                  className="px-5 py-2.5 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg hover:brightness-95 transition-all"
+                  style={{ backgroundColor: colors.olive }}
                 >
                   Create Group
                 </button>

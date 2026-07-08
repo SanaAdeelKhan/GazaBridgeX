@@ -96,6 +96,27 @@ export const colors = {
   // ─── FOOTER ───────────────────────────────────────────────────────
   footer:           '#1C2833',
   footerText:       'rgba(255,255,255,0.75)',
+
+  // ─── ON-DARK SURFACES (navy full-bleed sections, e.g. landing-page
+  //     Testimonials / Marquee strip) — translucent-white overlays that
+  //     sit on top of colors.sidebar / colors.primary backgrounds ──────
+  onDarkCard:        'rgba(255,255,255,0.04)',
+  onDarkCardHover:   'rgba(255,255,255,0.07)',
+  onDarkBorder:      'rgba(255,255,255,0.08)',
+  onDarkBorderHover: 'rgba(255,255,255,0.15)',
+  onDarkMuted:       'rgba(255,255,255,0.25)',
+  onDarkWatermark:   'rgba(255,255,255,0.03)',
+
+  // ─── GLOWS (soft blurred decorative orbs / faint grid overlays,
+  //     used on light backgrounds like the landing-page hero) ────────
+  goldGlow:         'rgba(212,160,23,0.08)',
+  oliveGlow:        'rgba(46,125,50,0.06)',
+  primaryGlow:      'rgba(26,82,118,0.06)',
+
+  // ─── WHITE OVERLAYS (decorative translucent-white blur shapes sitting
+  //     on top of a solid brand-color card, e.g. the gold highlight card) ──
+  overlayStrong:    'rgba(255,255,255,0.10)',
+  overlaySoft:      'rgba(255,255,255,0.05)',
 };
 
 // ─── TAILWIND UTILITY CLASSES ──────────────────────────────────────────────
@@ -156,6 +177,10 @@ export const tw = {
 
   // Divider
   divider:       'border-[#E8EAEC]',
+
+  // On-dark surfaces (landing page dark sections)
+  onDarkCard:        'bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)]',
+  onDarkCardActive:  'bg-white',
 };
 
 export default colors;

@@ -9,6 +9,7 @@ import LoadingScreen from './components/LoadingScreen';
 import PageTransition from './components/PageTransition';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { UserProvider } from './context/UserContext';
+import { colors } from './theme/colors';
 import { NotificationProvider } from './context/NotificationContext';
 import { ResourceProvider } from './context/ResourceContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -161,18 +162,12 @@ function AppRoutes() {
     isLandingPage ||
     (!isAuthenticated && isAuthPath);
 
-  // Debug log
-  console.log('Path:', location.pathname);
-  console.log('showPublicLayout:', showPublicLayout);
-  console.log('isAlwaysPublic:', isAlwaysPublic);
-  console.log('isInfoPath:', isInfoPath);
-  console.log('isAuthPath:', isAuthPath);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-emerald-50/30">
+    <div className="min-h-screen" style={{ backgroundColor: colors.pageBg }}>
       {showPublicLayout && (
         <div className="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
-          <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-300" />
+          <div className="h-full transition-all duration-300" style={{ backgroundColor: colors.gold }} />
         </div>
       )}
       

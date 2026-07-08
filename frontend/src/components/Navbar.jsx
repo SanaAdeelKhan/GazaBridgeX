@@ -7,6 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
+import { colors } from '../theme/colors';
 
 const navLinks = [
   { name: 'Home',         href: '/' },
@@ -141,7 +142,8 @@ export default function Navbar() {
                   whileHover={{ rotate: 0 }}
                   initial={{ rotate: 12 }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                  className="absolute inset-0 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-xl shadow-md shadow-emerald-500/20"
+                  className="absolute inset-0 rounded-xl shadow-md"
+                  style={{ backgroundColor: colors.gold }}
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -153,8 +155,8 @@ export default function Navbar() {
 
               {/* Wordmark */}
               <span
-                className="text-xl font-bold bg-gradient-to-r from-[#1a2e1a] to-[#e18f23] bg-clip-text text-transparent"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                className="text-xl font-bold"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
               >
                 GazaBridge
               </span>
@@ -169,7 +171,8 @@ export default function Navbar() {
           >
             {/* Hover background pill */}
             <motion.div
-              className="absolute top-1 bottom-1 bg-gray-100 rounded-full pointer-events-none"
+              className="absolute top-1 bottom-1 rounded-full pointer-events-none"
+              style={{ backgroundColor: colors.goldLight }}
               animate={hoverStyle}
               transition={{ type: 'spring', stiffness: 350, damping: 28 }}
             />
@@ -189,14 +192,15 @@ export default function Navbar() {
                       initial={{ opacity: 0, y: -12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                      className={`relative flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-full transition-colors duration-200 select-none
-                        ${active ? 'text-[#C97B1A]' : 'text-gray-600 hover:text-gray-900'}`}
+                      className="relative flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-full transition-colors duration-200 select-none"
+                      style={{ color: active ? colors.gold : colors.muted }}
                     >
                       {/* Active dot */}
                       {active && (
                         <motion.span
                           layoutId="nav-dot"
-                          className="w-1 h-1 rounded-full bg-[#fdf3e3]0 flex-shrink-0"
+                          className="w-1 h-1 rounded-full flex-shrink-0"
+                          style={{ backgroundColor: colors.gold }}
                           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                         />
                       )}
@@ -219,11 +223,12 @@ export default function Navbar() {
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-colors
-                      ${location.pathname === '/chat'
-                        ? 'text-[#C97B1A] bg-[#fdf3e3]'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                      }`}
+                    className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-full transition-colors"
+                    style={
+                      location.pathname === '/chat'
+                        ? { color: colors.gold, backgroundColor: colors.goldLight }
+                        : { color: colors.muted }
+                    }
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -238,7 +243,8 @@ export default function Navbar() {
                   <Link to="/admin">
                     <motion.div
                       whileHover={{ scale: 1.05 }}
-                      className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 rounded-full hover:bg-gray-50 transition-colors"
+                      className="px-3 py-2 text-sm font-medium rounded-full transition-colors"
+                      style={{ color: colors.muted }}
                     >
                       Admin
                     </motion.div>
@@ -249,12 +255,16 @@ export default function Navbar() {
                 <Magnetic strength={0.25}>
                   <motion.div
                     whileHover={{ scale: 1.04 }}
-                    className="flex items-center gap-2.5 pl-1 pr-3 py-1 bg-gray-50 border border-gray-100 rounded-full cursor-default"
+                    className="flex items-center gap-2.5 pl-1 pr-3 py-1 border rounded-full cursor-default"
+                    style={{ backgroundColor: colors.pageBg, borderColor: colors.cardBorder }}
                   >
-                    <div className="w-7 h-7 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-sm"
+                      style={{ backgroundColor: colors.gold }}
+                    >
                       {user?.first_name?.[0] || user?.email?.[0] || 'U'}
                     </div>
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className="text-sm font-medium" style={{ color: colors.body }}>
                       {user?.first_name || 'User'}
                     </span>
                   </motion.div>
@@ -265,7 +275,8 @@ export default function Navbar() {
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
                   onClick={logout}
-                  className="px-3 py-2 text-sm font-medium text-gray-400 hover:text-red-500 rounded-full hover:bg-red-50 transition-colors"
+                  className="px-3 py-2 text-sm font-medium rounded-full hover:bg-red-50 transition-colors"
+                  style={{ color: colors.muted }}
                 >
                   Logout
                 </motion.button>
@@ -278,7 +289,10 @@ export default function Navbar() {
                     <motion.button
                       whileHover={{ scale: 1.04 }}
                       whileTap={{ scale: 0.96 }}
-                      className="px-5 py-2 text-sm font-semibold text-gray-600 hover:text-[#C97B1A] rounded-full hover:bg-[#fdf3e3] transition-all duration-200"
+                      className="px-5 py-2 text-sm font-semibold rounded-full hover:bg-[#FCF3CF] transition-all duration-200"
+                      style={{ color: colors.muted }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = colors.gold; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = colors.muted; }}
                     >
                       Log In
                     </motion.button>
@@ -289,12 +303,10 @@ export default function Navbar() {
                 <Magnetic>
                   <Link to="/register">
                     <motion.button
-                      whileHover={{ scale: 1.05, boxShadow: '0 16px 40px rgba(16,185,129,0.3)' }}
                       whileTap={{ scale: 0.96 }}
-                      className="group relative px-6 py-2.5 text-sm font-bold text-white rounded-full overflow-hidden shadow-lg shadow-emerald-500/20"
-                      style={{ background: 'linear-gradient(135deg,#10b981,#14b8a6)' }}
+                      className="group relative px-6 py-2.5 text-sm font-bold text-white rounded-full overflow-hidden hover:brightness-95 transition-all"
+                      style={{ backgroundColor: colors.gold }}
                     >
-                      <motion.div className="absolute inset-0 bg-gradient-to-r from-[#e18f23] to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                       <span className="relative z-10 flex items-center gap-1.5">
                         Get Started
                         <motion.span
@@ -362,13 +374,19 @@ export default function Navbar() {
                     >
                       <Link
                         to={link.href}
-                        className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all
-                          ${active
-                            ? 'text-[#C97B1A] bg-[#fdf3e3] border border-emerald-100'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                          }`}
+                        className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
+                        style={
+                          active
+                            ? { color: colors.gold, backgroundColor: colors.goldLight, border: `1px solid ${colors.gold}` }
+                            : { color: colors.muted }
+                        }
                       >
-                        {active && <span className="w-1.5 h-1.5 rounded-full bg-[#fdf3e3]0 flex-shrink-0" />}
+                        {active && (
+                          <span
+                            className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                            style={{ backgroundColor: colors.gold }}
+                          />
+                        )}
                         {link.name}
                       </Link>
                     </motion.div>
@@ -385,8 +403,14 @@ export default function Navbar() {
                   <NotificationBell />
 
                   <Link to="/chat">
-                    <div className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all
-                      ${location.pathname === '/chat' ? 'text-[#C97B1A] bg-[#fdf3e3]' : 'text-gray-600 hover:bg-gray-50'}`}>
+                    <div
+                      className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all"
+                      style={
+                        location.pathname === '/chat'
+                          ? { color: colors.gold, backgroundColor: colors.goldLight }
+                          : { color: colors.muted }
+                      }
+                    >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                           d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -397,20 +421,23 @@ export default function Navbar() {
 
                   {user?.roles?.some(r => ['manager', 'admin', 'superuser'].includes(r.name)) && (
                     <Link to="/admin">
-                      <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all">
+                      <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all" style={{ color: colors.muted }}>
                         Admin Panel
                       </div>
                     </Link>
                   )}
 
                   {/* User row */}
-                  <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-xl mt-2">
-                    <div className="w-9 h-9 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm flex-shrink-0">
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl mt-2" style={{ backgroundColor: colors.pageBg }}>
+                    <div
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-sm flex-shrink-0"
+                      style={{ backgroundColor: colors.gold }}
+                    >
                       {user?.first_name?.[0] || user?.email?.[0] || 'U'}
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-gray-800">{user?.first_name || 'User'}</div>
-                      <div className="text-xs text-gray-400">{user?.email}</div>
+                      <div className="text-sm font-semibold" style={{ color: colors.body }}>{user?.first_name || 'User'}</div>
+                      <div className="text-xs" style={{ color: colors.muted }}>{user?.email}</div>
                     </div>
                   </div>
 
@@ -430,7 +457,8 @@ export default function Navbar() {
                   <Link to="/login">
                     <motion.button
                       whileTap={{ scale: 0.97 }}
-                      className="w-full py-3 text-sm font-semibold text-[#C97B1A] border border-emerald-200 rounded-xl hover:bg-[#fdf3e3] transition-colors"
+                      className="w-full py-3 text-sm font-semibold border rounded-xl hover:bg-[#FCF3CF] transition-colors"
+                      style={{ color: colors.gold, borderColor: colors.gold }}
                     >
                       Log In
                     </motion.button>
@@ -438,8 +466,8 @@ export default function Navbar() {
                   <Link to="/register">
                     <motion.button
                       whileTap={{ scale: 0.97 }}
-                      className="w-full py-3 text-sm font-bold text-white rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
-                      style={{ background: 'linear-gradient(135deg,#10b981,#14b8a6)' }}
+                      className="w-full py-3 text-sm font-bold text-white rounded-xl flex items-center justify-center gap-2 hover:brightness-95 transition-all"
+                      style={{ backgroundColor: colors.gold }}
                     >
                       Get Started Free
                       <motion.span animate={{ x: [0, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>→</motion.span>

@@ -8,9 +8,15 @@ import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionV
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { services } from '../data/services';
+import colors from '../theme/colors';
+import HeroVideo from '../components/HeroVideo';
 
 // ─── FONT IMPORT (add to your index.html or global CSS) ──────────────────────
 // <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+// ─── AVATAR COLOR CYCLE — replaces the old per-instance orange/purple/teal/blue
+//     gradients with the app's three brand colors, cycled for variety ────────
+const AVATAR_CYCLE = [colors.primary, colors.gold, colors.olive, colors.primaryHover];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MAGNETIC BUTTON HOOK
@@ -116,7 +122,7 @@ function CursorBlob() {
       className="fixed top-0 left-0 w-[500px] h-[500px] pointer-events-none z-0"
       style={{ willChange: 'transform' }}
     >
-      <div className="w-full h-full rounded-full bg-[#C97B1A]/8 blur-[80px]" />
+      <div className="w-full h-full rounded-full blur-[80px]" style={{ backgroundColor: colors.goldGlow }} />
     </div>
   );
 }
@@ -144,32 +150,40 @@ function Hero() {
 
   return (
     <motion.section
-      style={{ opacity }}
-      className="relative min-h-screen flex items-center overflow-hidden bg-[#f8faf8]"
+      style={{ opacity, backgroundColor: colors.heroBg }}
+      className="relative min-h-screen flex items-center overflow-hidden"
     >
       <NoiseOverlay />
+
+      {/* Subtle background photo — faded, text stays primary focus */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: "url('/images/gaza_journey_poster.jpg')",
+          backgroundSize: '90% 75%',
+          backgroundPosition: 'center 30%',
+          backgroundRepeat: 'no-repeat',
+          opacity: 0.42,
+        }}
+      />
 
       {/* Grid lines */}
       <div className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: `linear-gradient(rgba(16,185,129,0.06) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(16,185,129,0.06) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(${colors.oliveGlow} 1px, transparent 1px),
+                            linear-gradient(90deg, ${colors.oliveGlow} 1px, transparent 1px)`,
           backgroundSize: '80px 80px',
         }}
       />
 
-      {/* Large emerald circle — architectural element */}
+      {/* Large architectural rings */}
       <motion.div
-        style={{ y }}
-        className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-emerald-200/60 pointer-events-none"
+        style={{ y, borderColor: colors.divider }}
+        className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border pointer-events-none"
       />
       <motion.div
-        style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]) }}
-        className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border border-emerald-100/40 pointer-events-none"
-      />
-      <motion.div
-        style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]) }}
-        className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#fdf3e3]/80 pointer-events-none"
+        style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]), borderColor: colors.divider }}
+        className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border pointer-events-none"
       />
 
       {/* Floating badge — top right corner */}
@@ -187,46 +201,12 @@ function Hero() {
           {/* Spinning ring text */}
           <svg className="absolute inset-0 w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 112 112">
             <path id="circle-text" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
-            <text fontSize="10" fontFamily="DM Sans, sans-serif" fill="#059669" fontWeight="500" letterSpacing="3">
+            <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.olive} fontWeight="500" letterSpacing="3">
               <textPath href="#circle-text">FREE FOREVER • LEARN TODAY • FREE FOREVER • </textPath>
             </text>
           </svg>
-          <div className="w-14 h-14 rounded-full bg-[#fdf3e3]0 flex items-center justify-center shadow-xl shadow-emerald-500/30">
+          <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl" style={{ backgroundColor: colors.gold }}>
             <span className="text-white text-xl">✦</span>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* Bottom-left floating card */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 2, duration: 0.8 }}
-        className="absolute bottom-32 left-8 hidden xl:block"
-      >
-        <motion.div
-          animate={{ y: [0, -12, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-          className="bg-white rounded-2xl shadow-xl shadow-black/5 border border-gray-100 p-4 w-52"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 rounded-xl bg-[#fdf3e3]0/10 flex items-center justify-center text-base">🚀</div>
-            <div>
-              <div className="text-xs text-gray-400 font-medium">This month</div>
-              <div className="text-sm font-semibold text-gray-800">312 launched careers</div>
-            </div>
-          </div>
-          <div className="flex gap-1">
-            {[90, 65, 80, 95, 70, 85, 100].map((h, i) => (
-              <motion.div
-                key={i}
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: 1 }}
-                transition={{ delay: 2.4 + i * 0.07, duration: 0.4 }}
-                style={{ height: `${h * 0.28}px`, originY: 1 }}
-                className="flex-1 bg-gradient-to-t from-[#e18f23] to-teal-400 rounded-sm"
-              />
-            ))}
           </div>
         </motion.div>
       </motion.div>
@@ -243,14 +223,14 @@ function Hero() {
               transition={{ duration: 0.6 }}
               className="flex items-center gap-3"
             >
-              <div className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-2 rounded-full px-4 py-2 shadow-sm border" style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}>
                 <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C97B1A] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#fdf3e3]0" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: colors.gold }} />
+                  <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: colors.gold }} />
                 </span>
-                <span className="text-xs font-semibold text-gray-600 tracking-wide uppercase">Empowering Gaza</span>
+                <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: colors.muted }}>Empowering Gaza</span>
               </div>
-              <div className="h-px flex-1 bg-gradient-to-r from-emerald-200 to-transparent" />
+              <div className="h-px flex-1" style={{ backgroundColor: colors.divider }} />
             </motion.div>
 
             {/* HEADLINE — giant serif + word swap */}
@@ -262,8 +242,8 @@ function Hero() {
                 className="overflow-hidden"
               >
                 <h1
-                  className="text-[clamp(3.2rem,7vw,6.5rem)] font-serif leading-[0.95] tracking-tight text-gray-900"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                  className="text-[clamp(3.2rem,7vw,6.5rem)] font-serif leading-[0.95] tracking-tight"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
                 >
                   Build Your
                 </h1>
@@ -285,13 +265,14 @@ function Hero() {
                       animate={{ y: 0 }}
                       exit={{ y: '-100%' }}
                       transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-                      className="absolute inset-0 bg-gradient-to-r from-[#e18f23] via-teal-500 to-cyan-500 bg-clip-text text-transparent"
+                      className="absolute inset-0"
                       style={{
                         fontFamily: "'Instrument Serif', Georgia, serif",
                         fontSize: 'clamp(3.2rem,7vw,6.5rem)',
                         lineHeight: '0.95',
                         display: 'block',
-                        fontStyle: 'italic'
+                        fontStyle: 'italic',
+                        color: colors.olive,
                       }}
                     >
                       {words[wordIndex]}
@@ -306,8 +287,8 @@ function Hero() {
                 transition={{ delay: 0.45, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
               >
                 <h1
-                  className="text-[clamp(3.2rem,7vw,6.5rem)] font-serif leading-[0.95] tracking-tight text-gray-900"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                  className="text-[clamp(3.2rem,7vw,6.5rem)] font-serif leading-[0.95] tracking-tight"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
                 >
                   With Digital Skills
                 </h1>
@@ -319,8 +300,8 @@ function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="text-gray-500 text-lg leading-relaxed max-w-lg"
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
+              className="text-lg leading-relaxed max-w-lg"
+              style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body }}
             >
               A free platform connecting passionate volunteers worldwide with talented individuals in Gaza.
               Learn digital skills, build your career, and transform your life — at zero cost.
@@ -344,12 +325,9 @@ function Hero() {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
-                    className="group relative px-8 py-4 bg-gray-900 text-white font-semibold rounded-full overflow-hidden"
-                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                    className="group relative px-8 py-4 text-white font-semibold rounded-full overflow-hidden hover:brightness-95 transition-all"
+                    style={{ fontFamily: "'DM Sans', sans-serif", backgroundColor: colors.gold }}
                   >
-                    <motion.span
-                      className="absolute inset-0 bg-gradient-to-r from-[#e18f23] to-[#E8920F] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    />
                     <span className="relative z-10 flex items-center gap-2 text-sm tracking-wide">
                       Start Learning Free
                       <motion.span
@@ -373,8 +351,8 @@ function Hero() {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
-                    className="px-8 py-4 rounded-full border border-gray-200 bg-white text-gray-700 font-semibold hover:border-emerald-300 transition-colors text-sm tracking-wide"
-                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                    className="px-8 py-4 rounded-full border font-semibold transition-colors text-sm tracking-wide hover:border-[#D4A017] hover:text-[#D4A017]"
+                    style={{ fontFamily: "'DM Sans', sans-serif", borderColor: colors.divider, backgroundColor: colors.card, color: colors.body }}
                   >
                     Volunteer With Us
                   </motion.button>
@@ -397,22 +375,20 @@ function Hero() {
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 1.1 + i * 0.07 }}
                     className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-[11px] font-bold text-white shadow-sm"
-                    style={{
-                      background: `hsl(${155 + i * 12}, 60%, ${40 + i * 3}%)`,
-                    }}
+                    style={{ backgroundColor: AVATAR_CYCLE[i % AVATAR_CYCLE.length] }}
                   >{l}</motion.div>
                 ))}
               </div>
-              <div className="text-sm text-gray-500" style={{ fontFamily: "'DM Sans', sans-serif" }}>
-                <span className="font-semibold text-gray-800">1,000+</span> learners trust us
+              <div className="text-sm" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>
+                <span className="font-semibold" style={{ color: colors.body }}>1,000+</span> learners trust us
               </div>
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className="w-3.5 h-3.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                  <svg key={i} className="w-3.5 h-3.5" style={{ color: colors.gold }} fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}
-                <span className="text-xs text-gray-400 ml-1">5.0</span>
+                <span className="text-xs ml-1" style={{ color: colors.muted }}>5.0</span>
               </div>
             </motion.div>
           </div>
@@ -428,101 +404,79 @@ function Hero() {
             <motion.div
               animate={{ rotate: [-6, -4, -6] }}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute w-72 h-96 bg-teal-100 rounded-3xl border border-teal-200"
+              className="absolute w-72 h-96 rounded-3xl border"
+              style={{ backgroundColor: colors.oliveLight, borderColor: colors.divider }}
             />
             <motion.div
               animate={{ rotate: [3, 5, 3] }}
               transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-              className="absolute w-72 h-96 bg-[#fdf3e3] rounded-3xl border border-emerald-200"
+              className="absolute w-72 h-96 rounded-3xl border"
+              style={{ backgroundColor: colors.goldLight, borderColor: colors.divider }}
             />
 
-            {/* Main card */}
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              className="relative z-10 w-72 bg-white rounded-3xl shadow-2xl shadow-emerald-900/10 border border-gray-100 p-7 flex flex-col gap-5"
-            >
-              {/* Card header */}
-              <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#e18f23] to-[#E8920F] flex items-center justify-center shadow-lg shadow-emerald-400/30">
-                  <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                </div>
-                <span className="text-[10px] font-semibold text-[#C97B1A] bg-[#fdf3e3] px-3 py-1 rounded-full tracking-wide uppercase">Live Platform</span>
-              </div>
-
-              {/* Course progress */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-semibold text-gray-800" style={{ fontFamily: "'DM Sans', sans-serif" }}>Web Development</span>
-                  <span className="text-sm text-[#C97B1A] font-semibold">68%</span>
-                </div>
-                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: '68%' }}
-                    transition={{ delay: 1.2, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-                    className="h-full bg-gradient-to-r from-[#e18f23] to-[#E8920F] rounded-full"
-                  />
-                </div>
-              </div>
-
-              {/* Mentor row */}
-              <div className="bg-gray-50 rounded-2xl p-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">JD</div>
-                <div>
-                  <div className="text-sm font-semibold text-gray-800" style={{ fontFamily: "'DM Sans', sans-serif" }}>Jane D.</div>
-                  <div className="text-xs text-gray-500">Senior Engineer @ Google</div>
-                </div>
-                <div className="ml-auto w-2 h-2 rounded-full bg-[#C97B1A] flex-shrink-0" />
-              </div>
-
-              {/* Stats mini row */}
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { v: '24', label: 'Lessons' },
-                  { v: '8', label: 'Projects' },
-                  { v: '∞', label: 'Support' },
-                ].map(s => (
-                  <div key={s.label} className="text-center bg-gray-50 rounded-xl py-2.5">
-                    <div className="text-base font-bold text-gray-900">{s.v}</div>
-                    <div className="text-[10px] text-gray-400 font-medium">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Next session */}
-              <div className="flex items-center gap-2 text-xs text-gray-500 bg-[#fdf3e3] rounded-xl px-3 py-2.5">
-                <span className="text-emerald-500">▶</span>
-                <span style={{ fontFamily: "'DM Sans', sans-serif" }}>Next session in <strong className="text-[#C97B1A]">2h 14m</strong></span>
-              </div>
-            </motion.div>
+            <HeroVideo />
 
             {/* Floating chip — top-right */}
             <motion.div
               animate={{ y: [0, -8, 0], x: [0, 4, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-              className="absolute top-4 right-0 bg-white shadow-xl shadow-black/8 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
+              className="absolute top-4 right-0 shadow-xl rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
+              style={{ backgroundColor: colors.card }}
             >
               <span className="text-base">🌍</span>
               <div>
-                <div className="text-xs font-semibold text-gray-800">45 Countries</div>
-                <div className="text-[10px] text-gray-400">Mentors connected</div>
+                <div className="text-xs font-semibold" style={{ color: colors.body }}>45 Countries</div>
+                <div className="text-[10px]" style={{ color: colors.muted }}>Mentors connected</div>
               </div>
             </motion.div>
 
-            {/* Floating chip — bottom-left */}
+            {/* Floating chip — bottom-right */}
             <motion.div
               animate={{ y: [0, 10, 0], x: [0, -4, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-              className="absolute bottom-8 left-0 bg-white shadow-xl shadow-black/8 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
+              className="absolute bottom-8 right-0 shadow-xl rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
+              style={{ backgroundColor: colors.card }}
             >
               <span className="text-base">🏆</span>
               <div>
-                <div className="text-xs font-semibold text-gray-800">3,200 Success Stories</div>
-                <div className="text-[10px] text-gray-400">And counting...</div>
+                <div className="text-xs font-semibold" style={{ color: colors.body }}>3,200 Success Stories</div>
+                <div className="text-[10px]" style={{ color: colors.muted }}>And counting...</div>
               </div>
+            </motion.div>
+
+            {/* Floating card — left side, near video stack */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2, duration: 0.8 }}
+              className="absolute top-1/2 -translate-y-1/2 -left-16 hidden xl:block z-20"
+            >
+              <motion.div
+                animate={{ y: [0, -12, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                className="rounded-2xl shadow-xl border p-4 w-52"
+                style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base" style={{ backgroundColor: colors.goldLight }}>🚀</div>
+                  <div>
+                    <div className="text-xs font-medium" style={{ color: colors.muted }}>This month</div>
+                    <div className="text-sm font-semibold" style={{ color: colors.body }}>312 launched careers</div>
+                  </div>
+                </div>
+                <div className="flex gap-1">
+                  {[90, 65, 80, 95, 70, 85, 100].map((h, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ scaleY: 0 }}
+                      animate={{ scaleY: 1 }}
+                      transition={{ delay: 2.4 + i * 0.07, duration: 0.4 }}
+                      style={{ height: `${h * 0.28}px`, originY: 1, backgroundColor: colors.gold }}
+                      className="flex-1 rounded-sm"
+                    />
+                  ))}
+                </div>
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>
@@ -535,13 +489,14 @@ function Hero() {
         transition={{ delay: 2.2 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] tracking-[0.2em] uppercase text-gray-400" style={{ fontFamily: "'DM Sans', sans-serif" }}>scroll</span>
+        <span className="text-[10px] tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>scroll</span>
         <motion.div
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 1.8, repeat: Infinity }}
-          className="w-5 h-8 border border-gray-300 rounded-full flex items-start justify-center pt-1.5"
+          className="w-5 h-8 border rounded-full flex items-start justify-center pt-1.5"
+          style={{ borderColor: colors.divider }}
         >
-          <div className="w-1 h-1.5 bg-gray-400 rounded-full" />
+          <div className="w-1 h-1.5 rounded-full" style={{ backgroundColor: colors.muted }} />
         </motion.div>
       </motion.div>
     </motion.section>
@@ -556,7 +511,7 @@ function MarqueeStrip() {
   const doubled = [...items, ...items];
 
   return (
-    <div className="relative bg-gray-900 py-4 overflow-hidden border-y border-gray-800">
+    <div className="relative py-4 overflow-hidden border-y" style={{ backgroundColor: colors.sidebar, borderColor: colors.primary }}>
       <motion.div
         animate={{ x: ['0%', '-50%'] }}
         transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
@@ -565,8 +520,8 @@ function MarqueeStrip() {
         {doubled.map((item, i) => (
           <span
             key={i}
-            className={`text-sm font-medium tracking-wide ${item === '✦' ? 'text-emerald-400' : 'text-gray-400'}`}
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
+            className="text-sm font-medium tracking-wide"
+            style={{ fontFamily: "'DM Sans', sans-serif", color: item === '✦' ? colors.gold : colors.onDarkMuted }}
           >
             {item}
           </span>
@@ -588,7 +543,7 @@ function StatsSection() {
   ];
 
   return (
-    <section className="py-24 bg-white overflow-hidden">
+    <section className="py-24 overflow-hidden" style={{ backgroundColor: colors.card }}>
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Label */}
@@ -598,11 +553,11 @@ function StatsSection() {
           viewport={{ once: true }}
           className="flex items-center gap-4 mb-16"
         >
-          <div className="h-px w-12 bg-[#C97B1A]" />
-          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]" style={{ fontFamily: "'DM Sans', sans-serif" }}>By The Numbers</span>
+          <div className="h-px w-12" style={{ backgroundColor: colors.gold }} />
+          <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.gold }}>By The Numbers</span>
         </motion.div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-gray-100 border border-gray-100 rounded-3xl overflow-hidden">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-px border rounded-3xl overflow-hidden" style={{ backgroundColor: colors.divider, borderColor: colors.divider }}>
           {stats.map((s, i) => (
             <motion.div
               key={s.label}
@@ -610,19 +565,21 @@ function StatsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.6 }}
-              className="bg-white px-8 py-10 group hover:bg-[#fdf3e3]/50 transition-colors duration-300"
+              className="px-8 py-10 group transition-colors duration-300 hover:bg-[#FCF3CF]/50"
+              style={{ backgroundColor: colors.card }}
             >
               <div className="text-3xl mb-4">{s.icon}</div>
               <div
-                className="text-4xl xl:text-5xl font-bold text-gray-900 mb-1 tabular-nums"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                className="text-4xl xl:text-5xl font-bold mb-1 tabular-nums"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
               >
                 <AnimatedNumber value={s.value} suffix={s.suffix} />
               </div>
-              <div className="text-sm font-semibold text-gray-800 mb-1" style={{ fontFamily: "'DM Sans', sans-serif" }}>{s.label}</div>
-              <div className="text-xs text-gray-400" style={{ fontFamily: "'DM Sans', sans-serif" }}>{s.desc}</div>
+              <div className="text-sm font-semibold mb-1" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body }}>{s.label}</div>
+              <div className="text-xs" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>{s.desc}</div>
               <motion.div
-                className="mt-5 h-0.5 bg-gradient-to-r from-[#e18f23] to-teal-400 origin-left"
+                className="mt-5 h-0.5 origin-left"
+                style={{ backgroundColor: colors.gold }}
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true }}
@@ -676,7 +633,7 @@ function HowItWorksSection() {
   const lineHeight = useTransform(scrollYProgress, [0.1, 0.9], ['0%', '100%']);
 
   return (
-    <section ref={containerRef} className="py-32 bg-[#f8faf8] overflow-hidden">
+    <section ref={containerRef} className="py-32 overflow-hidden" style={{ backgroundColor: colors.pageBgWarm }}>
       <NoiseOverlay />
       <div className="max-w-7xl mx-auto px-6">
 
@@ -692,25 +649,25 @@ function HowItWorksSection() {
               className="space-y-6"
             >
               <div className="flex items-center gap-3">
-                <div className="h-px w-8 bg-[#C97B1A]" />
-                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]" style={{ fontFamily: "'DM Sans', sans-serif" }}>Process</span>
+                <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+                <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.gold }}>Process</span>
               </div>
               <h2
-                className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05]"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                className="text-5xl lg:text-6xl font-bold leading-[1.05]"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
               >
                 How It<br />
-                <em className="text-emerald-500">Works</em>
+                <em style={{ color: colors.olive }}>Works</em>
               </h2>
-              <p className="text-gray-500 leading-relaxed text-sm max-w-xs" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+              <p className="leading-relaxed text-sm max-w-xs" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>
                 A seamless journey from signup to career launch — crafted for your success.
               </p>
               <Link to="/how-it-works">
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
-                  className="text-sm font-semibold text-gray-900 flex items-center gap-2 group border border-gray-200 rounded-full px-5 py-2.5 hover:border-[#C97B1A] hover:text-[#C97B1A] transition-all"
-                  style={{ fontFamily: "'DM Sans', sans-serif" }}
+                  className="text-sm font-semibold flex items-center gap-2 group border rounded-full px-5 py-2.5 transition-all hover:border-[#D4A017] hover:text-[#D4A017]"
+                  style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body, borderColor: colors.divider }}
                 >
                   See full process
                   <motion.span
@@ -725,10 +682,10 @@ function HowItWorksSection() {
           {/* RIGHT — timeline steps */}
           <div className="relative">
             {/* Timeline line */}
-            <div className="absolute left-6 top-8 bottom-8 w-px bg-gray-200">
+            <div className="absolute left-6 top-8 bottom-8 w-px" style={{ backgroundColor: colors.divider }}>
               <motion.div
-                style={{ height: lineHeight }}
-                className="w-full bg-gradient-to-b from-[#e18f23] to-[#E8920F] origin-top"
+                style={{ height: lineHeight, backgroundColor: colors.gold }}
+                className="w-full origin-top"
               />
             </div>
 
@@ -747,7 +704,8 @@ function HowItWorksSection() {
                     whileInView={{ scale: [0, 1.3, 1] }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.08 + 0.2, duration: 0.5 }}
-                    className="absolute left-0 top-6 w-12 h-12 rounded-full bg-white border-2 border-gray-200 group-hover:border-[#C97B1A] transition-colors duration-300 flex items-center justify-center shadow-sm"
+                    className="absolute left-0 top-6 w-12 h-12 rounded-full border-2 transition-colors duration-300 flex items-center justify-center shadow-sm hover:border-[#D4A017]"
+                    style={{ backgroundColor: colors.card, borderColor: colors.divider }}
                   >
                     <span className="text-lg">{s.icon}</span>
                   </motion.div>
@@ -756,21 +714,22 @@ function HowItWorksSection() {
                   <motion.div
                     whileHover={{ x: 6 }}
                     transition={{ duration: 0.2 }}
-                    className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 p-7"
+                    className="rounded-3xl border shadow-sm hover:shadow-md transition-shadow duration-300 p-7"
+                    style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
                   >
                     <div className="flex items-start justify-between mb-3">
                       <h3
-                        className="text-xl font-bold text-gray-900"
-                        style={{ fontFamily: "'DM Sans', sans-serif" }}
+                        className="text-xl font-bold"
+                        style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body }}
                       >{s.title}</h3>
                       <span
-                        className="text-[11px] font-bold text-gray-300 tracking-widest"
-                        style={{ fontFamily: 'monospace' }}
+                        className="text-[11px] font-bold tracking-widest"
+                        style={{ fontFamily: 'monospace', color: colors.muted }}
                       >{s.num}</span>
                     </div>
-                    <p className="text-gray-500 text-sm leading-relaxed mb-3" style={{ fontFamily: "'DM Sans', sans-serif" }}>{s.desc}</p>
-                    <div className="flex items-center gap-2 text-xs text-[#C97B1A] font-semibold bg-[#fdf3e3] rounded-xl px-3 py-2 w-fit">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#C97B1A] inline-block" />
+                    <p className="text-sm leading-relaxed mb-3" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>{s.desc}</p>
+                    <div className="flex items-center gap-2 text-xs font-semibold rounded-xl px-3 py-2 w-fit" style={{ color: colors.gold, backgroundColor: colors.goldLight }}>
+                      <span className="w-1.5 h-1.5 rounded-full inline-block" style={{ backgroundColor: colors.gold }} />
                       {s.detail}
                     </div>
                   </motion.div>
@@ -792,7 +751,7 @@ function ServicesSection() {
   const sizes = ['lg', 'sm', 'sm', 'sm', 'lg', 'sm']; // alternating bento
 
   return (
-    <section className="py-32 bg-white">
+    <section className="py-32" style={{ backgroundColor: colors.card }}>
       <div className="max-w-7xl mx-auto px-6">
 
         <motion.div
@@ -803,18 +762,18 @@ function ServicesSection() {
         >
           <div>
             <div className="flex items-center gap-3 mb-5">
-              <div className="h-px w-8 bg-[#C97B1A]" />
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]" style={{ fontFamily: "'DM Sans', sans-serif" }}>What We Offer</span>
+              <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.gold }}>What We Offer</span>
             </div>
             <h2
-              className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05]"
-              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+              className="text-5xl lg:text-6xl font-bold leading-[1.05]"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
             >
               Skills That<br />
-              <em className="text-emerald-500">Pay Bills</em>
+              <em style={{ color: colors.olive }}>Pay Bills</em>
             </h2>
           </div>
-          <p className="text-gray-500 text-base leading-relaxed max-w-sm lg:text-right" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+          <p className="text-base leading-relaxed max-w-sm lg:text-right" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>
             Comprehensive digital training paths that take you from complete beginner to market-ready professional.
           </p>
         </motion.div>
@@ -828,42 +787,44 @@ function ServicesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ delay: i * 0.07, duration: 0.55 }}
-              className={`group relative rounded-3xl border border-gray-100 bg-white overflow-hidden cursor-pointer
+              className={`group relative rounded-3xl border overflow-hidden cursor-pointer
                 ${sizes[i] === 'lg' ? 'md:col-span-2 lg:col-span-1' : ''}`}
-              style={{ minHeight: sizes[i] === 'lg' ? '280px' : '220px' }}
+              style={{ minHeight: sizes[i] === 'lg' ? '280px' : '220px', backgroundColor: colors.card, borderColor: colors.cardBorder }}
             >
               {/* Hover gradient flood */}
               <motion.div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                 style={{
-                  background: `radial-gradient(ellipse at top left, rgba(16,185,129,0.06) 0%, transparent 60%)`,
+                  background: `radial-gradient(ellipse at top left, ${colors.oliveGlow} 0%, transparent 60%)`,
                 }}
               />
 
               {/* Bottom border reveal */}
-              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#e18f23] to-[#E8920F] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+              <div className="absolute bottom-0 left-0 w-full h-0.5 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" style={{ backgroundColor: colors.gold }} />
 
               <div className="p-7 h-full flex flex-col justify-between">
                 <div>
                   <motion.div
                     whileHover={{ rotate: 10, scale: 1.1 }}
                     transition={{ duration: 0.3 }}
-                    className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl mb-5 group-hover:bg-[#fdf3e3] transition-colors"
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-5 transition-colors hover:bg-[#FCF3CF]"
+                    style={{ backgroundColor: colors.pageBg }}
                   >
                     {service.icon}
                   </motion.div>
                   <h3
-                    className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#C97B1A] transition-colors"
-                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                    className="text-lg font-bold mb-2 transition-colors hover:text-[#D4A017]"
+                    style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body }}
                   >{service.title}</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>{service.description}</p>
+                  <p className="text-sm leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>{service.description}</p>
                 </div>
 
-                <div className="flex items-center justify-between mt-5 pt-4 border-t border-gray-50">
-                  <span className="text-xs font-semibold text-[#C97B1A] bg-[#fdf3e3] px-3 py-1 rounded-full">{service.stats}</span>
+                <div className="flex items-center justify-between mt-5 pt-4 border-t" style={{ borderColor: colors.divider }}>
+                  <span className="text-xs font-semibold px-3 py-1 rounded-full" style={{ color: colors.gold, backgroundColor: colors.goldLight }}>{service.stats}</span>
                   <motion.span
                     whileHover={{ x: 3 }}
-                    className="text-xs text-gray-400 group-hover:text-emerald-500 transition-colors font-medium"
+                    className="text-xs transition-colors font-medium hover:text-[#2E7D32]"
+                    style={{ color: colors.muted }}
                   >Explore →</motion.span>
                 </div>
               </div>
@@ -881,8 +842,8 @@ function ServicesSection() {
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-[#1a2e1a] transition-colors duration-300"
-              style={{ fontFamily: "'DM Sans', sans-serif" }}
+              className="inline-flex items-center gap-2 px-8 py-4 text-white text-sm font-semibold rounded-full hover:brightness-90 transition-all duration-300"
+              style={{ fontFamily: "'DM Sans', sans-serif", backgroundColor: colors.primary }}
             >
               Browse All 20+ Skills
               <span>→</span>
@@ -901,19 +862,19 @@ function TestimonialsSection() {
   const testimonials = [
     {
       quote: "GazaBridge transformed my life. I went from knowing nothing about coding to landing a remote job in just 8 months. This platform is genuinely life-changing.",
-      name: "Ahmed S.", role: "Web Developer @ Remote Startup", avatar: "AS", color: 'from-[#e18f23] to-[#E8920F]',
+      name: "Ahmed S.", role: "Web Developer @ Remote Startup", avatar: "AS",
     },
     {
       quote: "The personalized mentorship helped me build a portfolio that got me hired as a UI/UX designer. The free resources are world-class. Forever grateful.",
-      name: "Sara M.", role: "UI/UX Designer @ Agency", avatar: "SM", color: 'from-purple-400 to-pink-500',
+      name: "Sara M.", role: "UI/UX Designer @ Agency", avatar: "SM",
     },
     {
       quote: "I never thought I could learn data science for free. The structured curriculum and my mentor's guidance made the impossible feel completely achievable.",
-      name: "Mohammed K.", role: "Data Analyst @ Tech Co", avatar: "MK", color: 'from-blue-400 to-cyan-500',
+      name: "Mohammed K.", role: "Data Analyst @ Tech Co", avatar: "MK",
     },
     {
       quote: "Within 6 months I was freelancing on international projects. GazaBridge didn't just teach me skills — it gave me confidence and a real income.",
-      name: "Layla A.", role: "Freelance Developer", avatar: "LA", color: 'from-amber-400 to-orange-500',
+      name: "Layla A.", role: "Freelance Developer", avatar: "LA",
     },
   ];
 
@@ -925,13 +886,13 @@ function TestimonialsSection() {
   }, []);
 
   return (
-    <section className="py-32 bg-gray-900 relative overflow-hidden">
+    <section className="py-32 relative overflow-hidden" style={{ backgroundColor: colors.sidebar }}>
       <NoiseOverlay />
 
       {/* Large quote mark */}
       <div
-        className="absolute top-16 left-12 text-[200px] leading-none text-white/[0.03] font-serif select-none pointer-events-none"
-        style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+        className="absolute top-16 left-12 text-[200px] leading-none font-serif select-none pointer-events-none"
+        style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.onDarkWatermark }}
       >"</div>
 
       <div className="max-w-7xl mx-auto px-6">
@@ -944,15 +905,15 @@ function TestimonialsSection() {
         >
           <div>
             <div className="flex items-center gap-3 mb-5">
-              <div className="h-px w-8 bg-[#C97B1A]" />
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-emerald-400" style={{ fontFamily: "'DM Sans', sans-serif" }}>Testimonials</span>
+              <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.gold }}>Testimonials</span>
             </div>
             <h2
-              className="text-5xl lg:text-6xl font-bold text-white leading-[1.05]"
-              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+              className="text-5xl lg:text-6xl font-bold leading-[1.05]"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.white }}
             >
               Real Stories,<br />
-              <em className="text-emerald-400">Real Impact</em>
+              <em style={{ color: colors.gold }}>Real Impact</em>
             </h2>
           </div>
 
@@ -962,7 +923,12 @@ function TestimonialsSection() {
               <button
                 key={i}
                 onClick={() => setActive(i)}
-                className={`transition-all duration-300 rounded-full ${i === active ? 'w-8 h-2 bg-[#C97B1A]' : 'w-2 h-2 bg-gray-600 hover:bg-gray-400'}`}
+                className="transition-all duration-300 rounded-full hover:opacity-80"
+                style={{
+                  width: i === active ? '2rem' : '0.5rem',
+                  height: '0.5rem',
+                  backgroundColor: i === active ? colors.gold : colors.onDarkMuted,
+                }}
               />
             ))}
           </div>
@@ -978,33 +944,34 @@ function TestimonialsSection() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.6 }}
               onClick={() => setActive(i)}
-              className={`relative rounded-3xl p-7 border cursor-pointer transition-all duration-400 group
-                ${i === active
-                  ? 'bg-white border-white/20 shadow-2xl shadow-emerald-900/30'
-                  : 'bg-white/[0.04] border-white/[0.06] hover:border-white/10 hover:bg-white/[0.07]'
-                }`}
+              className={`relative rounded-3xl p-7 border cursor-pointer transition-all duration-400 group hover:border-[rgba(255,255,255,0.15)] hover:bg-[rgba(255,255,255,0.07)] ${i === active ? 'shadow-2xl' : ''}`}
+              style={
+                i === active
+                  ? { backgroundColor: colors.card, borderColor: colors.cardBorder }
+                  : { backgroundColor: colors.onDarkCard, borderColor: colors.onDarkBorder }
+              }
             >
               {/* Stars */}
               <div className="flex gap-0.5 mb-5">
                 {[...Array(5)].map((_, s) => (
-                  <svg key={s} className={`w-3.5 h-3.5 ${i === active ? 'text-amber-400' : 'text-amber-400/40'} transition-colors`} fill="currentColor" viewBox="0 0 20 20">
+                  <svg key={s} className="w-3.5 h-3.5 transition-colors" style={{ color: colors.gold, opacity: i === active ? 1 : 0.4 }} fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}
               </div>
 
               <p
-                className={`text-sm leading-relaxed mb-6 ${i === active ? 'text-gray-700' : 'text-gray-400'} transition-colors`}
-                style={{ fontFamily: "'DM Sans', sans-serif" }}
+                className="text-sm leading-relaxed mb-6 transition-colors"
+                style={{ fontFamily: "'DM Sans', sans-serif", color: i === active ? colors.body : colors.onDarkMuted }}
               >"{t.quote}"</p>
 
               <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${t.color} flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0`}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-[11px] font-bold flex-shrink-0" style={{ backgroundColor: AVATAR_CYCLE[i % AVATAR_CYCLE.length] }}>
                   {t.avatar}
                 </div>
                 <div>
-                  <div className={`text-sm font-semibold ${i === active ? 'text-gray-900' : 'text-gray-300'} transition-colors`} style={{ fontFamily: "'DM Sans', sans-serif" }}>{t.name}</div>
-                  <div className={`text-[11px] ${i === active ? 'text-[#C97B1A]' : 'text-emerald-400/50'} transition-colors`} style={{ fontFamily: "'DM Sans', sans-serif" }}>{t.role}</div>
+                  <div className="text-sm font-semibold transition-colors" style={{ fontFamily: "'DM Sans', sans-serif", color: i === active ? colors.body : colors.navText }}>{t.name}</div>
+                  <div className="text-[11px] transition-colors" style={{ fontFamily: "'DM Sans', sans-serif", color: i === active ? colors.gold : colors.onDarkMuted }}>{t.role}</div>
                 </div>
               </div>
             </motion.div>
@@ -1034,7 +1001,7 @@ function FeaturesSection() {
   const xRight = useTransform(scrollYProgress, [0, 1], [60, -60]);
 
   return (
-    <section ref={containerRef} className="py-32 bg-[#f8faf8] overflow-hidden">
+    <section ref={containerRef} className="py-32 overflow-hidden" style={{ backgroundColor: colors.pageBgWarm }}>
       <NoiseOverlay />
       <div className="max-w-7xl mx-auto px-6">
 
@@ -1045,15 +1012,15 @@ function FeaturesSection() {
             <div className="space-y-8">
               <div>
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="h-px w-8 bg-[#C97B1A]" />
-                  <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]" style={{ fontFamily: "'DM Sans', sans-serif" }}>Why GazaBridge</span>
+                  <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+                  <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.gold }}>Why GazaBridge</span>
                 </div>
                 <h2
-                  className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05]"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                  className="text-5xl lg:text-6xl font-bold leading-[1.05]"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
                 >
                   Built Different.<br />
-                  <em className="text-emerald-500">Built For You.</em>
+                  <em style={{ color: colors.olive }}>Built For You.</em>
                 </h2>
               </div>
 
@@ -1066,14 +1033,15 @@ function FeaturesSection() {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1, duration: 0.5 }}
                     whileHover={{ x: 6 }}
-                    className="flex items-start gap-4 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default group"
+                    className="flex items-start gap-4 rounded-2xl p-5 border shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default group"
+                    style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
                   >
                     <div className="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">{f.icon}</div>
                     <div>
-                      <h4 className="font-bold text-gray-900 text-sm mb-1" style={{ fontFamily: "'DM Sans', sans-serif" }}>{f.title}</h4>
-                      <p className="text-gray-500 text-xs leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>{f.desc}</p>
+                      <h4 className="font-bold text-sm mb-1" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body }}>{f.title}</h4>
+                      <p className="text-xs leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>{f.desc}</p>
                     </div>
-                    <div className="ml-auto w-1 h-full flex-shrink-0 self-stretch rounded-full bg-gray-100 group-hover:bg-[#C97B1A] transition-colors duration-300" style={{ minHeight: '40px' }} />
+                    <div className="ml-auto w-1 h-full flex-shrink-0 self-stretch rounded-full transition-colors duration-300 group-hover:bg-[#D4A017]" style={{ minHeight: '40px', backgroundColor: colors.divider }} />
                   </motion.div>
                 ))}
               </div>
@@ -1088,18 +1056,19 @@ function FeaturesSection() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="relative bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-3xl p-8 text-white overflow-hidden"
+              className="relative rounded-3xl p-8 text-white overflow-hidden"
+              style={{ backgroundColor: colors.gold }}
             >
               <NoiseOverlay />
-              <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
-              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-2xl" />
+              <div className="absolute -right-10 -top-10 w-48 h-48 rounded-full blur-2xl" style={{ backgroundColor: colors.overlayStrong }} />
+              <div className="absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-2xl" style={{ backgroundColor: colors.overlaySoft }} />
               <div className="relative">
                 <div className="text-5xl mb-4">📈</div>
                 <div
                   className="text-5xl font-bold mb-2"
                   style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
                 >85%</div>
-                <p className="text-white/80 text-sm leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                <p className="text-sm leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.navText }}>
                   of our graduates report improved career outcomes within 6 months of completing their learning path.
                 </p>
               </div>
@@ -1114,14 +1083,15 @@ function FeaturesSection() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.5 }}
                   whileHover={{ x: -6 }}
-                  className="flex items-start gap-4 bg-white rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default group"
+                  className="flex items-start gap-4 rounded-2xl p-5 border shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default group"
+                  style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
                 >
                   <div className="text-2xl flex-shrink-0 group-hover:scale-110 transition-transform duration-200">{f.icon}</div>
                   <div>
-                    <h4 className="font-bold text-gray-900 text-sm mb-1" style={{ fontFamily: "'DM Sans', sans-serif" }}>{f.title}</h4>
-                    <p className="text-gray-500 text-xs leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>{f.desc}</p>
+                    <h4 className="font-bold text-sm mb-1" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body }}>{f.title}</h4>
+                    <p className="text-xs leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>{f.desc}</p>
                   </div>
-                  <div className="ml-auto w-1 self-stretch flex-shrink-0 rounded-full bg-gray-100 group-hover:bg-[#C97B1A] transition-colors duration-300" style={{ minHeight: '40px' }} />
+                  <div className="ml-auto w-1 self-stretch flex-shrink-0 rounded-full transition-colors duration-300 group-hover:bg-[#D4A017]" style={{ minHeight: '40px', backgroundColor: colors.divider }} />
                 </motion.div>
               ))}
             </div>
@@ -1144,7 +1114,7 @@ function FinalCTA() {
   const magnetic2 = useMagnetic(0.5);
 
   return (
-    <section ref={containerRef} className="relative py-40 overflow-hidden bg-[#f8faf8]">
+    <section ref={containerRef} className="relative py-40 overflow-hidden" style={{ backgroundColor: colors.heroBg }}>
       <NoiseOverlay />
 
       {/* Animated grid background */}
@@ -1156,7 +1126,7 @@ function FinalCTA() {
             __html: `<svg width="100%" height="120%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;opacity:0.5">
               <defs>
                 <pattern id="smallGrid" width="80" height="80" patternUnits="userSpaceOnUse">
-                  <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                  <path d="M 80 0 L 0 0 0 80" fill="none" stroke="${colors.oliveGlow}" stroke-width="1"/>
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#smallGrid)" />
@@ -1166,8 +1136,8 @@ function FinalCTA() {
       </div>
 
       {/* Glowing orbs */}
-      <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#C97B1A]/8 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-teal-400/6 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[120px] pointer-events-none" style={{ backgroundColor: colors.goldGlow }} />
+      <div className="absolute top-1/2 right-1/4 translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full blur-[100px] pointer-events-none" style={{ backgroundColor: colors.oliveGlow }} />
 
       <div className="relative max-w-5xl mx-auto px-6 text-center">
         <motion.div
@@ -1181,18 +1151,19 @@ function FinalCTA() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#fdf3e3] rounded-full border border-emerald-200 mb-8"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-8"
+            style={{ backgroundColor: colors.goldLight, borderColor: colors.divider }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#fdf3e3]0 animate-pulse" />
-            <span className="text-xs font-semibold text-[#C97B1A] tracking-wide uppercase" style={{ fontFamily: "'DM Sans', sans-serif" }}>Start Today — No Cost</span>
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: colors.gold }} />
+            <span className="text-xs font-semibold tracking-wide uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.gold }}>Start Today — No Cost</span>
           </motion.div>
 
           <h2
-            className="text-6xl md:text-7xl lg:text-8xl font-bold text-gray-900 leading-[0.95] mb-8 tracking-tight"
-            style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+            className="text-6xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-8 tracking-tight"
+            style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
           >
             Ready to<br />
-            <em className="bg-gradient-to-r from-[#e18f23] via-teal-500 to-cyan-500 bg-clip-text text-transparent">
+            <em style={{ color: colors.olive }}>
               Start Your Journey?
             </em>
           </h2>
@@ -1202,8 +1173,8 @@ function FinalCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="text-gray-500 text-lg mb-12 max-w-xl mx-auto leading-relaxed"
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
+            className="text-lg mb-12 max-w-xl mx-auto leading-relaxed"
+            style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body }}
           >
             Join thousands of learners and volunteers making a real difference. Completely free, forever.
           </motion.p>
@@ -1225,8 +1196,8 @@ function FinalCTA() {
                 <motion.button
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
-                  className="group px-10 py-5 bg-gray-900 text-white font-bold rounded-full shadow-xl shadow-gray-900/20 text-base hover:bg-[#1a2e1a] transition-colors duration-300 flex items-center gap-2"
-                  style={{ fontFamily: "'DM Sans', sans-serif" }}
+                  className="group px-10 py-5 text-white font-bold rounded-full shadow-xl text-base hover:brightness-95 transition-all duration-300 flex items-center gap-2"
+                  style={{ fontFamily: "'DM Sans', sans-serif", backgroundColor: colors.gold }}
                 >
                   Get Started Free
                   <motion.span
@@ -1245,10 +1216,10 @@ function FinalCTA() {
             >
               <Link to="/register">
                 <motion.button
-                  whileHover={{ scale: 1.04, borderColor: 'rgba(16,185,129,0.5)' }}
+                  whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
-                  className="px-10 py-5 border border-gray-200 bg-white text-gray-700 font-semibold rounded-full text-base hover:border-[#C97B1A] hover:text-[#C97B1A] transition-all duration-300 shadow-sm"
-                  style={{ fontFamily: "'DM Sans', sans-serif" }}
+                  className="px-10 py-5 border font-semibold rounded-full text-base transition-all duration-300 shadow-sm hover:border-[#D4A017] hover:text-[#D4A017]"
+                  style={{ fontFamily: "'DM Sans', sans-serif", borderColor: colors.divider, backgroundColor: colors.card, color: colors.body }}
                 >
                   Become a Volunteer
                 </motion.button>
@@ -1277,7 +1248,8 @@ function FinalCTA() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.7 + i * 0.07 }}
-                className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 text-gray-500 shadow-sm"
+                className="flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm"
+                style={{ backgroundColor: colors.card, borderColor: colors.divider, color: colors.muted }}
               >
                 <span className="text-base">{item.icon}</span>
                 <span className="text-xs font-medium" style={{ fontFamily: "'DM Sans', sans-serif" }}>{item.label}</span>

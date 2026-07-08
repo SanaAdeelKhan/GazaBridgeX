@@ -6,10 +6,13 @@ import { useAuth } from '../context/AuthContext';
 import { liveSectionsAPI } from '../api/liveSections';
 import LiveSectionCard from '../components/LiveSectionCard';
 import CreateLiveSectionModal from '../components/CreateLiveSectionModal';
+import colors from '../theme/colors';
 
 // Beautiful Confirmation Modal Component
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete' }) => {
   if (!isOpen) return null;
+
+  const isDelete = type === 'delete';
 
   return (
     <motion.div
@@ -24,41 +27,42 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
         onClick={(e) => e.stopPropagation()}
-        className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
+        className="relative max-w-md w-full rounded-2xl shadow-2xl overflow-hidden"
+        style={{ backgroundColor: colors.card }}
       >
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-[#e18f23]'}`} />
-        
+        <div className="h-1" style={{ backgroundColor: isDelete ? colors.error : colors.gold }} />
+
         <div className="p-6">
           <div className="flex justify-center mb-4">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-              className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                type === 'delete' ? 'bg-red-100' : 'bg-[#fdf3e3]'
-              }`}
+              className="w-16 h-16 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: isDelete ? colors.errorBg : colors.goldLight }}
             >
-              {type === 'delete' ? (
-                <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {isDelete ? (
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={colors.error}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-[#C97B1A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke={colors.goldHover}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
             </motion.div>
           </div>
 
-          <h3 className="text-xl font-bold text-center text-gray-900 mb-2">{title}</h3>
-          <p className="text-gray-600 text-center mb-6">{message}</p>
+          <h3 className="text-xl font-bold text-center mb-2" style={{ color: colors.headingDark }}>{title}</h3>
+          <p className="text-center mb-6" style={{ color: colors.muted }}>{message}</p>
 
           <div className="flex gap-3">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+              className="flex-1 px-4 py-2.5 font-medium rounded-xl transition-colors"
+              style={{ backgroundColor: colors.badgeNeutral, color: colors.body }}
             >
               Cancel
             </motion.button>
@@ -66,11 +70,8 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onConfirm}
-              className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
-                type === 'delete'
-                  ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  : 'bg-[#e18f23] hover:bg-[#c97a18]'
-              }`}
+              className="flex-1 px-4 py-2.5 text-white font-medium rounded-xl hover:brightness-95 transition-all"
+              style={{ backgroundColor: isDelete ? colors.error : colors.gold }}
             >
               Confirm
             </motion.button>
@@ -204,19 +205,22 @@ export default function LiveSections() {
     return liveSection?.title || 'this live section';
   };
 
+  const selectStyle = { borderColor: colors.inputBorder, color: colors.body, backgroundColor: colors.inputBg };
+
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]">
+    <div className="pt-24 min-h-screen" style={{ backgroundColor: colors.pageBg }}>
       <div className="max-w-7xl mx-auto px-6 py-12">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">Live Sections</h1>
-              <p className="text-lg text-gray-600">Time-bound live learning sessions from the community</p>
+              <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: colors.headingDark }}>Live Sections</h1>
+              <p className="text-lg" style={{ color: colors.muted }}>Time-bound live learning sessions from the community</p>
             </div>
             <motion.button
               whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setShowCreateModal(true)}
-              className="px-6 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:brightness-95 transition-all flex items-center gap-2"
+              style={{ backgroundColor: colors.gold }}
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -225,61 +229,85 @@ export default function LiveSections() {
             </motion.button>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="rounded-2xl shadow-lg p-6 border" style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}>
             <form onSubmit={handleSearch} className="flex gap-3 mb-4">
               <div className="flex-1 relative">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke={colors.muted}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <input type="text" value={searchInput} onChange={(e) => setSearchInput(e.target.value)}
-                  placeholder="Search live sections..." className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none" />
+                <input
+                  type="text"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder="Search live sections..."
+                  className="w-full pl-12 pr-4 py-3 border rounded-xl outline-none transition-all"
+                  style={selectStyle}
+                  onFocus={(e) => (e.target.style.borderColor = colors.inputBorderFocus)}
+                  onBlur={(e) => (e.target.style.borderColor = colors.inputBorder)}
+                />
               </div>
-              <motion.button type="submit" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all">Search</motion.button>
+              <motion.button
+                type="submit"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-6 py-3 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:brightness-95 transition-all"
+                style={{ backgroundColor: colors.gold }}
+              >
+                Search
+              </motion.button>
             </form>
             <div className="flex flex-wrap gap-2">
               <select value={filters.category} onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                className="px-4 py-2 rounded-xl border text-sm font-medium outline-none" style={selectStyle}>
                 {CATEGORIES.map(cat => <option key={cat.value} value={cat.value}>{cat.icon} {cat.label}</option>)}
               </select>
               <select value={filters.skill_level} onChange={(e) => setFilters(prev => ({ ...prev, skill_level: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                className="px-4 py-2 rounded-xl border text-sm font-medium outline-none" style={selectStyle}>
                 {SKILL_LEVELS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
               <select value={filters.language} onChange={(e) => setFilters(prev => ({ ...prev, language: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                className="px-4 py-2 rounded-xl border text-sm font-medium outline-none" style={selectStyle}>
                 {LANGUAGES.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}
               </select>
               <select value={filters.status} onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                className="px-4 py-2 rounded-xl border text-sm font-medium outline-none" style={selectStyle}>
                 {STATUS_OPTIONS.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
               </select>
             </div>
           </div>
         </motion.div>
 
-        {error && <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"><p className="text-sm text-red-700">{error}</p></motion.div>}
+        {error && (
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 p-4 rounded-xl border" style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}>
+            <p className="text-sm" style={{ color: colors.error }}>{error}</p>
+          </motion.div>
+        )}
 
         {loading && liveSections.length === 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => <div key={i} className="bg-white rounded-2xl p-6 shadow-lg animate-pulse"><div className="h-4 bg-gray-200 rounded w-3/4 mb-4" /><div className="h-4 bg-gray-200 rounded w-1/2" /></div>)}
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="rounded-2xl p-6 shadow-lg animate-pulse" style={{ backgroundColor: colors.card }}>
+                <div className="h-4 rounded w-3/4 mb-4" style={{ backgroundColor: colors.badgeNeutral }} />
+                <div className="h-4 rounded w-1/2" style={{ backgroundColor: colors.badgeNeutral }} />
+              </div>
+            ))}
           </div>
         ) : liveSections.length === 0 ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
             <div className="text-6xl mb-6">📡</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">No live sections found</h3>
-            <p className="text-gray-600">Be the first to create a live section!</p>
+            <h3 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>No live sections found</h3>
+            <p style={{ color: colors.muted }}>Be the first to create a live section!</p>
           </motion.div>
         ) : (
           <>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               <AnimatePresence>
                 {liveSections.map((ls, index) => (
-                  <LiveSectionCard 
-                    key={ls.id} 
-                    liveSection={ls} 
-                    index={index} 
-                    canDelete={canDelete(ls)} 
+                  <LiveSectionCard
+                    key={ls.id}
+                    liveSection={ls}
+                    index={index}
+                    canDelete={canDelete(ls)}
                     onDelete={() => setDeleteModal({ isOpen: true, liveSectionId: ls.id, liveSectionTitle: ls.title })}
                   />
                 ))}
@@ -287,13 +315,18 @@ export default function LiveSections() {
             </div>
             {pagination.page < pagination.totalPages && (
               <div className="text-center mt-12">
-                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleLoadMore} disabled={loading}
-                  className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-emerald-300 hover:text-[#C97B1A] transition-all shadow-sm disabled:opacity-50">
+                <motion.button
+                  whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleLoadMore} disabled={loading}
+                  className="px-8 py-3 font-medium rounded-xl border shadow-sm disabled:opacity-50 transition-all"
+                  style={{ backgroundColor: colors.card, borderColor: colors.cardBorder, color: colors.body }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = colors.primary; e.currentTarget.style.borderColor = colors.primary; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = colors.body; e.currentTarget.style.borderColor = colors.cardBorder; }}
+                >
                   {loading ? 'Loading...' : 'Load More'}
                 </motion.button>
               </div>
             )}
-            <div className="text-center mt-4 text-sm text-gray-500">Showing {liveSections.length} of {pagination.totalCount} live sections</div>
+            <div className="text-center mt-4 text-sm" style={{ color: colors.muted }}>Showing {liveSections.length} of {pagination.totalCount} live sections</div>
           </>
         )}
       </div>

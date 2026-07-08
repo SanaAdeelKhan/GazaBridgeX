@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import ResourceCard from '../components/ResourceCard';
 // import ResourceFilters from '../components/ResourceFilters';
 import CreateResourceModal from '../components/CreateResourceModal';
+import colors from '../theme/colors';
 
 const CATEGORIES = [
   { value: '', label: 'All Categories', icon: '📚' },
@@ -32,12 +33,12 @@ export default function Resources() {
     deleteResource,
     updateFilters,
   } = useResources();
-  
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
 
-  const canManage = user?.roles?.some(r => 
+  const canManage = user?.roles?.some(r =>
     ['manager', 'admin', 'superuser'].includes(r.name)
   ) || user?.is_staff || user?.is_superuser;
 
@@ -71,7 +72,7 @@ export default function Resources() {
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]">
+    <div className="pt-24 min-h-screen" style={{ backgroundColor: colors.pageBg }}>
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
         <motion.div
@@ -81,20 +82,21 @@ export default function Resources() {
         >
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+              <h1 className="text-4xl md:text-5xl font-bold mb-2" style={{ color: colors.headingDark }}>
                 Resources
               </h1>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg" style={{ color: colors.muted }}>
                 Discover opportunities, scholarships, jobs, and more
               </p>
             </div>
-            
+
             {canManage && (
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowCreateModal(true)}
-                className="px-6 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+                className="px-6 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:brightness-95 transition-all flex items-center gap-2"
+                style={{ backgroundColor: colors.gold }}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -105,10 +107,10 @@ export default function Resources() {
           </div>
 
           {/* Search and Filters */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+          <div className="rounded-2xl shadow-lg p-6 border" style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}>
             <form onSubmit={handleSearch} className="flex gap-3 mb-6">
               <div className="flex-1 relative">
-                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke={colors.muted}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
@@ -116,14 +118,18 @@ export default function Resources() {
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   placeholder="Search resources..."
-                  className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                  className="w-full pl-12 pr-4 py-3 border rounded-xl outline-none transition-all"
+                  style={{ borderColor: colors.inputBorder, color: colors.body, backgroundColor: colors.inputBg }}
+                  onFocus={(e) => (e.target.style.borderColor = colors.inputBorderFocus)}
+                  onBlur={(e) => (e.target.style.borderColor = colors.inputBorder)}
                 />
               </div>
               <motion.button
                 type="submit"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+                className="px-6 py-3 text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:brightness-95 transition-all"
+                style={{ backgroundColor: colors.gold }}
               >
                 Search
               </motion.button>
@@ -136,7 +142,8 @@ export default function Resources() {
                     setSearchInput('');
                     updateFilters({ search: '' });
                   }}
-                  className="px-4 py-3 text-gray-600 hover:text-gray-900 font-medium rounded-xl border border-gray-300 hover:border-gray-400 transition-all"
+                  className="px-4 py-3 font-medium rounded-xl border transition-all"
+                  style={{ color: colors.body, borderColor: colors.inputBorder }}
                 >
                   Clear
                 </motion.button>
@@ -145,22 +152,25 @@ export default function Resources() {
 
             {/* Category Pills */}
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map(cat => (
-                <motion.button
-                  key={cat.value}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleCategoryChange(cat.value)}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                    selectedCategory === cat.value
-                      ? 'bg-[#fdf3e3]0 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  <span className="mr-1">{cat.icon}</span>
-                  {cat.label}
-                </motion.button>
-              ))}
+              {CATEGORIES.map(cat => {
+                const isActive = selectedCategory === cat.value;
+                return (
+                  <motion.button
+                    key={cat.value}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleCategoryChange(cat.value)}
+                    className="px-4 py-2 rounded-xl text-sm font-medium transition-all"
+                    style={isActive
+                      ? { backgroundColor: colors.gold, color: colors.white, boxShadow: '0 4px 10px rgba(212,160,23,0.35)' }
+                      : { backgroundColor: colors.badgeNeutral, color: colors.badgeNeutralText }
+                    }
+                  >
+                    <span className="mr-1">{cat.icon}</span>
+                    {cat.label}
+                  </motion.button>
+                );
+              })}
             </div>
           </div>
         </motion.div>
@@ -170,9 +180,10 @@ export default function Resources() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"
+            className="mb-6 p-4 rounded-xl border"
+            style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}
           >
-            <p className="text-sm text-red-700">{error}</p>
+            <p className="text-sm" style={{ color: colors.error }}>{error}</p>
           </motion.div>
         )}
 
@@ -180,13 +191,13 @@ export default function Resources() {
         {loading && resources.length === 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl p-6 shadow-lg animate-pulse">
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-4" />
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-6" />
+              <div key={i} className="rounded-2xl p-6 shadow-lg animate-pulse" style={{ backgroundColor: colors.card }}>
+                <div className="h-4 rounded w-3/4 mb-4" style={{ backgroundColor: colors.badgeNeutral }} />
+                <div className="h-4 rounded w-1/2 mb-6" style={{ backgroundColor: colors.badgeNeutral }} />
                 <div className="space-y-2">
-                  <div className="h-3 bg-gray-200 rounded" />
-                  <div className="h-3 bg-gray-200 rounded" />
-                  <div className="h-3 bg-gray-200 rounded w-5/6" />
+                  <div className="h-3 rounded" style={{ backgroundColor: colors.badgeNeutral }} />
+                  <div className="h-3 rounded" style={{ backgroundColor: colors.badgeNeutral }} />
+                  <div className="h-3 rounded w-5/6" style={{ backgroundColor: colors.badgeNeutral }} />
                 </div>
               </div>
             ))}
@@ -198,8 +209,8 @@ export default function Resources() {
             className="text-center py-20"
           >
             <div className="text-6xl mb-6">📚</div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">No resources found</h3>
-            <p className="text-gray-600 mb-6">
+            <h3 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>No resources found</h3>
+            <p className="mb-6" style={{ color: colors.muted }}>
               {filters.search || filters.category
                 ? 'Try adjusting your search or filters.'
                 : 'Resources will appear here once they are added.'}
@@ -211,7 +222,8 @@ export default function Resources() {
                   setSelectedCategory('');
                   updateFilters({ search: '', category: '' });
                 }}
-                className="px-6 py-3 bg-gray-100 text-gray-700 font-medium rounded-xl hover:bg-gray-200 transition-colors"
+                className="px-6 py-3 font-medium rounded-xl transition-colors"
+                style={{ backgroundColor: colors.badgeNeutral, color: colors.body }}
               >
                 Clear Filters
               </button>
@@ -242,7 +254,10 @@ export default function Resources() {
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLoadMore}
                   disabled={loading}
-                  className="px-8 py-3 bg-white border border-gray-200 text-gray-700 font-medium rounded-xl hover:border-emerald-300 hover:text-[#C97B1A] transition-all shadow-sm disabled:opacity-50"
+                  className="px-8 py-3 font-medium rounded-xl border shadow-sm disabled:opacity-50 transition-all"
+                  style={{ backgroundColor: colors.card, borderColor: colors.cardBorder, color: colors.body }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = colors.primary; e.currentTarget.style.borderColor = colors.primary; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = colors.body; e.currentTarget.style.borderColor = colors.cardBorder; }}
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -260,7 +275,7 @@ export default function Resources() {
             )}
 
             {/* Results Count */}
-            <div className="text-center mt-4 text-sm text-gray-500">
+            <div className="text-center mt-4 text-sm" style={{ color: colors.muted }}>
               Showing {resources.length} of {pagination.totalCount} resources
             </div>
           </>

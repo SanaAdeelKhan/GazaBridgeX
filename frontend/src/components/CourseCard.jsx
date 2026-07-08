@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { useState } from "react";
 import { Link } from 'react-router-dom';
+import colors from '../theme/colors';
 
 const CATEGORY_ICONS = {
   teaching_language: '🗣️',
@@ -23,22 +24,24 @@ const CATEGORY_LABELS = {
   others: 'Others',
 };
 
-const SKILL_LEVEL_COLORS = {
-  beginner: 'bg-[#fdf3e3] text-green-700',
-  intermediate: 'bg-yellow-100 text-yellow-700',
-  advanced: 'bg-red-100 text-red-700',
-};
-
-const STATUS_COLORS = {
-  active: 'bg-[#fdf3e3] text-[#1a2e1a] border-emerald-200',
-  inactive: 'bg-gray-100 text-gray-700 border-gray-200',
-  closed: 'bg-red-100 text-red-700 border-red-200',
-};
-
 const LANGUAGE_LABELS = {
   en: 'English', ur: 'Urdu', ar: 'Arabic', fr: 'French',
   es: 'Spanish', de: 'German', zh: 'Chinese', hi: 'Hindi',
   pt: 'Portuguese', ru: 'Russian', ja: 'Japanese', tr: 'Turkish',
+};
+
+// skill level: beginner = olive, intermediate = gold, advanced = error
+const SKILL_LEVEL_STYLE = {
+  beginner:     { backgroundColor: colors.oliveLight, color: colors.olive },
+  intermediate: { backgroundColor: colors.goldLight,  color: colors.goldHover },
+  advanced:     { backgroundColor: colors.errorBg,     color: colors.error },
+};
+
+// status: active = olive/open, inactive = neutral grey, closed = error
+const STATUS_STYLE = {
+  active:   { backgroundColor: colors.badgeOpen,    color: colors.badgeOpenText,    borderColor: colors.oliveLight },
+  inactive: { backgroundColor: colors.badgeNeutral, color: colors.badgeNeutralText, borderColor: colors.divider },
+  closed:   { backgroundColor: colors.badgeClosed,  color: colors.badgeClosedText,  borderColor: colors.errorBg },
 };
 
 export default function CourseCard({ course, index, canDelete, onDelete }) {
@@ -48,16 +51,23 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
     ? course.description.substring(0, 120) + '...'
     : course.description;
 
+  const statusStyle = STATUS_STYLE[course.status] || STATUS_STYLE.active;
+  const skillStyle = SKILL_LEVEL_STYLE[course.skill_level] || { backgroundColor: colors.badgeNeutral, color: colors.badgeNeutralText };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.5 }}
       whileHover={{ y: -5 }}
-      className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden"
+      className="group relative rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border overflow-hidden"
+      style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
     >
       {/* Status Badge */}
-      <div className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold border ${STATUS_COLORS[course.status] || STATUS_COLORS.active}`}>
+      <div
+        className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold border"
+        style={statusStyle}
+      >
         {course.status}
       </div>
 
@@ -69,27 +79,33 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
 
         {/* Title */}
         <Link to={`/courses/${course.id}`}>
-          <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#C97B1A] transition-colors">
+          <h3
+            className="text-xl font-bold mb-2 transition-colors"
+            style={{ color: colors.body }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = colors.gold)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = colors.body)}
+          >
             {course.title}
           </h3>
         </Link>
 
         {/* Category */}
         <div className="mb-3">
-          <span className="text-sm text-gray-500">
+          <span className="text-sm" style={{ color: colors.muted }}>
             {CATEGORY_LABELS[course.category] || course.category}
           </span>
         </div>
 
         {/* Description */}
         <div className="mb-4">
-          <p className="text-gray-600 text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed" style={{ color: colors.body }}>
             {isExpanded ? course.description : truncatedDescription}
           </p>
           {course.description?.length > 120 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="text-[#C97B1A] hover:text-[#1a2e1a] text-sm font-medium mt-1 transition-colors"
+              className="text-sm font-medium mt-1 transition-colors"
+              style={{ color: colors.gold }}
             >
               {isExpanded ? 'Show less' : 'Read more'}
             </button>
@@ -98,19 +114,28 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
 
         {/* Badges */}
         <div className="flex flex-wrap gap-2 mb-4">
-          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${SKILL_LEVEL_COLORS[course.skill_level] || 'bg-gray-100 text-gray-700'}`}>
+          <span className="px-2 py-1 rounded-full text-xs font-semibold" style={skillStyle}>
             {course.skill_level}
           </span>
-          <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+          <span
+            className="px-2 py-1 rounded-full text-xs font-semibold"
+            style={{ backgroundColor: colors.primaryLight, color: colors.primary }}
+          >
             {LANGUAGE_LABELS[course.language] || course.language}
           </span>
-          <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-semibold">
+          <span
+            className="px-2 py-1 rounded-full text-xs font-semibold"
+            style={{ backgroundColor: colors.badgeNeutral, color: colors.badgeNeutralText }}
+          >
             {course.sessions_per_week}x/week • {course.session_duration}min
           </span>
         </div>
 
         {/* Stats */}
-        <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-100 text-sm text-gray-500">
+        <div
+          className="flex items-center gap-4 mb-4 pb-4 border-b text-sm"
+          style={{ borderColor: colors.divider, color: colors.muted }}
+        >
           <div className="flex items-center gap-1">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -128,12 +153,15 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
         {/* Author & Actions */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white text-xs font-bold">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+              style={{ backgroundColor: colors.primary }}
+            >
               {course.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-900">{course.user_full_name}</p>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm font-medium" style={{ color: colors.body }}>{course.user_full_name}</p>
+              <p className="text-xs" style={{ color: colors.muted }}>
                 {new Date(course.created_at).toLocaleDateString()}
               </p>
             </div>
@@ -142,7 +170,8 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
           <div className="flex items-center gap-2">
             <Link
               to={`/courses/${course.id}`}
-              className="px-4 py-2 bg-[#e18f23] hover:bg-[#c97a18] text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg transition-all"
+              className="px-4 py-2 text-white text-sm font-semibold rounded-xl shadow-md hover:shadow-lg hover:brightness-95 transition-all"
+              style={{ backgroundColor: colors.gold }}
             >
               View Course
             </Link>
@@ -151,7 +180,16 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => onDelete(course.id)}
-                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                className="p-2 rounded-lg transition-all"
+                style={{ color: colors.muted }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = colors.error;
+                  e.currentTarget.style.backgroundColor = colors.errorBg;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = colors.muted;
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
                 title="Delete course"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
