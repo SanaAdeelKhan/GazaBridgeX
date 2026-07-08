@@ -657,7 +657,7 @@ function HowItWorksSection() {
   const lineHeight = useTransform(scrollYProgress, [0.1, 0.9], ['0%', '100%']);
 
   return (
-    <section ref={containerRef} className="py-32 overflow-hidden" style={{ backgroundColor: colors.pageBgWarm }}>
+    <section ref={containerRef} className="py-32 overflow-hidden" style={{ backgroundColor: colors.primaryLight }}>
       <NoiseOverlay />
       <div className="max-w-7xl mx-auto px-6">
 
@@ -1025,7 +1025,7 @@ function FeaturesSection() {
   const xRight = useTransform(scrollYProgress, [0, 1], [60, -60]);
 
   return (
-    <section ref={containerRef} className="py-32 overflow-hidden" style={{ backgroundColor: colors.pageBgWarm }}>
+    <section ref={containerRef} className="py-32 overflow-hidden" style={{ backgroundColor: colors.primaryLight }}>
       <NoiseOverlay />
       <div className="max-w-7xl mx-auto px-6">
 
@@ -1138,7 +1138,7 @@ function FinalCTA() {
   const magnetic2 = useMagnetic(0.5);
 
   return (
-    <section ref={containerRef} className="relative py-40 overflow-hidden" style={{ backgroundColor: colors.heroBg }}>
+    <section ref={containerRef} className="relative py-40 overflow-hidden" style={{ backgroundColor: colors.primaryLight }}>
       <NoiseOverlay />
 
       {/* Animated grid background */}
