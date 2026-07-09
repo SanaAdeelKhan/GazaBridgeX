@@ -1,5 +1,5 @@
 // frontend/src/pages/Services.jsx
-// Exact same design system & hero color as Home.jsx — #f8faf8 light background
+// Retheme: navy/gold/olive design system (colors.js) — matches Home.jsx / HowItWorks.jsx
 // Deps: framer-motion (already installed)
 // Fonts: Instrument Serif + DM Sans (in index.html)
 
@@ -14,10 +14,8 @@ import {
 import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { services } from '../data/services';
+import colors from '../theme/colors';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// NOISE OVERLAY — same helper as Home
-// ─────────────────────────────────────────────────────────────────────────────
 function NoiseOverlay() {
   return (
     <svg
@@ -33,9 +31,6 @@ function NoiseOverlay() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MAGNETIC BUTTON — same helper as Home
-// ─────────────────────────────────────────────────────────────────────────────
 function Magnetic({ children, strength = 0.45 }) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -60,9 +55,6 @@ function Magnetic({ children, strength = 0.45 }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CURSOR BLOB — same helper as Home
-// ─────────────────────────────────────────────────────────────────────────────
 function CursorBlob() {
   const blobRef = useRef(null);
   const pos = useRef({ x: 0, y: 0 });
@@ -90,59 +82,47 @@ function CursorBlob() {
       className="fixed top-0 left-0 w-[500px] h-[500px] pointer-events-none z-0"
       style={{ willChange: 'transform' }}
     >
-      <div className="w-full h-full rounded-full bg-[#C97B1A]/6 blur-[80px]" />
+      <div className="w-full h-full rounded-full blur-[80px]" style={{ backgroundColor: colors.goldGlow }} />
     </div>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// CATEGORY CONFIG
-// ─────────────────────────────────────────────────────────────────────────────
 const ALL = 'All';
 const CATEGORIES = [ALL, 'Development', 'Design', 'Marketing', 'Data', 'Security', 'Career'];
 
 const catAccent = {
   Development: {
-    pill:  'bg-blue-50 text-blue-700',
-    dot:   'bg-blue-400',
-    bar:   'from-blue-400 to-cyan-400',
-    glow:  'group-hover:shadow-blue-100',
+    pillBg: colors.primaryLight, pillText: colors.primary,
+    dot: colors.primary,
+    barFrom: colors.primary, barTo: colors.primaryHover,
   },
   Design: {
-    pill:  'bg-purple-50 text-purple-700',
-    dot:   'bg-purple-400',
-    bar:   'from-purple-400 to-pink-400',
-    glow:  'group-hover:shadow-purple-100',
+    pillBg: colors.oliveLight, pillText: colors.oliveHover,
+    dot: colors.olive,
+    barFrom: colors.olive, barTo: colors.oliveHover,
   },
   Marketing: {
-    pill:  'bg-orange-50 text-orange-700',
-    dot:   'bg-orange-400',
-    bar:   'from-orange-400 to-red-400',
-    glow:  'group-hover:shadow-orange-100',
+    pillBg: colors.goldLight, pillText: colors.goldHover,
+    dot: colors.gold,
+    barFrom: colors.gold, barTo: colors.goldHover,
   },
   Data: {
-    pill:  'bg-[#fdf3e3] text-[#1a2e1a]',
-    dot:   'bg-[#C97B1A]',
-    bar:   'from-[#e18f23] to-teal-400',
-    glow:  'group-hover:shadow-emerald-100',
+    pillBg: 'rgba(46,134,193,0.12)', pillText: colors.secondary,
+    dot: colors.secondary,
+    barFrom: colors.secondary, barTo: colors.primary,
   },
   Security: {
-    pill:  'bg-rose-50 text-rose-700',
-    dot:   'bg-rose-400',
-    bar:   'from-rose-400 to-red-500',
-    glow:  'group-hover:shadow-rose-100',
+    pillBg: colors.errorBg, pillText: colors.error,
+    dot: colors.error,
+    barFrom: colors.error, barTo: '#922B21',
   },
   Career: {
-    pill:  'bg-teal-50 text-teal-700',
-    dot:   'bg-teal-400',
-    bar:   'from-teal-400 to-cyan-500',
-    glow:  'group-hover:shadow-teal-100',
+    pillBg: colors.successBg, pillText: colors.success,
+    dot: colors.success,
+    barFrom: colors.success, barTo: colors.oliveHover,
   },
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// ANIMATED NUMBER COUNTER (viewport triggered)
-// ─────────────────────────────────────────────────────────────────────────────
 function AnimatedNumber({ value, suffix = '' }) {
   const ref = useRef(null);
   const [count, setCount] = useState(0);
@@ -169,9 +149,6 @@ function AnimatedNumber({ value, suffix = '' }) {
   return <span ref={ref}>{count.toLocaleString()}{suffix}</span>;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MAIN PAGE
-// ─────────────────────────────────────────────────────────────────────────────
 export default function Services() {
   const [activeTab, setActiveTab] = useState(ALL);
   const heroRef  = useRef(null);
@@ -191,47 +168,39 @@ export default function Services() {
   );
 
   return (
-    <div className="bg-[#f8faf8]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ backgroundColor: colors.primaryLight, fontFamily: "'DM Sans', sans-serif" }}>
       <CursorBlob />
 
-      {/* ═══════════════════════════════════════════════════════ HERO ══ */}
-      {/*   bg-[#f8faf8] + emerald grid + concentric rings = exact Home match  */}
       <motion.section
         ref={heroRef}
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-screen flex items-center overflow-hidden bg-[#f8faf8] pt-24"
+        style={{ opacity: heroOpacity, scale: heroScale, backgroundColor: colors.primaryLight }}
+        className="relative min-h-screen flex items-center overflow-hidden pt-24"
       >
         <NoiseOverlay />
 
-        {/* Emerald grid — pixel-perfect match with Home hero */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: `
-              linear-gradient(rgba(16,185,129,0.06) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(16,185,129,0.06) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(${colors.primaryGlow} 1px, transparent 1px), linear-gradient(90deg, ${colors.primaryGlow} 1px, transparent 1px)`,
             backgroundSize: '80px 80px',
           }}
         />
 
-        {/* Mouse-follow radial gradient — same as Home */}
         <MouseGradient />
 
-        {/* Architectural concentric rings — right side, same as Home */}
         <motion.div
-          style={{ y: heroY }}
-          className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-emerald-200/60 pointer-events-none"
+          style={{ y: heroY, borderColor: 'rgba(26,82,118,0.35)' }}
+          className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border pointer-events-none"
         />
         <motion.div
-          style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]) }}
-          className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border border-emerald-100/40 pointer-events-none"
+          style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]), borderColor: 'rgba(26,82,118,0.2)' }}
+          className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border pointer-events-none"
         />
         <motion.div
-          style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]) }}
-          className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#fdf3e3]/80 pointer-events-none"
+          style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]), backgroundColor: 'rgba(252,243,207,0.8)' }}
+          className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none"
         />
 
-        {/* Spinning ring badge — same as Home */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
@@ -245,22 +214,21 @@ export default function Services() {
           >
             <svg className="absolute inset-0 w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 112 112">
               <path id="srv-ring" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
-              <text fontSize="10" fontFamily="DM Sans, sans-serif" fill="#059669" fontWeight="500" letterSpacing="3">
+              <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.gold} fontWeight="500" letterSpacing="3">
                 <textPath href="#srv-ring">22 SKILLS • ALL FREE • 22 SKILLS • ALL FREE • </textPath>
               </text>
             </svg>
-            <div className="w-14 h-14 rounded-full bg-[#fdf3e3]0 flex items-center justify-center shadow-xl shadow-emerald-500/30">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl" style={{ backgroundColor: colors.gold, boxShadow: '0 10px 25px rgba(212,160,23,0.4)' }}>
               <span className="text-white text-xl">✦</span>
             </div>
           </motion.div>
         </motion.div>
 
-        {/* Floating stat card bottom-left — same pattern as Home */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2, duration: 0.8 }}
-          className="absolute bottom-36 left-8 hidden xl:block"
+          className="absolute bottom-16 right-16 hidden xl:block"
         >
           <motion.div
             animate={{ y: [0, -12, 0] }}
@@ -268,10 +236,10 @@ export default function Services() {
             className="bg-white rounded-2xl shadow-xl shadow-black/5 border border-gray-100 p-4 w-52"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-[#fdf3e3]0/10 flex items-center justify-center text-base">🎓</div>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base" style={{ backgroundColor: colors.goldGlow }}>🎓</div>
               <div>
-                <div className="text-xs text-gray-400 font-medium">This month</div>
-                <div className="text-sm font-semibold text-gray-800">420+ enrolled</div>
+                <div className="text-xs font-medium" style={{ color: colors.muted }}>This month</div>
+                <div className="text-sm font-semibold" style={{ color: colors.body }}>420+ enrolled</div>
               </div>
             </div>
             <div className="flex gap-1">
@@ -281,54 +249,47 @@ export default function Services() {
                   initial={{ scaleY: 0 }}
                   animate={{ scaleY: 1 }}
                   transition={{ delay: 2.4 + i * 0.07, duration: 0.4 }}
-                  style={{ height: `${h * 0.28}px`, originY: 1 }}
-                  className="flex-1 bg-gradient-to-t from-[#e18f23] to-teal-400 rounded-sm"
+                  style={{ height: `${h * 0.28}px`, originY: 1, background: `linear-gradient(to top, ${colors.gold}, ${colors.primary})` }}
+                  className="flex-1 rounded-sm"
                 />
               ))}
             </div>
           </motion.div>
         </motion.div>
 
-        {/* ── Hero content ── */}
         <motion.div
           style={{ y: heroY }}
           className="relative z-10 max-w-7xl mx-auto px-6 w-full"
         >
           <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-            {/* LEFT */}
             <div className="space-y-8">
 
-              {/* Eyebrow badge — same as Home */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-emerald-200 shadow-lg"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border"
+                style={{ borderColor: 'rgba(26,82,118,0.2)' }}
               >
                 <motion.span
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                   className="relative flex h-2.5 w-2.5"
                 >
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C97B1A] opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#fdf3e3]0" />
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: colors.gold }} />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ backgroundColor: colors.gold }} />
                 </motion.span>
-                <span className="text-sm font-semibold text-[#1a2e1a]">22 Free Skill Tracks</span>
+                <span className="text-sm font-semibold" style={{ color: colors.title }}>22 Free Skill Tracks</span>
               </motion.div>
 
-              {/* Headline — same serif + gradient style as Home */}
               <div className="space-y-1 overflow-hidden">
                 <motion.h1
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                  className="leading-[0.95] tracking-tight text-gray-900"
-                  style={{
-                    fontFamily: "'Instrument Serif', Georgia, serif",
-                    fontSize: 'clamp(3rem, 6.5vw, 6rem)',
-                    fontWeight: 700,
-                  }}
+                  className="leading-[0.95] tracking-tight"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem, 6.5vw, 6rem)', fontWeight: 700, color: colors.headingDark }}
                 >
                   Skills That
                 </motion.h1>
@@ -337,14 +298,7 @@ export default function Services() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.42, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                   className="leading-[0.95] tracking-tight italic"
-                  style={{
-                    fontFamily: "'Instrument Serif', Georgia, serif",
-                    fontSize: 'clamp(3rem, 6.5vw, 6rem)',
-                    fontWeight: 700,
-                    background: 'linear-gradient(90deg, #10b981, #14b8a6, #06b6d4)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem, 6.5vw, 6rem)', fontWeight: 700, color: colors.gold }}
                 >
                   Open Doors
                 </motion.h1>
@@ -352,29 +306,24 @@ export default function Services() {
                   initial={{ opacity: 0, y: 50 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.54, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                  className="leading-[0.95] tracking-tight text-gray-900"
-                  style={{
-                    fontFamily: "'Instrument Serif', Georgia, serif",
-                    fontSize: 'clamp(3rem, 6.5vw, 6rem)',
-                    fontWeight: 700,
-                  }}
+                  className="leading-[0.95] tracking-tight"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem, 6.5vw, 6rem)', fontWeight: 700, color: colors.headingDark }}
                 >
                   For Free
                 </motion.h1>
               </div>
 
-              {/* Description */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.65, duration: 0.8 }}
-                className="text-gray-500 text-lg leading-relaxed max-w-lg"
+                className="text-lg leading-relaxed max-w-lg"
+                style={{ color: colors.muted }}
               >
                 22 comprehensive digital training paths built for people in Gaza —
                 from complete beginner to market-ready professional, at zero cost.
               </motion.p>
 
-              {/* CTA row — same buttons as Home */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -384,18 +333,15 @@ export default function Services() {
                 <Magnetic>
                   <Link to="/register">
                     <motion.button
-                      whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(16,185,129,0.35)' }}
+                      whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(212,160,23,0.35)' }}
                       whileTap={{ scale: 0.95 }}
-                      className="group relative px-8 py-4 text-white font-bold rounded-full shadow-xl shadow-emerald-500/25 overflow-hidden"
-                      style={{ background: 'linear-gradient(135deg, #10b981, #14b8a6)' }}
+                      className="group relative px-8 py-4 text-white font-bold rounded-full shadow-xl overflow-hidden"
+                      style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
                     >
                       <span className="relative z-10 flex items-center gap-2 text-sm">
                         Start Learning Free
-                        <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                          →
-                        </motion.span>
+                        <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
                       </span>
-                      <motion.div className="absolute inset-0 bg-gradient-to-r from-[#e18f23] to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </motion.button>
                   </Link>
                 </Magnetic>
@@ -405,14 +351,14 @@ export default function Services() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => filterRef.current?.scrollIntoView({ behavior: 'smooth' })}
-                    className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-full hover:border-[#C97B1A] hover:text-[#C97B1A] transition-all duration-300 text-sm"
+                    className="px-8 py-4 border-2 border-gray-300 font-bold rounded-full transition-all duration-300 text-sm hover:border-[#D4A017] hover:text-[#D4A017]"
+                    style={{ color: colors.body }}
                   >
                     Browse All Skills ↓
                   </motion.button>
                 </Magnetic>
               </motion.div>
 
-              {/* Quick stat row */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -425,54 +371,48 @@ export default function Services() {
                   { v: 45, suffix: '', l: 'Countries' },
                 ].map((s) => (
                   <div key={s.l} className="flex items-center gap-2">
-                    <span
-                      className="text-2xl font-bold text-gray-900"
-                      style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
-                    >
+                    <span className="text-2xl font-bold" style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}>
                       <AnimatedNumber value={s.v} suffix={s.suffix} />
                     </span>
-                    <span className="text-sm text-gray-500">{s.l}</span>
+                    <span className="text-sm" style={{ color: colors.muted }}>{s.l}</span>
                   </div>
                 ))}
               </motion.div>
             </div>
 
-            {/* RIGHT — category preview card stack */}
             <motion.div
               initial={{ opacity: 0, x: 80 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
               className="relative hidden lg:flex items-center justify-center h-[540px]"
             >
-              {/* Background tilt cards */}
               <motion.div
                 animate={{ rotate: [-5, -3, -5] }}
                 transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute w-72 h-[420px] bg-teal-100/60 rounded-3xl border border-teal-200/60"
+                className="absolute w-72 h-[420px] rounded-3xl border"
+                style={{ backgroundColor: 'rgba(46,134,193,0.10)', borderColor: 'rgba(46,134,193,0.25)' }}
               />
               <motion.div
                 animate={{ rotate: [3, 5, 3] }}
                 transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-                className="absolute w-72 h-[420px] bg-[#fdf3e3]/60 rounded-3xl border border-emerald-200/60"
+                className="absolute w-72 h-[420px] rounded-3xl border"
+                style={{ backgroundColor: 'rgba(252,243,207,0.6)', borderColor: 'rgba(26,82,118,0.2)' }}
               />
 
-              {/* Main card */}
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative z-10 w-72 bg-white rounded-3xl shadow-2xl shadow-emerald-900/10 border border-gray-100 p-7 flex flex-col gap-4"
+                className="relative z-10 w-72 bg-white rounded-3xl shadow-2xl border border-gray-100 p-7 flex flex-col gap-4"
               >
-                {/* Card header */}
                 <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#e18f23] to-[#E8920F] flex items-center justify-center shadow-lg shadow-emerald-400/30">
+                  <div className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>
                     <span className="text-white text-lg">📚</span>
                   </div>
-                  <span className="text-[10px] font-semibold text-[#C97B1A] bg-[#fdf3e3] px-3 py-1 rounded-full tracking-wide uppercase">
+                  <span className="text-[10px] font-semibold px-3 py-1 rounded-full tracking-wide uppercase" style={{ backgroundColor: colors.goldLight, color: colors.goldHover }}>
                     22 Tracks
                   </span>
                 </div>
 
-                {/* Category list */}
                 <div className="space-y-2">
                   {CATEGORIES.slice(1).map((cat, i) => {
                     const a = catAccent[cat];
@@ -486,10 +426,10 @@ export default function Services() {
                         className="flex items-center justify-between bg-gray-50/80 rounded-xl px-3 py-2"
                       >
                         <div className="flex items-center gap-2">
-                          <span className={`w-1.5 h-1.5 rounded-full ${a.dot}`} />
-                          <span className="text-xs font-semibold text-gray-700">{cat}</span>
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: a.dot }} />
+                          <span className="text-xs font-semibold" style={{ color: colors.body }}>{cat}</span>
                         </div>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${a.pill}`}>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: a.pillBg, color: a.pillText }}>
                           {count} tracks
                         </span>
                       </motion.div>
@@ -497,14 +437,12 @@ export default function Services() {
                   })}
                 </div>
 
-                {/* Bottom chip */}
-                <div className="flex items-center gap-2 bg-[#fdf3e3] rounded-xl px-3 py-2.5 text-xs text-gray-500 mt-1">
-                  <span className="text-emerald-500">✦</span>
-                  <span>All tracks <strong className="text-[#C97B1A]">100% free</strong></span>
+                <div className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs mt-1" style={{ backgroundColor: colors.goldLight, color: colors.muted }}>
+                  <span style={{ color: colors.gold }}>✦</span>
+                  <span>All tracks <strong style={{ color: colors.goldHover }}>100% free</strong></span>
                 </div>
               </motion.div>
 
-              {/* Floating chip top-right */}
               <motion.div
                 animate={{ y: [0, -8, 0], x: [0, 4, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
@@ -512,12 +450,11 @@ export default function Services() {
               >
                 <span className="text-base">🌍</span>
                 <div>
-                  <div className="text-xs font-semibold text-gray-800">45 Countries</div>
-                  <div className="text-[10px] text-gray-400">Mentors active</div>
+                  <div className="text-xs font-semibold" style={{ color: colors.body }}>45 Countries</div>
+                  <div className="text-[10px]" style={{ color: colors.muted }}>Mentors active</div>
                 </div>
               </motion.div>
 
-              {/* Floating chip bottom-left */}
               <motion.div
                 animate={{ y: [0, 10, 0], x: [0, -4, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
@@ -525,34 +462,32 @@ export default function Services() {
               >
                 <span className="text-base">🏆</span>
                 <div>
-                  <div className="text-xs font-semibold text-gray-800">3,200+ Graduates</div>
-                  <div className="text-[10px] text-gray-400">hired globally</div>
+                  <div className="text-xs font-semibold" style={{ color: colors.body }}>3,200+ Graduates</div>
+                  <div className="text-[10px]" style={{ color: colors.muted }}>hired globally</div>
                 </div>
               </motion.div>
             </motion.div>
           </div>
         </motion.div>
 
-        {/* Scroll hint */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.2 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
-          <span className="text-[10px] tracking-[0.2em] uppercase text-gray-400">scroll</span>
+          <span className="text-[10px] tracking-[0.2em] uppercase" style={{ color: colors.muted }}>scroll</span>
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ duration: 1.8, repeat: Infinity }}
             className="w-5 h-8 border border-gray-300 rounded-full flex items-start justify-center pt-1.5"
           >
-            <div className="w-1 h-1.5 bg-gray-400 rounded-full" />
+            <div className="w-1 h-1.5 rounded-full" style={{ backgroundColor: colors.muted }} />
           </motion.div>
         </motion.div>
       </motion.section>
 
-      {/* ═══════════════════════════════════ MARQUEE STRIP (same as Home) ══ */}
-      <div className="relative bg-gray-900 py-4 overflow-hidden border-y border-gray-800">
+      <div className="relative py-4 overflow-hidden border-y" style={{ backgroundColor: colors.sidebar, borderColor: colors.onDarkBorder }}>
         <motion.div
           animate={{ x: ['0%', '-50%'] }}
           transition={{ duration: 24, repeat: Infinity, ease: 'linear' }}
@@ -567,7 +502,8 @@ export default function Services() {
             return doubled.map((item, j) => (
               <span
                 key={`${i}-${j}`}
-                className={`text-sm font-medium tracking-wide ${j % 2 === 0 ? 'text-emerald-400' : 'text-gray-400'}`}
+                className="text-sm font-medium tracking-wide"
+                style={{ color: j % 2 === 0 ? colors.gold : colors.onDarkMuted }}
               >
                 {item}
               </span>
@@ -576,7 +512,6 @@ export default function Services() {
         </motion.div>
       </div>
 
-      {/* ═══════════════════════════════════ STICKY FILTER BAR ══ */}
       <div
         ref={filterRef}
         className="sticky top-[72px] z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm"
@@ -596,18 +531,17 @@ export default function Services() {
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.95 }}
                   layout
-                  className={`relative whitespace-nowrap flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 flex-shrink-0
-                    ${isActive
-                      ? 'bg-gray-900 text-white shadow-sm'
-                      : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50 border border-transparent hover:border-gray-100'
-                    }`}
+                  className="relative whitespace-nowrap flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 flex-shrink-0 border border-transparent"
+                  style={isActive ? { backgroundColor: colors.sidebar, color: colors.white } : { color: colors.muted }}
                 >
                   {accent && (
-                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${accent.dot} ${isActive ? 'opacity-60' : ''}`} />
+                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: accent.dot, opacity: isActive ? 0.6 : 1 }} />
                   )}
                   {cat}
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold
-                    ${isActive ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-400'}`}>
+                  <span
+                    className="text-[10px] px-1.5 py-0.5 rounded-full font-bold"
+                    style={isActive ? { backgroundColor: 'rgba(255,255,255,0.2)', color: colors.white } : { backgroundColor: colors.badgeNeutral, color: colors.muted }}
+                  >
                     {count}
                   </span>
                 </motion.button>
@@ -622,9 +556,10 @@ export default function Services() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 6 }}
                   transition={{ duration: 0.2 }}
-                  className="text-[11px] text-gray-400 whitespace-nowrap"
+                  className="text-[11px] whitespace-nowrap"
+                  style={{ color: colors.muted }}
                 >
-                  <span className="font-semibold text-gray-700">{filtered.length}</span> tracks
+                  <span className="font-semibold" style={{ color: colors.body }}>{filtered.length}</span> tracks
                 </motion.span>
               </AnimatePresence>
             </div>
@@ -632,11 +567,9 @@ export default function Services() {
         </div>
       </div>
 
-      {/* ═══════════════════════════════════ SERVICES GRID ══ */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
 
-          {/* Section label */}
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab + '-label'}
@@ -646,16 +579,15 @@ export default function Services() {
               transition={{ duration: 0.3 }}
               className="flex items-center gap-4 mb-12"
             >
-              <div className="h-px w-8 bg-[#C97B1A]" />
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]">
+              <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: colors.gold }}>
                 {activeTab === ALL ? 'All Programmes' : activeTab}
               </span>
               <div className="h-px flex-1 bg-gray-100" />
-              <span className="text-xs text-gray-400">{filtered.length} available</span>
+              <span className="text-xs" style={{ color: colors.muted }}>{filtered.length} available</span>
             </motion.div>
           </AnimatePresence>
 
-          {/* Grid with layout animation */}
           <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             <AnimatePresence mode="popLayout">
               {filtered.map((service, index) => {
@@ -667,24 +599,19 @@ export default function Services() {
                     initial={{ opacity: 0, scale: 0.92, y: 30 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                    transition={{
-                      duration: 0.38,
-                      delay: index * 0.035,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    className={`group relative rounded-3xl border border-gray-100 bg-white overflow-hidden cursor-pointer
-                      hover:shadow-xl hover:shadow-black/5 transition-all duration-300 ${accent.glow}`}
+                    transition={{ duration: 0.38, delay: index * 0.035, ease: [0.16, 1, 0.3, 1] }}
+                    className="group relative rounded-3xl border border-gray-100 bg-white overflow-hidden cursor-pointer hover:shadow-xl hover:shadow-black/5 transition-all duration-300"
                   >
-                    {/* Hover flood */}
                     <div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                      style={{ background: 'radial-gradient(ellipse at top left,rgba(16,185,129,0.04) 0%,transparent 65%)' }}
+                      style={{ background: 'radial-gradient(ellipse at top left,rgba(26,82,118,0.05) 0%,transparent 65%)' }}
                     />
-                    {/* Bottom bar reveal */}
-                    <div className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r ${accent.bar} origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`} />
+                    <div
+                      className="absolute bottom-0 left-0 w-full h-0.5 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
+                      style={{ background: `linear-gradient(90deg, ${accent.barFrom}, ${accent.barTo})` }}
+                    />
 
                     <div className="p-7 flex flex-col min-h-[270px]">
-                      {/* Top row */}
                       <div className="flex items-start justify-between mb-5">
                         <motion.div
                           whileHover={{ rotate: 10, scale: 1.12 }}
@@ -693,43 +620,40 @@ export default function Services() {
                         >
                           {service.icon}
                         </motion.div>
-                        <span className={`text-[10px] font-bold px-3 py-1 rounded-full ${accent.pill} tracking-wide`}>
+                        <span className="text-[10px] font-bold px-3 py-1 rounded-full tracking-wide" style={{ backgroundColor: accent.pillBg, color: accent.pillText }}>
                           {service.category}
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#C97B1A] transition-colors duration-200">
+                      <h3 className="text-lg font-bold mb-2 transition-colors duration-200 hover:text-[#D4A017]" style={{ color: colors.body }}>
                         {service.title}
                       </h3>
 
-                      <p className="text-gray-500 text-sm leading-relaxed flex-1">
+                      <p className="text-sm leading-relaxed flex-1" style={{ color: colors.muted }}>
                         {service.description}
                       </p>
 
-                      {/* Detail — smooth height reveal */}
                       <motion.p
                         initial={false}
-                        className="text-gray-400 text-xs leading-relaxed overflow-hidden"
-                        style={{ maxHeight: 0 }}
+                        className="text-xs leading-relaxed overflow-hidden"
+                        style={{ maxHeight: 0, color: colors.muted }}
                         whileHover={{ maxHeight: 40 }}
                         transition={{ duration: 0.3 }}
                       >
                         {service.details}
                       </motion.p>
 
-                      {/* Footer */}
                       <div className="mt-5 pt-4 border-t border-gray-50 flex items-center justify-between">
-                        <span className={`text-[11px] font-semibold px-3 py-1 rounded-full ${accent.pill}`}>
+                        <span className="text-[11px] font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: accent.pillBg, color: accent.pillText }}>
                           {service.stats}
                         </span>
                         <motion.span
                           whileHover={{ x: 3 }}
-                          className="text-xs font-semibold text-gray-400 group-hover:text-[#C97B1A] transition-colors flex items-center gap-1"
+                          className="text-xs font-semibold transition-colors flex items-center gap-1 hover:text-[#D4A017]"
+                          style={{ color: colors.muted }}
                         >
                           Enroll Free
-                          <motion.span animate={{ x: [0, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>
-                            →
-                          </motion.span>
+                          <motion.span animate={{ x: [0, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>→</motion.span>
                         </motion.span>
                       </div>
                     </div>
@@ -741,12 +665,9 @@ export default function Services() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════ BOTTOM CTA — matches Home FinalCTA ══ */}
       <section className="relative py-32 overflow-hidden">
-        {/* Same gradient as Home FinalCTA */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a2e1a] via-teal-600 to-cyan-700" />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${colors.sidebar} 0%, ${colors.primary} 55%, ${colors.secondary} 100%)` }} />
 
-        {/* Animated waves — same as Home */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
             animate={{ x: [0, -50, 0] }}
@@ -827,7 +748,8 @@ export default function Services() {
                   <motion.button
                     whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(0,0,0,0.3)' }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-10 py-5 bg-white text-[#1a2e1a] font-bold rounded-full shadow-2xl text-base hover:shadow-3xl transition-all duration-300 flex items-center gap-2"
+                    className="px-10 py-5 bg-white font-bold rounded-full shadow-2xl text-base transition-all duration-300 flex items-center gap-2 hover:bg-[#FCF3CF]"
+                    style={{ color: colors.title }}
                   >
                     Get Started Free
                     <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
@@ -847,7 +769,6 @@ export default function Services() {
               </Magnetic>
             </motion.div>
 
-            {/* Feature pills — same as Home FinalCTA */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -874,7 +795,6 @@ export default function Services() {
   );
 }
 
-// ── Mouse gradient helper (inside file to avoid prop drilling) ────────────────
 function MouseGradient() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
 
@@ -888,7 +808,7 @@ function MouseGradient() {
     <div
       className="absolute inset-0 opacity-30 pointer-events-none transition-opacity duration-300"
       style={{
-        backgroundImage: `radial-gradient(circle at ${pos.x}px ${pos.y}px, rgba(16,185,129,0.1) 0%, transparent 50%)`,
+        backgroundImage: `radial-gradient(circle at ${pos.x}px ${pos.y}px, rgba(26,82,118,0.10) 0%, transparent 50%)`,
       }}
     />
   );
