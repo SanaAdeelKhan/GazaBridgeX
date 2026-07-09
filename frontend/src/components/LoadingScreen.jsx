@@ -9,22 +9,16 @@ export default function LoadingScreen() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
       className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: colors.pageBg }}
+      style={{ backgroundColor: colors.primaryLight }}
     >
       <div className="text-center">
         <motion.div
-          animate={{
-            rotate: 360,
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            rotate: { duration: 2, repeat: Infinity, ease: 'linear' },
-            scale: { duration: 1, repeat: Infinity, ease: 'easeInOut' },
-          }}
-          className="w-20 h-20 mx-auto mb-8 rounded-full flex items-center justify-center border-4 bg-white"
-          style={{ borderColor: colors.gold }}
+          animate={{ scale: [1, 1.06, 1] }}
+          transition={{ duration: 1.4, repeat: Infinity, ease: 'easeInOut' }}
+          className="mx-auto mb-8 rounded-2xl flex items-center justify-center border-2 bg-white p-3"
+          style={{ borderColor: colors.gold, width: '220px', height: '140px' }}
         >
-          <img src="/images/logo-icon-only.png" alt="" className="w-14 h-14 object-contain" />
+          <img src="/logo-full.png" alt="GazaBridge" className="w-full h-full object-contain" />
         </motion.div>
 
         <motion.h2
@@ -42,7 +36,7 @@ export default function LoadingScreen() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          style={{ color: colors.muted }}
+          style={{ color: colors.body }}
         >
           Building bridges through education...
         </motion.p>
