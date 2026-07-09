@@ -4,7 +4,8 @@
 
 import { Link, useLocation } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
+import colors from '../theme/colors';
 
 // ─── Noise overlay ─────────────────────────────────────────────────────────
 function NoiseOverlay() {
@@ -32,7 +33,7 @@ function FooterMarquee() {
   const doubled = [...words, ...words];
 
   return (
-    <div className="relative overflow-hidden border-b border-white/[0.06] py-4">
+    <div className="relative overflow-hidden border-b py-4" style={{ borderColor: colors.onDarkBorder }}>
       <motion.div
         animate={{ x: ['0%', '-50%'] }}
         transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
@@ -41,10 +42,8 @@ function FooterMarquee() {
         {doubled.map((w, i) => (
           <span
             key={i}
-            className={`text-xs font-medium tracking-widest uppercase ${
-              w === '✦' ? 'text-emerald-500' : 'text-gray-600'
-            }`}
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
+            className="text-xs font-medium tracking-widest uppercase"
+            style={{ fontFamily: "'DM Sans', sans-serif", color: w === '✦' ? colors.gold : colors.onDarkMuted }}
           >
             {w}
           </span>
@@ -131,8 +130,8 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="relative bg-gray-900 text-white overflow-hidden"
-      style={{ fontFamily: "'DM Sans', sans-serif" }}
+      className="relative text-white overflow-hidden"
+      style={{ backgroundColor: colors.sidebar, fontFamily: "'DM Sans', sans-serif", '--gb-gold': colors.gold }}
     >
       <NoiseOverlay />
 
@@ -141,15 +140,15 @@ export default function Footer() {
         className="absolute inset-0 pointer-events-none opacity-[0.03]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(16,185,129,1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(16,185,129,1) 1px, transparent 1px)`,
+            linear-gradient(${colors.onDarkBorder} 1px, transparent 1px),
+            linear-gradient(90deg, ${colors.onDarkBorder} 1px, transparent 1px)`,
           backgroundSize: '80px 80px',
         }}
       />
 
       {/* Glow orbs */}
-      <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] bg-[#4d4d1c]/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-[300px] h-[200px] bg-teal-600/8 rounded-full blur-[80px] pointer-events-none" />
+      <div className="absolute bottom-0 left-1/4 w-[500px] h-[300px] rounded-full blur-[120px] pointer-events-none" style={{ backgroundColor: colors.goldGlow }} />
+      <div className="absolute top-0 right-1/4 w-[300px] h-[200px] rounded-full blur-[80px] pointer-events-none" style={{ backgroundColor: colors.oliveGlow }} />
 
       {/* Scrolling marquee strip */}
       <FooterMarquee />
@@ -169,14 +168,14 @@ export default function Footer() {
           >
             {/* Logo */}
             <Link to="/" className="inline-flex items-center group">
-              <div className="rounded-full overflow-hidden border-4 p-1 bg-white inline-flex flex-shrink-0" style={{ borderColor: '#D4A017' }}>
-                <img src="/logo-full.png" alt="GazaBridge" className="h-12 w-auto object-contain" />
+              <div className="rounded-2xl overflow-hidden border-2 p-0 bg-white inline-flex flex-shrink-0" style={{ borderColor: colors.gold }}>
+                <img src="/logo-full.png" alt="GazaBridge" className="h-32 w-[201px] object-contain" />
               </div>
             </Link>
 
             {/* Tagline */}
-            <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Empowering people in Gaza through free digital skills education. 
+            <p className="text-sm leading-relaxed max-w-xs" style={{ color: colors.onDarkMuted }}>
+              Empowering people in Gaza through free digital skills education.
               Connecting passionate volunteers with talented learners — worldwide, forever free.
             </p>
 
@@ -191,7 +190,8 @@ export default function Footer() {
                   aria-label={s.label}
                   whileHover={{ scale: 1.15, y: -2 }}
                   whileTap={{ scale: 0.93 }}
-                  className="w-9 h-9 rounded-xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center text-gray-400 hover:text-emerald-400 hover:bg-[#fdf3e3]0/10 hover:border-[#C97B1A]/20 transition-colors duration-200"
+                  className="w-9 h-9 rounded-xl flex items-center justify-center transition-colors duration-200 hover:text-[var(--gb-gold)]"
+                  style={{ backgroundColor: colors.onDarkCard, borderWidth: 1, borderColor: colors.onDarkBorder, color: colors.onDarkMuted }}
                 >
                   {s.icon}
                 </motion.a>
@@ -202,9 +202,10 @@ export default function Footer() {
             <motion.a
               href="mailto:hello@gazabridge.org"
               whileHover={{ scale: 1.02 }}
-              className="inline-flex items-center gap-2 text-xs text-gray-500 hover:text-emerald-400 transition-colors group"
+              className="inline-flex items-center gap-2 text-xs transition-colors group hover:text-[var(--gb-gold)]"
+              style={{ color: colors.onDarkMuted }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#fdf3e3]0 group-hover:animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full group-hover:animate-pulse" style={{ backgroundColor: colors.gold }} />
               hello@gazabridge.org
             </motion.a>
           </motion.div>
@@ -220,8 +221,8 @@ export default function Footer() {
             >
               {/* Category heading */}
               <div className="flex items-center gap-2 mb-5">
-                <div className="h-px w-4 bg-[#fdf3e3]0/50" />
-                <h4 className="text-[11px] font-bold tracking-[0.18em] uppercase text-gray-500">
+                <div className="h-px w-4" style={{ backgroundColor: colors.onDarkBorder }} />
+                <h4 className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: colors.onDarkMuted }}>
                   {category}
                 </h4>
               </div>
@@ -237,10 +238,12 @@ export default function Footer() {
                   >
                     <Link
                       to={link.href}
-                      className="group flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-400 transition-colors duration-200"
+                      className="group flex items-center gap-2 text-sm transition-colors duration-200 hover:text-[var(--gb-gold)]"
+                      style={{ color: colors.onDarkMuted }}
                     >
                       <motion.span
-                        className="w-0 h-px bg-[#C97B1A] group-hover:w-3 transition-all duration-300"
+                        className="w-0 h-px group-hover:w-3 transition-all duration-300"
+                        style={{ backgroundColor: colors.gold }}
                       />
                       {link.name}
                     </Link>
@@ -257,15 +260,16 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          className="border-t border-white/[0.07] pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
+          className="border-t pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
+          style={{ borderColor: colors.onDarkBorder }}
         >
           {/* Left */}
           <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-600">
+            <span className="text-xs" style={{ color: colors.onDarkMuted }}>
               © {new Date().getFullYear()} GazaBridge.
             </span>
-            <span className="w-1 h-1 rounded-full bg-gray-700" />
-            <span className="text-xs text-gray-600">
+            <span className="w-1 h-1 rounded-full" style={{ backgroundColor: colors.onDarkMuted }} />
+            <span className="text-xs" style={{ color: colors.onDarkMuted }}>
               Made with{' '}
               <motion.span
                 animate={{ scale: [1, 1.3, 1] }}
@@ -279,10 +283,11 @@ export default function Footer() {
           {/* Centre — free badge */}
           <motion.div
             whileHover={{ scale: 1.04 }}
-            className="flex items-center gap-2 px-4 py-1.5 bg-[#fdf3e3]0/10 border border-[#C97B1A]/20 rounded-full"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full"
+            style={{ backgroundColor: colors.goldLight + '1A', borderWidth: 1, borderColor: colors.gold + '33' }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C97B1A] animate-pulse" />
-            <span className="text-[11px] font-semibold text-emerald-400 tracking-wide uppercase">
+            <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: colors.gold }} />
+            <span className="text-[11px] font-semibold tracking-wide uppercase" style={{ color: colors.gold }}>
               100% Free Forever
             </span>
           </motion.div>
@@ -296,7 +301,8 @@ export default function Footer() {
               <Link
                 key={l.name}
                 to={l.href}
-                className="text-xs text-gray-600 hover:text-emerald-400 transition-colors duration-200"
+                className="text-xs transition-colors duration-200 hover:text-[var(--gb-gold)]"
+                style={{ color: colors.onDarkMuted }}
               >
                 {l.name}
               </Link>
@@ -312,8 +318,8 @@ export default function Footer() {
           className="text-center leading-none"
         >
           <span
-            className="text-[clamp(6rem,18vw,16rem)] font-bold text-white/[0.02]"
-            style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+            className="text-[clamp(6rem,18vw,16rem)] font-bold"
+            style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.onDarkWatermark }}
           >
             GazaBridge
           </span>
