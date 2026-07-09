@@ -130,9 +130,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.02 }}
               transition={{ type: 'spring', stiffness: 400, damping: 20 }}
             >
-              <div className="rounded-full overflow-hidden border-4 p-1 bg-white inline-flex flex-shrink-0" style={{ borderColor: '#D4A017' }}>
-                <img src="/logo-full.png" alt="GazaBridge" className="h-16 w-auto object-contain" />
-              </div>
+              <img src="/logo-full.png" alt="GazaBridge" className="h-28 w-[176px] object-contain flex-shrink-0 mt-2" />
             </motion.div>
           </Link>
 
