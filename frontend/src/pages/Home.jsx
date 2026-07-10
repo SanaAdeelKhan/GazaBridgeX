@@ -531,11 +531,11 @@ function Hero() {
 // MARQUEE STRIP
 // ─────────────────────────────────────────────────────────────────────────────
 function MarqueeStrip() {
-  const items = ['Web Development', '✦', 'UI/UX Design', '✦', 'Data Science', '✦', 'Digital Marketing', '✦', 'Freelancing', '✦', 'AI & Machine Learning', '✦', 'Cybersecurity', '✦', 'Mobile Apps', '✦'];
+  const items = ['Web Development', '✦\uFE0E', 'UI/UX Design', '✦\uFE0E', 'Data Science', '✦\uFE0E', 'Digital Marketing', '✦\uFE0E', 'Freelancing', '✦\uFE0E', 'AI & Machine Learning', '✦\uFE0E', 'Cybersecurity', '✦\uFE0E', 'Mobile Apps', '✦\uFE0E'];
   const doubled = [...items, ...items];
 
   return (
-    <div className="relative py-4 overflow-hidden border-y" style={{ backgroundColor: colors.sidebar, borderColor: colors.primary }}>
+    <div className="relative py-4 overflow-hidden border-y" style={{ backgroundColor: colors.sidebar, borderColor: colors.onDarkBorder }}>
       <motion.div
         animate={{ x: ['0%', '-50%'] }}
         transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
@@ -545,7 +545,7 @@ function MarqueeStrip() {
           <span
             key={i}
             className="text-sm font-medium tracking-wide"
-            style={{ fontFamily: "'DM Sans', sans-serif", color: item === '✦' ? colors.gold : colors.onDarkMuted }}
+            style={{ fontFamily: "'DM Sans', sans-serif", color: item.startsWith('✦') ? colors.gold : colors.onDarkMuted }}
           >
             {item}
           </span>
