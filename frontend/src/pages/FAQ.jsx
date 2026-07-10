@@ -1,6 +1,5 @@
 // frontend/src/pages/FAQ.jsx
-// Design system: Instrument Serif + DM Sans — exact match to Home.jsx hero
-// Deps: framer-motion (already installed)
+// Retheme: navy/gold/olive design system (colors.js) — matches Home.jsx / HowItWorks.jsx / Services.jsx / AboutUs.jsx
 
 import {
   motion,
@@ -12,8 +11,8 @@ import {
 } from 'framer-motion';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { faqData } from '../data/faq';
+import colors from '../theme/colors';
 
-// ─── Helpers (same across all pages) ─────────────────────────────────────────
 function NoiseOverlay() {
   return (
     <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.035] mix-blend-overlay" xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +34,7 @@ function MouseGradient() {
   }, []);
   return (
     <div className="absolute inset-0 opacity-30 pointer-events-none" style={{
-      backgroundImage: `radial-gradient(circle at ${pos.x}px ${pos.y}px, rgba(16,185,129,0.1) 0%, transparent 50%)`,
+      backgroundImage: `radial-gradient(circle at ${pos.x}px ${pos.y}px, rgba(26,82,118,0.10) 0%, transparent 50%)`,
     }} />
   );
 }
@@ -60,7 +59,7 @@ function CursorBlob() {
   }, []);
   return (
     <div ref={blobRef} className="fixed top-0 left-0 w-[500px] h-[500px] pointer-events-none z-0" style={{ willChange: 'transform' }}>
-      <div className="w-full h-full rounded-full bg-[#C97B1A]/6 blur-[80px]" />
+      <div className="w-full h-full rounded-full blur-[80px]" style={{ backgroundColor: colors.goldGlow }} />
     </div>
   );
 }
@@ -84,7 +83,6 @@ function Magnetic({ children, strength = 0.45 }) {
   );
 }
 
-// ─── FAQ Item ─────────────────────────────────────────────────────────────────
 function FAQItem({ faq, index }) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -94,33 +92,34 @@ function FAQItem({ faq, index }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-30px' }}
       transition={{ delay: index * 0.04, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className={`group relative rounded-2xl border overflow-hidden transition-all duration-300
-        ${isOpen ? 'border-emerald-200 shadow-md shadow-emerald-50' : 'border-gray-100 hover:border-gray-200 shadow-sm'}`}
+      className="group relative rounded-2xl border overflow-hidden transition-all duration-300 shadow-sm"
+      style={{ borderColor: isOpen ? colors.gold : '#E8EAEC' }}
     >
-      {/* Top accent bar — visible when open */}
-      <div className={`absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#e18f23] to-[#E8920F] transition-transform duration-300 origin-left
-        ${isOpen ? 'scale-x-100' : 'scale-x-0'}`} />
+      <div
+        className="absolute top-0 left-0 w-full h-0.5 transition-transform duration-300 origin-left"
+        style={{ background: `linear-gradient(90deg, ${colors.gold}, ${colors.goldHover})`, transform: isOpen ? 'scaleX(1)' : 'scaleX(0)' }}
+      />
 
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-7 py-5 text-left flex justify-between items-center bg-white hover:bg-gray-50/80 transition-colors group"
       >
         <div className="flex items-center gap-4 flex-1 pr-4">
-          {/* Index number */}
           <span className="text-[11px] font-bold text-gray-300 font-mono flex-shrink-0">
             {String(index + 1).padStart(2, '0')}
           </span>
-          <span className="text-base font-semibold text-gray-900 group-hover:text-[#C97B1A] transition-colors duration-200">
+          <span className="text-base font-semibold transition-colors duration-200 hover:text-[#D4A017]" style={{ color: colors.body }}>
             {faq.question}
           </span>
         </div>
 
-        {/* Toggle icon */}
         <motion.div
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300
-            ${isOpen ? 'bg-[#fdf3e3]0 text-white' : 'bg-gray-100 text-gray-400 group-hover:bg-[#fdf3e3] group-hover:text-emerald-500'}`}
+          className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 border"
+          style={isOpen
+            ? { backgroundColor: colors.gold, color: '#ffffff', borderColor: colors.goldHover }
+            : { backgroundColor: colors.badgeNeutral, color: colors.muted, borderColor: '#E8EAEC' }}
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -144,8 +143,8 @@ function FAQItem({ faq, index }) {
               transition={{ duration: 0.25, delay: 0.05 }}
               className="px-7 pb-6 pt-1 flex gap-4"
             >
-              <div className="w-px bg-emerald-200 flex-shrink-0 ml-[42px]" />
-              <p className="text-gray-500 text-sm leading-relaxed">{faq.answer}</p>
+              <div className="w-px flex-shrink-0 ml-[42px]" style={{ backgroundColor: colors.goldLight }} />
+              <p className="text-sm leading-relaxed" style={{ color: colors.muted }}>{faq.answer}</p>
             </motion.div>
           </motion.div>
         )}
@@ -173,35 +172,29 @@ export default function FAQ() {
     : faqData;
 
   return (
-    <div className="bg-[#f8faf8]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ backgroundColor: colors.primaryLight, fontFamily: "'DM Sans', sans-serif" }}>
       <CursorBlob />
 
-      {/* ══════════════════════════════════════════════ HERO ══ */}
       <motion.section
         ref={heroRef}
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-[85vh] flex items-center overflow-hidden bg-[#f8faf8] pt-24"
+        style={{ opacity: heroOpacity, scale: heroScale, backgroundColor: colors.primaryLight }}
+        className="relative min-h-[85vh] flex items-center overflow-hidden pt-24"
       >
         <NoiseOverlay />
         <MouseGradient />
 
-        {/* Grid — identical to Home */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          backgroundImage: `
-            linear-gradient(rgba(16,185,129,0.06) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(16,185,129,0.06) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(${colors.primaryGlow} 1px, transparent 1px), linear-gradient(90deg, ${colors.primaryGlow} 1px, transparent 1px)`,
           backgroundSize: '80px 80px',
         }} />
 
-        {/* Architectural rings — same as Home */}
-        <motion.div style={{ y: heroY }}
-          className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-emerald-200/60 pointer-events-none" />
-        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]) }}
-          className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border border-emerald-100/40 pointer-events-none" />
-        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]) }}
-          className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#fdf3e3]/80 pointer-events-none" />
+        <motion.div style={{ y: heroY, borderColor: colors.ringBorderStrong }}
+          className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border pointer-events-none" />
+        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]), borderColor: colors.ringBorderSoft }}
+          className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border pointer-events-none" />
+        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]), backgroundColor: colors.oliveLight, opacity: 0.7 }}
+          className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none" />
 
-        {/* Spinning badge — same as Home */}
         <motion.div
           initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.6, duration: 0.8 }}
@@ -214,41 +207,39 @@ export default function FAQ() {
           >
             <svg className="absolute inset-0 w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 112 112">
               <path id="ring-faq" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
-              <text fontSize="10" fontFamily="DM Sans, sans-serif" fill="#059669" fontWeight="500" letterSpacing="3">
+              <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.gold} fontWeight="500" letterSpacing="3">
                 <textPath href="#ring-faq">12 QUESTIONS • ALL ANSWERS • 12 QUESTIONS • </textPath>
               </text>
             </svg>
-            <div className="w-14 h-14 rounded-full bg-[#fdf3e3]0 flex items-center justify-center shadow-xl shadow-emerald-500/30">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl" style={{ backgroundColor: colors.gold, boxShadow: '0 10px 25px rgba(212,160,23,0.4)' }}>
               <span className="text-white text-xl">✦</span>
             </div>
           </motion.div>
         </motion.div>
 
-        {/* Hero content */}
         <motion.div style={{ y: heroY }} className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl space-y-8">
 
-            {/* Eyebrow */}
             <motion.div
               initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-emerald-200 shadow-lg"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border"
+              style={{ borderColor: colors.gold }}
             >
               <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
                 className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C97B1A] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#fdf3e3]0" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: colors.gold }} />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ backgroundColor: colors.gold }} />
               </motion.span>
-              <span className="text-sm font-semibold text-[#1a2e1a]">{faqData.length} Questions Answered</span>
+              <span className="text-sm font-semibold" style={{ color: colors.title }}>{faqData.length} Questions Answered</span>
             </motion.div>
 
-            {/* Headline */}
             <div className="space-y-1 overflow-hidden">
               <motion.h1
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-gray-900 leading-[0.95] tracking-tight"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700 }}
+                className="leading-[0.95] tracking-tight"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700, color: colors.headingDark }}
               >
                 Got
               </motion.h1>
@@ -256,20 +247,15 @@ export default function FAQ() {
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.38, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                 className="italic leading-[0.95] tracking-tight"
-                style={{
-                  fontFamily: "'Instrument Serif', Georgia, serif",
-                  fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700,
-                  background: 'linear-gradient(90deg,#10b981,#14b8a6,#06b6d4)',
-                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                }}
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700, color: colors.gold }}
               >
                 Questions?
               </motion.h1>
               <motion.h1
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-gray-900 leading-[0.95] tracking-tight"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700 }}
+                className="leading-[0.95] tracking-tight"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700, color: colors.headingDark }}
               >
                 We Have Answers.
               </motion.h1>
@@ -278,18 +264,18 @@ export default function FAQ() {
             <motion.p
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.62, duration: 0.8 }}
-              className="text-gray-500 text-lg leading-relaxed max-w-lg"
+              className="text-lg leading-relaxed max-w-lg"
+              style={{ color: colors.muted }}
             >
               Everything you need to know about GazaBridge — how it works, who it's for, and why it's free.
             </motion.p>
 
-            {/* Search bar */}
             <motion.div
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.75, duration: 0.8 }}
               className="relative max-w-md"
             >
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: colors.muted }}>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -299,7 +285,8 @@ export default function FAQ() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search questions..."
-                className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-full text-sm text-gray-700 placeholder-gray-400 shadow-sm focus:outline-none focus:border-[#C97B1A] focus:ring-2 focus:ring-emerald-400/20 transition-all duration-200"
+                className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-full text-sm shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 focus:border-[#D4A017]"
+                style={{ color: colors.body, '--tw-ring-color': 'rgba(212,160,23,0.2)' }}
               />
               <AnimatePresence>
                 {search && (
@@ -319,22 +306,19 @@ export default function FAQ() {
           </div>
         </motion.div>
 
-        {/* Scroll hint */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="text-[10px] tracking-[0.2em] uppercase text-gray-400">scroll</span>
+          <span className="text-[10px] tracking-[0.2em] uppercase" style={{ color: colors.muted }}>scroll</span>
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.8, repeat: Infinity }}
             className="w-5 h-8 border border-gray-300 rounded-full flex items-start justify-center pt-1.5">
-            <div className="w-1 h-1.5 bg-gray-400 rounded-full" />
+            <div className="w-1 h-1.5 rounded-full" style={{ backgroundColor: colors.muted }} />
           </motion.div>
         </motion.div>
       </motion.section>
 
-      {/* ══════════════════════════════════════════════ FAQ LIST ══ */}
       <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-6">
 
-          {/* Label row */}
           <AnimatePresence mode="wait">
             <motion.div
               key={search}
@@ -342,16 +326,15 @@ export default function FAQ() {
               exit={{ opacity: 0, y: 8 }} transition={{ duration: 0.25 }}
               className="flex items-center gap-4 mb-10"
             >
-              <div className="h-px w-8 bg-[#C97B1A]" />
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]">
+              <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: colors.gold }}>
                 {search ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${search}"` : 'All Questions'}
               </span>
               <div className="h-px flex-1 bg-gray-100" />
-              <span className="text-xs text-gray-400">{filtered.length} total</span>
+              <span className="text-xs" style={{ color: colors.muted }}>{filtered.length} total</span>
             </motion.div>
           </AnimatePresence>
 
-          {/* FAQ items */}
           <AnimatePresence mode="popLayout">
             {filtered.length > 0 ? (
               <motion.div layout className="space-y-3">
@@ -366,15 +349,15 @@ export default function FAQ() {
                 className="text-center py-20"
               >
                 <div className="text-5xl mb-4">🔍</div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}>
+                <h3 className="text-xl font-bold mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}>
                   No matches found
                 </h3>
-                <p className="text-gray-500 text-sm mb-6">Try a different search term or browse all questions.</p>
+                <p className="text-sm mb-6" style={{ color: colors.muted }}>Try a different search term or browse all questions.</p>
                 <motion.button
                   whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                   onClick={() => setSearch('')}
-                  className="px-6 py-3 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-[#1a2e1a] transition-colors"
+                  className="px-6 py-3 text-white text-sm font-semibold rounded-full transition-colors"
+                  style={{ backgroundColor: colors.sidebar }}
                 >
                   Clear search
                 </motion.button>
@@ -382,14 +365,12 @@ export default function FAQ() {
             )}
           </AnimatePresence>
 
-          {/* Still have questions card */}
           <motion.div
             initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.65 }}
             className="mt-16 relative rounded-3xl overflow-hidden"
           >
-            {/* Gradient bg — matches Home final CTA */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1a2e1a] via-teal-600 to-cyan-700" />
+            <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${colors.sidebar} 0%, ${colors.primary} 55%, ${colors.secondary} 100%)` }} />
             <div className="absolute inset-0 overflow-hidden">
               <motion.div animate={{ x: [0, -30, 0] }} transition={{ duration: 16, repeat: Infinity, ease: 'linear' }}
                 className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] bg-white/5 rounded-full blur-3xl" />
@@ -411,7 +392,8 @@ export default function FAQ() {
                 <motion.a
                   href="mailto:hello@gazabridge.org"
                   whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center gap-2.5 px-8 py-4 bg-white text-[#1a2e1a] font-bold rounded-full shadow-xl hover:bg-[#fdf3e3] transition-colors duration-300 text-sm"
+                  className="inline-flex items-center gap-2.5 px-8 py-4 bg-white font-bold rounded-full shadow-xl transition-colors duration-300 text-sm hover:bg-[#FCF3CF]"
+                  style={{ color: colors.title }}
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
