@@ -4,11 +4,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import colors from '../theme/colors';
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -34,16 +35,11 @@ export default function Login() {
 
     if (result.success) {
       const userData = result.user;
-      // FIXED: Roles are strings from backend
       const adminRoles = ['manager', 'admin', 'superuser'];
-      const isAdmin = userData?.roles?.some(r => adminRoles.includes(r)) || 
-                      userData?.is_staff || 
+      const isAdmin = userData?.roles?.some(r => adminRoles.includes(r)) ||
+                      userData?.is_staff ||
                       userData?.is_superuser;
-      
-      console.log('Login - User:', userData?.email);
-      console.log('Login - Roles:', userData?.roles);
-      console.log('Login - Is Admin:', isAdmin);
-      
+
       navigate(isAdmin ? '/admin' : '/dashboard');
     } else {
       setError(result.error);
@@ -53,61 +49,56 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]" />
-      
+    <div className="min-h-screen flex items-center justify-center pt-32 pb-12 px-4 sm:px-6 lg:px-8 relative">
+      <div className="absolute inset-0" style={{ backgroundColor: colors.primaryLight }} />
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         className="relative max-w-md w-full"
       >
-        {/* Logo */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-xl rotate-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#1a2e1a] to-[#e18f23] bg-clip-text text-transparent">
-              GazaBridge
-            </span>
+          <Link to="/" className="inline-flex items-center justify-center mb-6">
+            <div className="rounded-2xl border-4 p-1 bg-white" style={{ borderColor: colors.gold }}>
+              <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-[126px] object-contain" />
+            </div>
           </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
-          <p className="mt-2 text-gray-600">Sign in to your account to continue</p>
+          <h2 className="text-3xl font-bold" style={{ color: colors.headingDark }}>Welcome back</h2>
+          <p className="mt-2" style={{ color: colors.muted }}>Sign in to your account to continue</p>
         </div>
 
-        {/* Form Card */}
         <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
-          {/* Google Login */}
           <GoogleLoginButton />
-          
+
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">or continue with email</span>
+              <span className="px-4 bg-white" style={{ color: colors.muted }}>or continue with email</span>
             </div>
           </div>
 
-          {/* Error Message */}
           {error && (
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"
+              className="mb-6 p-4 border rounded-xl"
+              style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}
             >
               <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: colors.error }}>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-sm text-red-700">{error}</p>
+                <p className="text-sm" style={{ color: colors.error }}>{error}</p>
               </div>
             </motion.div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                 Email address
               </label>
               <input
@@ -118,13 +109,14 @@ export default function Login() {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none text-gray-900 placeholder-gray-400"
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 transition-all outline-none placeholder-gray-400 focus:border-[#D4A017]"
+                style={{ color: colors.body, '--tw-ring-color': 'rgba(212,160,23,0.25)' }}
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                 Password
               </label>
               <div className="relative">
@@ -136,7 +128,8 @@ export default function Login() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none text-gray-900 placeholder-gray-400"
+                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 transition-all outline-none placeholder-gray-400 focus:border-[#D4A017]"
+                  style={{ color: colors.body, '--tw-ring-color': 'rgba(212,160,23,0.25)' }}
                   placeholder="Enter your password"
                 />
                 <button
@@ -160,7 +153,8 @@ export default function Login() {
               <div className="text-right mt-1">
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-[#C97B1A] hover:text-[#1a2e1a] font-medium transition-colors"
+                  className="text-sm font-medium transition-colors hover:text-[#154360]"
+                  style={{ color: colors.gold }}
                 >
                   Forgot your password?
                 </Link>
@@ -172,7 +166,8 @@ export default function Login() {
               disabled={loading}
               whileHover={{ scale: loading ? 1 : 1.02 }}
               whileTap={{ scale: loading ? 1 : 0.98 }}
-              className="w-full py-3.5 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})`, boxShadow: '0 10px 25px rgba(212,160,23,0.3)' }}
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
@@ -189,9 +184,9 @@ export default function Login() {
           </form>
         </div>
 
-        <p className="text-center mt-6 text-gray-600">
+        <p className="text-center mt-6" style={{ color: colors.muted }}>
           Don't have an account?{' '}
-          <Link to="/register" className="text-[#C97B1A] hover:text-[#1a2e1a] font-semibold">
+          <Link to="/register" className="font-semibold hover:text-[#154360]" style={{ color: colors.gold }}>
             Create one free
           </Link>
         </p>
