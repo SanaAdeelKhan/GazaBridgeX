@@ -1,5 +1,5 @@
 // frontend/src/pages/HowItWorks.jsx
-// Design system: Instrument Serif + DM Sans — exact match to Home.jsx hero
+// Design system: Instrument Serif + DM Sans — retheme matches Home.jsx hero (navy/gold/olive)
 // Deps: framer-motion (already installed)
 
 import {
@@ -12,6 +12,7 @@ import {
 } from 'framer-motion';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import colors from '../theme/colors';
 
 // ─── Noise overlay ────────────────────────────────────────────────────────────
 function NoiseOverlay() {
@@ -38,7 +39,7 @@ function MouseGradient() {
     <div
       className="absolute inset-0 opacity-30 pointer-events-none"
       style={{
-        backgroundImage: `radial-gradient(circle at ${pos.x}px ${pos.y}px, rgba(16,185,129,0.1) 0%, transparent 50%)`,
+        backgroundImage: `radial-gradient(circle at ${pos.x}px ${pos.y}px, rgba(26,82,118,0.10) 0%, transparent 50%)`,
       }}
     />
   );
@@ -65,7 +66,7 @@ function CursorBlob() {
   }, []);
   return (
     <div ref={blobRef} className="fixed top-0 left-0 w-[500px] h-[500px] pointer-events-none z-0" style={{ willChange: 'transform' }}>
-      <div className="w-full h-full rounded-full bg-[#C97B1A]/6 blur-[80px]" />
+      <div className="w-full h-full rounded-full blur-[80px]" style={{ backgroundColor: colors.goldGlow }} />
     </div>
   );
 }
@@ -122,7 +123,7 @@ const seekerWhy = [
 ];
 
 // ─── Step card ────────────────────────────────────────────────────────────────
-function StepCard({ step, index, accentBar }) {
+function StepCard({ step, index, accentColors }) {
   return (
     <motion.div
       initial={{ opacity: 0, x: -30 }}
@@ -133,14 +134,17 @@ function StepCard({ step, index, accentBar }) {
       className="group relative flex items-start gap-5 bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
     >
       {/* Bottom reveal bar */}
-      <div className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r ${accentBar} origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500`} />
+      <div
+        className="absolute bottom-0 left-0 w-full h-0.5 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
+        style={{ background: `linear-gradient(90deg, ${accentColors[0]}, ${accentColors[1]})` }}
+      />
 
       {/* Step number */}
       <div className="flex-shrink-0 flex flex-col items-center gap-1 pt-0.5">
         <motion.div
           whileHover={{ rotate: 10, scale: 1.1 }}
           transition={{ duration: 0.25 }}
-          className="w-11 h-11 rounded-2xl bg-gray-50 group-hover:bg-[#fdf3e3] border border-gray-100 group-hover:border-emerald-200 flex items-center justify-center text-xl transition-all duration-300 shadow-sm"
+          className="w-11 h-11 rounded-2xl bg-gray-50 border border-gray-100 group-hover:border-[#D4A017] flex items-center justify-center text-xl transition-all duration-300 shadow-sm group-hover:bg-[#FCF3CF]"
         >
           {step.icon}
         </motion.div>
@@ -149,39 +153,40 @@ function StepCard({ step, index, accentBar }) {
 
       {/* Content */}
       <div className="flex-1 pt-0.5">
-        <h3 className="text-base font-bold text-gray-900 mb-1 group-hover:text-[#C97B1A] transition-colors duration-200">
+        <h3 className="text-base font-bold mb-1 transition-colors duration-200 hover:text-[#D4A017]" style={{ color: colors.body }}>
           {step.title}
         </h3>
-        <p className="text-gray-500 text-sm leading-relaxed">{step.description}</p>
+        <p className="text-sm leading-relaxed" style={{ color: colors.muted }}>{step.description}</p>
       </div>
     </motion.div>
   );
 }
 
 // ─── Why card ─────────────────────────────────────────────────────────────────
-function WhyCard({ emoji, title, points, gradient }) {
+function WhyCard({ emoji, title, points, accentColors }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-      animate={{ y: [0, -8, 0] }}
-      // animate prop intentionally overrides whileInView after mount — use separate motion.div for float
       className="relative"
     >
       <motion.div
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-black/5 p-8"
+        className="bg-white rounded-3xl border border-gray-100 shadow-xl shadow-black/5 p-8 relative overflow-hidden"
       >
         {/* Top accent line */}
-        <div className={`absolute top-0 left-0 w-full h-1 rounded-t-3xl bg-gradient-to-r ${gradient}`} />
+        <div
+          className="absolute top-0 left-0 w-full h-1 rounded-t-3xl"
+          style={{ background: `linear-gradient(90deg, ${accentColors[0]}, ${accentColors[1]})` }}
+        />
 
         <div className="text-4xl mb-4">{emoji}</div>
         <h3
-          className="text-xl font-bold text-gray-900 mb-5"
-          style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+          className="text-xl font-bold mb-5"
+          style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
         >{title}</h3>
 
         <ul className="space-y-3">
@@ -192,9 +197,13 @@ function WhyCard({ emoji, title, points, gradient }) {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 + i * 0.08 }}
-              className="flex items-start gap-3 text-sm text-gray-600"
+              className="flex items-start gap-3 text-sm"
+              style={{ color: colors.body }}
             >
-              <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fdf3e3] border border-emerald-200 flex items-center justify-center text-emerald-500 text-[10px] mt-0.5 font-bold">✓</span>
+              <span
+                className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] mt-0.5 font-bold border"
+                style={{ backgroundColor: colors.goldLight, borderColor: colors.gold, color: colors.goldHover }}
+              >✓</span>
               {p}
             </motion.li>
           ))}
@@ -218,6 +227,7 @@ export default function HowItWorks() {
   const isVolunteer = activeRole === 'volunteer';
   const steps       = isVolunteer ? volunteerSteps : seekerSteps;
   const whyPoints   = isVolunteer ? volunteerWhy : seekerWhy;
+  const accentColors = isVolunteer ? [colors.gold, colors.goldHover] : [colors.primary, colors.primaryHover];
 
   // Scroll-driven progress line for steps
   const stepsRef = useRef(null);
@@ -225,33 +235,33 @@ export default function HowItWorks() {
   const lineH = useTransform(stepsScroll, [0.1, 0.85], ['0%', '100%']);
 
   return (
-    <div className="bg-[#f8faf8]" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+    <div style={{ backgroundColor: colors.primaryLight, fontFamily: "'DM Sans', sans-serif" }}>
       <CursorBlob />
 
       {/* ══════════════════════════════════════════════ HERO ══ */}
       <motion.section
         ref={heroRef}
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="relative min-h-screen flex items-center overflow-hidden bg-[#f8faf8] pt-24"
+        style={{ opacity: heroOpacity, scale: heroScale, backgroundColor: colors.primaryLight }}
+        className="relative min-h-screen flex items-center overflow-hidden pt-24"
       >
         <NoiseOverlay />
         <MouseGradient />
 
-        {/* Emerald grid — identical to Home */}
+        {/* Navy grid — identical treatment to Home */}
         <div className="absolute inset-0 pointer-events-none" style={{
           backgroundImage: `
-            linear-gradient(rgba(16,185,129,0.06) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(16,185,129,0.06) 1px, transparent 1px)`,
+            linear-gradient(${colors.primaryGlow} 1px, transparent 1px),
+            linear-gradient(90deg, ${colors.primaryGlow} 1px, transparent 1px)`,
           backgroundSize: '80px 80px',
         }} />
 
         {/* Architectural rings — right side, same as Home */}
-        <motion.div style={{ y: heroY }}
-          className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-emerald-200/60 pointer-events-none" />
-        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]) }}
-          className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border border-emerald-100/40 pointer-events-none" />
-        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]) }}
-          className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#fdf3e3]/80 pointer-events-none" />
+        <motion.div style={{ y: heroY, borderColor: 'rgba(26,82,118,0.35)' }}
+          className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border pointer-events-none" />
+        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]), borderColor: 'rgba(26,82,118,0.2)' }}
+          className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border pointer-events-none" />
+        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]), backgroundColor: 'rgba(252,243,207,0.8)' }}
+          className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none" />
 
         {/* Spinning badge — same as Home */}
         <motion.div
@@ -267,11 +277,11 @@ export default function HowItWorks() {
           >
             <svg className="absolute inset-0 w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 112 112">
               <path id="ring-hiw" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
-              <text fontSize="10" fontFamily="DM Sans, sans-serif" fill="#059669" fontWeight="500" letterSpacing="3">
+              <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.gold} fontWeight="500" letterSpacing="3">
                 <textPath href="#ring-hiw">5 SIMPLE STEPS • FREE FOREVER • </textPath>
               </text>
             </svg>
-            <div className="w-14 h-14 rounded-full bg-[#fdf3e3]0 flex items-center justify-center shadow-xl shadow-emerald-500/30">
+            <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl" style={{ backgroundColor: colors.gold, boxShadow: '0 10px 25px rgba(212,160,23,0.4)' }}>
               <span className="text-white text-xl">✦</span>
             </div>
           </motion.div>
@@ -281,7 +291,7 @@ export default function HowItWorks() {
         <motion.div
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2, duration: 0.8 }}
-          className="absolute bottom-36 left-8 hidden xl:block"
+          className="absolute bottom-16 right-16 hidden xl:block"
         >
           <motion.div
             animate={{ y: [0, -12, 0] }}
@@ -289,10 +299,10 @@ export default function HowItWorks() {
             className="bg-white rounded-2xl shadow-xl shadow-black/5 border border-gray-100 p-4 w-54"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl bg-[#fdf3e3]0/10 flex items-center justify-center text-base">🤝</div>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base" style={{ backgroundColor: colors.goldGlow }}>🤝</div>
               <div>
-                <div className="text-xs text-gray-400 font-medium">Live right now</div>
-                <div className="text-sm font-semibold text-gray-800">238 active sessions</div>
+                <div className="text-xs font-medium" style={{ color: colors.muted }}>Live right now</div>
+                <div className="text-sm font-semibold" style={{ color: colors.body }}>238 active sessions</div>
               </div>
             </div>
             <div className="flex gap-1">
@@ -300,8 +310,8 @@ export default function HowItWorks() {
                 <motion.div key={i}
                   initial={{ scaleY: 0 }} animate={{ scaleY: 1 }}
                   transition={{ delay: 2.4 + i * 0.07, duration: 0.4 }}
-                  style={{ height: `${h * 0.28}px`, originY: 1 }}
-                  className="flex-1 bg-gradient-to-t from-[#e18f23] to-teal-400 rounded-sm"
+                  style={{ height: `${h * 0.28}px`, originY: 1, background: `linear-gradient(to top, ${colors.gold}, ${colors.primary})` }}
+                  className="flex-1 rounded-sm"
                 />
               ))}
             </div>
@@ -316,14 +326,15 @@ export default function HowItWorks() {
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-emerald-200 shadow-lg"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg border"
+              style={{ borderColor: 'rgba(26,82,118,0.2)' }}
             >
               <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity }}
                 className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C97B1A] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#fdf3e3]0" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: colors.gold }} />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ backgroundColor: colors.gold }} />
               </motion.span>
-              <span className="text-sm font-semibold text-[#1a2e1a]">Simple 5-Step Process</span>
+              <span className="text-sm font-semibold" style={{ color: colors.title }}>Simple 5-Step Process</span>
             </motion.div>
 
             {/* Headline — serif, same as Home */}
@@ -331,8 +342,8 @@ export default function HowItWorks() {
               <motion.h1
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-gray-900 leading-[0.95] tracking-tight"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700 }}
+                className="leading-[0.95] tracking-tight"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700, color: colors.headingDark }}
               >
                 How
               </motion.h1>
@@ -343,8 +354,7 @@ export default function HowItWorks() {
                 style={{
                   fontFamily: "'Instrument Serif', Georgia, serif",
                   fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700,
-                  background: 'linear-gradient(90deg,#10b981,#14b8a6,#06b6d4)',
-                  WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                  color: colors.gold,
                 }}
               >
                 GazaBridge
@@ -352,8 +362,8 @@ export default function HowItWorks() {
               <motion.h1
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="text-gray-900 leading-[0.95] tracking-tight"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700 }}
+                className="leading-[0.95] tracking-tight"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700, color: colors.headingDark }}
               >
                 Works
               </motion.h1>
@@ -362,7 +372,8 @@ export default function HowItWorks() {
             <motion.p
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.62, duration: 0.8 }}
-              className="text-gray-500 text-lg leading-relaxed max-w-lg"
+              className="text-lg leading-relaxed max-w-lg"
+              style={{ color: colors.muted }}
             >
               A free platform connecting skilled volunteers worldwide with talented people
               in Gaza who need digital skills support — in just five steps.
@@ -377,16 +388,15 @@ export default function HowItWorks() {
               <Magnetic>
                 <Link to="/register">
                   <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(16,185,129,0.35)' }}
+                    whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(212,160,23,0.35)' }}
                     whileTap={{ scale: 0.95 }}
-                    className="group relative px-8 py-4 text-white font-bold rounded-full shadow-xl shadow-emerald-500/25 overflow-hidden text-sm"
-                    style={{ background: 'linear-gradient(135deg,#10b981,#14b8a6)' }}
+                    className="group relative px-8 py-4 text-white font-bold rounded-full shadow-xl overflow-hidden text-sm"
+                    style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
                   >
                     <span className="relative z-10 flex items-center gap-2">
                       Join as Volunteer
                       <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
                     </span>
-                    <motion.div className="absolute inset-0 bg-gradient-to-r from-[#e18f23] to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </motion.button>
                 </Link>
               </Magnetic>
@@ -394,7 +404,8 @@ export default function HowItWorks() {
                 <Link to="/register">
                   <motion.button
                     whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                    className="px-8 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-full hover:border-[#C97B1A] hover:text-[#C97B1A] transition-all duration-300 text-sm"
+                    className="px-8 py-4 border-2 border-gray-300 font-bold rounded-full transition-all duration-300 text-sm hover:border-[#D4A017] hover:text-[#D4A017]"
+                    style={{ color: colors.body }}
                   >
                     Start Learning Free
                   </motion.button>
@@ -414,12 +425,12 @@ export default function HowItWorks() {
                     initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 1.2 + i * 0.07 }}
                     className="w-8 h-8 rounded-full border-2 border-white flex items-center justify-center text-[11px] font-bold text-white shadow-sm"
-                    style={{ background: `hsl(${155 + i * 14},60%,${40 + i * 3}%)` }}
+                    style={{ backgroundColor: i % 2 === 0 ? colors.primary : colors.gold }}
                   >{l}</motion.div>
                 ))}
               </div>
-              <span className="text-sm text-gray-500">
-                <span className="font-semibold text-gray-800">5,000+</span> learners connected
+              <span className="text-sm" style={{ color: colors.muted }}>
+                <span className="font-semibold" style={{ color: colors.body }}>5,000+</span> learners connected
               </span>
             </motion.div>
           </div>
@@ -428,16 +439,16 @@ export default function HowItWorks() {
         {/* Scroll hint */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.2 }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <span className="text-[10px] tracking-[0.2em] uppercase text-gray-400">scroll</span>
+          <span className="text-[10px] tracking-[0.2em] uppercase" style={{ color: colors.muted }}>scroll</span>
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ duration: 1.8, repeat: Infinity }}
             className="w-5 h-8 border border-gray-300 rounded-full flex items-start justify-center pt-1.5">
-            <div className="w-1 h-1.5 bg-gray-400 rounded-full" />
+            <div className="w-1 h-1.5 rounded-full" style={{ backgroundColor: colors.muted }} />
           </motion.div>
         </motion.div>
       </motion.section>
 
       {/* ══════════════════════════════════════════════ MARQUEE ══ */}
-      <div className="relative bg-gray-900 py-4 overflow-hidden border-y border-gray-800">
+      <div className="relative py-4 overflow-hidden border-y" style={{ backgroundColor: colors.sidebar, borderColor: colors.onDarkBorder }}>
         <motion.div
           animate={{ x: ['0%', '-50%'] }}
           transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
@@ -447,7 +458,7 @@ export default function HowItWorks() {
             'Create Account', '✦', 'Complete Profile', '✦', 'Post an Offer',
             '✦', 'Browse Needs', '✦', 'Connect & Teach', '✦', 'Learn for Free', '✦',
           ]).map((item, i) => (
-            <span key={i} className={`text-sm font-medium tracking-wide ${item === '✦' ? 'text-emerald-400' : 'text-gray-400'}`}>
+            <span key={i} className="text-sm font-medium tracking-wide" style={{ color: item === '✦' ? colors.gold : colors.onDarkMuted }}>
               {item}
             </span>
           ))}
@@ -465,20 +476,20 @@ export default function HowItWorks() {
             className="flex flex-col items-center mb-16 gap-6"
           >
             <div className="flex items-center gap-3">
-              <div className="h-px w-8 bg-[#C97B1A]" />
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]">The Process</span>
-              <div className="h-px w-8 bg-[#C97B1A]" />
+              <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: colors.gold }}>The Process</span>
+              <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
             </div>
 
             <h2
-              className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05] text-center"
-              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+              className="text-5xl lg:text-6xl font-bold leading-[1.05] text-center"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
             >
               Pick Your Path
             </h2>
 
             {/* Toggle pill */}
-            <div className="flex items-center bg-gray-100 rounded-full p-1.5 gap-1">
+            <div className="flex items-center rounded-full p-1.5 gap-1" style={{ backgroundColor: colors.badgeNeutral }}>
               {[
                 { id: 'volunteer', label: '🙌 I want to volunteer', },
                 { id: 'seeker',    label: '🎓 I want to learn', },
@@ -488,8 +499,8 @@ export default function HowItWorks() {
                   onClick={() => setActiveRole(opt.id)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
-                  className={`relative px-6 py-3 rounded-full text-sm font-bold transition-all duration-300
-                    ${activeRole === opt.id ? 'bg-white text-gray-900 shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                  className={`relative px-6 py-3 rounded-full text-sm font-bold transition-all duration-300 ${activeRole === opt.id ? 'bg-white shadow-md' : ''}`}
+                  style={{ color: activeRole === opt.id ? colors.title : colors.muted }}
                 >
                   {opt.label}
                 </motion.button>
@@ -511,7 +522,7 @@ export default function HowItWorks() {
               <div ref={stepsRef} className="relative">
                 {/* Vertical line */}
                 <div className="absolute left-[26px] top-6 bottom-6 w-px bg-gray-100">
-                  <motion.div style={{ height: lineH }} className="w-full bg-gradient-to-b from-[#e18f23] to-[#E8920F] origin-top" />
+                  <motion.div style={{ height: lineH, background: `linear-gradient(to bottom, ${colors.gold}, ${colors.goldHover})` }} className="w-full origin-top" />
                 </div>
 
                 <div className="space-y-4 pl-2">
@@ -520,7 +531,7 @@ export default function HowItWorks() {
                       key={step.number + activeRole}
                       step={step}
                       index={i}
-                      accentBar={isVolunteer ? 'from-[#e18f23] to-[#E8920F]' : 'from-teal-400 to-cyan-500'}
+                      accentColors={accentColors}
                     />
                   ))}
                 </div>
@@ -532,7 +543,7 @@ export default function HowItWorks() {
                   emoji={isVolunteer ? '🌟' : '🎓'}
                   title={isVolunteer ? 'Why Volunteer?' : 'Why Learn With Us?'}
                   points={whyPoints}
-                  gradient={isVolunteer ? 'from-[#e18f23] to-[#E8920F]' : 'from-teal-400 to-cyan-500'}
+                  accentColors={accentColors}
                 />
 
                 {/* CTA under why card */}
@@ -546,8 +557,8 @@ export default function HowItWorks() {
                   <Link to="/register">
                     <motion.button
                       whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-                      className="w-full py-4 rounded-2xl font-bold text-white text-sm shadow-lg shadow-emerald-500/20 transition-all"
-                      style={{ background: 'linear-gradient(135deg,#10b981,#14b8a6)' }}
+                      className="w-full py-4 rounded-2xl font-bold text-white text-sm shadow-lg transition-all"
+                      style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
                     >
                       {isVolunteer ? 'Join as Volunteer →' : 'Start Learning Free →'}
                     </motion.button>
@@ -555,7 +566,8 @@ export default function HowItWorks() {
                   <motion.button
                     whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
                     onClick={() => setActiveRole(isVolunteer ? 'seeker' : 'volunteer')}
-                    className="w-full py-3 rounded-2xl font-semibold text-gray-500 text-sm border border-gray-200 hover:border-emerald-300 hover:text-[#C97B1A] transition-all"
+                    className="w-full py-3 rounded-2xl font-semibold text-sm border border-gray-200 transition-all hover:border-[#D4A017] hover:text-[#D4A017]"
+                    style={{ color: colors.muted }}
                   >
                     {isVolunteer ? 'Or learn instead →' : 'Or volunteer instead →'}
                   </motion.button>
@@ -567,10 +579,10 @@ export default function HowItWorks() {
       </section>
 
       {/* ══════════════════════════════════════════════ STATS BAND ══ */}
-      <section className="py-16 bg-[#f8faf8] overflow-hidden">
+      <section className="py-16 overflow-hidden" style={{ backgroundColor: colors.pageBg }}>
         <NoiseOverlay />
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200 rounded-3xl overflow-hidden border border-gray-200">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px rounded-3xl overflow-hidden border" style={{ backgroundColor: colors.divider, borderColor: colors.divider }}>
             {[
               { v: '5,000+', l: 'Active Learners',    icon: '🎓' },
               { v: '850+',   l: 'Expert Volunteers',  icon: '🙌' },
@@ -581,16 +593,17 @@ export default function HowItWorks() {
                 key={s.l}
                 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="bg-white px-8 py-8 group hover:bg-[#fdf3e3]/40 transition-colors duration-300"
+                className="bg-white px-8 py-8 group transition-colors duration-300 hover:bg-[#FCF3CF]/40"
               >
                 <div className="text-2xl mb-3">{s.icon}</div>
                 <div
-                  className="text-4xl font-bold text-gray-900 mb-1"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                  className="text-4xl font-bold mb-1"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.body }}
                 >{s.v}</div>
-                <div className="text-xs text-gray-500 font-medium">{s.l}</div>
+                <div className="text-xs font-medium" style={{ color: colors.muted }}>{s.l}</div>
                 <motion.div
-                  className="mt-4 h-0.5 bg-gradient-to-r from-[#e18f23] to-teal-400 origin-left"
+                  className="mt-4 h-0.5 origin-left"
+                  style={{ background: `linear-gradient(to right, ${colors.gold}, ${colors.primary})` }}
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
@@ -603,9 +616,8 @@ export default function HowItWorks() {
       </section>
 
       {/* ══════════════════════════════════════════════ FINAL CTA ══ */}
-      {/* Exact same gradient as Home FinalCTA */}
       <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1a2e1a] via-teal-600 to-cyan-700" />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${colors.sidebar} 0%, ${colors.primary} 55%, ${colors.secondary} 100%)` }} />
         <div className="absolute inset-0 overflow-hidden">
           <motion.div animate={{ x: [0, -50, 0] }} transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
             className="absolute -top-1/2 -left-1/4 w-[150%] h-[200%] bg-white/5 rounded-full blur-3xl" />
@@ -665,7 +677,8 @@ export default function HowItWorks() {
                   <motion.button
                     whileHover={{ scale: 1.05, boxShadow: '0 25px 50px rgba(0,0,0,0.3)' }}
                     whileTap={{ scale: 0.95 }}
-                    className="px-10 py-5 bg-white text-[#1a2e1a] font-bold rounded-full shadow-2xl text-base hover:bg-[#fdf3e3] transition-colors duration-300 flex items-center gap-2"
+                    className="px-10 py-5 bg-white font-bold rounded-full shadow-2xl text-base transition-colors duration-300 flex items-center gap-2 hover:bg-[#FCF3CF]"
+                    style={{ color: colors.title }}
                   >
                     Get Started Free
                     <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
