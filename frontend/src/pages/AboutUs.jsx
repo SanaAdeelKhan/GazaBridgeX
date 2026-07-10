@@ -1,14 +1,12 @@
 // frontend/src/pages/AboutUs.jsx
-// Same design system as Home.jsx:
-//   Fonts: Instrument Serif + DM Sans (add to index.html)
-//   Deps: framer-motion (already installed)
+// Retheme: navy/gold/olive design system (colors.js) — matches Home.jsx / HowItWorks.jsx / Services.jsx
 
 import { motion, useScroll, useTransform, useMotionValue } from 'framer-motion';
 import { useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { teamMembers } from '../data/team';
+import colors from '../theme/colors';
 
-// ─── Magnetic button hook ─────────────────────────────────────────────────────
 function useMagnetic(strength = 0.4) {
   const ref = useRef(null);
   const x = useMotionValue(0);
@@ -24,7 +22,6 @@ function useMagnetic(strength = 0.4) {
   return { ref, x, y, handleMouseMove, handleMouseLeave };
 }
 
-// ─── Magnetic Button wrapper component ───────────────────────────────────────
 function MagneticButton({ children, strength = 0.4 }) {
   const magnetic = useMagnetic(strength);
   return (
@@ -39,7 +36,6 @@ function MagneticButton({ children, strength = 0.4 }) {
   );
 }
 
-// ─── Noise overlay ────────────────────────────────────────────────────────────
 function NoiseOverlay() {
   return (
     <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.035] mix-blend-overlay" xmlns="http://www.w3.org/2000/svg">
@@ -52,14 +48,13 @@ function NoiseOverlay() {
   );
 }
 
-// ─── Gradient palette per team member ────────────────────────────────────────
-const gradientMap = {
-  'from-[#e18f23] to-[#E8920F]': { from: '#34d399', to: '#14b8a6' },
-  'from-blue-400 to-cyan-500':    { from: '#60a5fa', to: '#06b6d4' },
-  'from-purple-400 to-pink-500':  { from: '#c084fc', to: '#ec4899' },
-  'from-orange-400 to-red-500':   { from: '#fb923c', to: '#ef4444' },
-  'from-indigo-400 to-blue-500':  { from: '#818cf8', to: '#3b82f6' },
-};
+const teamPalette = [
+  { from: colors.primary, to: colors.primaryHover },
+  { from: colors.gold, to: colors.goldHover },
+  { from: colors.olive, to: colors.oliveHover },
+  { from: colors.secondary, to: colors.primary },
+  { from: colors.success, to: colors.oliveHover },
+];
 
 export default function AboutUs() {
   const heroRef = useRef(null);
@@ -70,25 +65,20 @@ export default function AboutUs() {
   return (
     <div className="bg-white" style={{ fontFamily: "'DM Sans', sans-serif" }}>
 
-      {/* ── HERO ────────────────────────────────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-[72vh] flex items-end pb-20 overflow-hidden bg-[#f8faf8] pt-28">
+      <section ref={heroRef} className="relative min-h-[72vh] flex items-end pb-20 overflow-hidden pt-28" style={{ backgroundColor: colors.primaryLight }}>
         <NoiseOverlay />
 
-        {/* Grid lines */}
         <div className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: `linear-gradient(rgba(16,185,129,0.06) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(16,185,129,0.06) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(${colors.primaryGlow} 1px, transparent 1px), linear-gradient(90deg, ${colors.primaryGlow} 1px, transparent 1px)`,
             backgroundSize: '80px 80px',
           }}
         />
 
-        {/* Architectural circles */}
-        <div className="absolute -right-40 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-emerald-200/50 pointer-events-none" />
-        <div className="absolute -right-64 top-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-emerald-100/30 pointer-events-none" />
-        <div className="absolute -right-24 top-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full bg-[#fdf3e3]/60 pointer-events-none" />
+        <div className="absolute -right-40 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border pointer-events-none" style={{ borderColor: colors.ringBorderStrong }} />
+        <div className="absolute -right-64 top-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border pointer-events-none" style={{ borderColor: colors.ringBorderSoft }} />
+        <div className="absolute -right-24 top-1/2 -translate-y-1/2 w-[420px] h-[420px] rounded-full pointer-events-none" style={{ backgroundColor: colors.oliveLight, opacity: 0.6 }} />
 
-        {/* Spinning badge */}
         <motion.div
           initial={{ opacity: 0, scale: 0.7 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -97,11 +87,11 @@ export default function AboutUs() {
         >
           <svg className="absolute inset-0 w-full h-full animate-[spin_14s_linear_infinite]" viewBox="0 0 112 112">
             <path id="circle-a" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
-            <text fontSize="10" fontFamily="DM Sans, sans-serif" fill="#059669" fontWeight="500" letterSpacing="3">
+            <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.gold} fontWeight="500" letterSpacing="3">
               <textPath href="#circle-a">OUR TEAM • SINCE 2023 • OUR TEAM • SINCE 2023 • </textPath>
             </text>
           </svg>
-          <div className="w-14 h-14 rounded-full bg-[#fdf3e3]0 flex items-center justify-center shadow-xl shadow-emerald-500/30">
+          <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl" style={{ backgroundColor: colors.gold, boxShadow: '0 10px 25px rgba(212,160,23,0.4)' }}>
             <span className="text-white text-xl">✦</span>
           </div>
         </motion.div>
@@ -117,27 +107,26 @@ export default function AboutUs() {
             className="space-y-6 max-w-3xl"
           >
             <div className="flex items-center gap-3">
-              <div className="h-px w-8 bg-[#C97B1A]" />
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]">The People</span>
+              <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+              <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: colors.gold }}>The People</span>
             </div>
 
             <h1
-              className="text-[clamp(3rem,6.5vw,6rem)] font-bold text-gray-900 leading-[0.95] tracking-tight"
-              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+              className="text-[clamp(3rem,6.5vw,6rem)] font-bold leading-[0.95] tracking-tight"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
             >
               Built by People<br />
-              Who <em className="text-emerald-500">Actually Care</em>
+              Who <em style={{ color: colors.gold }}>Actually Care</em>
             </h1>
 
-            <p className="text-gray-500 text-lg leading-relaxed max-w-xl">
+            <p className="text-lg leading-relaxed max-w-xl" style={{ color: colors.muted }}>
               We're a small, passionate team driven by one belief: that where you're born should never determine what you can become.
             </p>
 
-            {/* Pull-quote strip */}
             <div className="flex items-center gap-4 pt-2">
               <div className="flex -space-x-2">
                 {teamMembers.map((m, i) => {
-                  const g = gradientMap[m.gradient] || { from: '#34d399', to: '#14b8a6' };
+                  const g = teamPalette[i % teamPalette.length];
                   return (
                     <motion.div
                       key={m.id}
@@ -150,8 +139,8 @@ export default function AboutUs() {
                   );
                 })}
               </div>
-              <span className="text-sm text-gray-500">
-                <span className="font-semibold text-gray-800">{teamMembers.length} team members</span> — and growing
+              <span className="text-sm" style={{ color: colors.muted }}>
+                <span className="font-semibold" style={{ color: colors.body }}>{teamMembers.length} team members</span> — and growing
               </span>
             </div>
           </motion.div>
@@ -160,12 +149,10 @@ export default function AboutUs() {
         <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white to-transparent pointer-events-none" />
       </section>
 
-      {/* ── STORY SECTION ───────────────────────────────────────────────────── */}
       <section className="py-28 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid lg:grid-cols-[1fr_1.6fr] gap-20 items-start">
 
-            {/* Left — sticky heading */}
             <div className="lg:sticky lg:top-32 space-y-6">
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
@@ -174,24 +161,23 @@ export default function AboutUs() {
                 transition={{ duration: 0.7 }}
               >
                 <div className="flex items-center gap-3 mb-5">
-                  <div className="h-px w-8 bg-[#C97B1A]" />
-                  <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]">Our Story</span>
+                  <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+                  <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: colors.gold }}>Our Story</span>
                 </div>
                 <h2
-                  className="text-4xl lg:text-5xl font-bold text-gray-900 leading-[1.05] mb-4"
-                  style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                  className="text-4xl lg:text-5xl font-bold leading-[1.05] mb-4"
+                  style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
                 >
                   Why We<br />
-                  <em className="text-emerald-500">Built This</em>
+                  <em style={{ color: colors.gold }}>Built This</em>
                 </h2>
 
-                {/* Big stat */}
-                <div className="mt-8 bg-gray-900 rounded-3xl p-7 text-white">
+                <div className="mt-8 rounded-3xl p-7 text-white" style={{ backgroundColor: colors.sidebar }}>
                   <div
                     className="text-5xl font-bold mb-2"
                     style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
                   >45+</div>
-                  <div className="text-sm text-gray-400 leading-relaxed">
+                  <div className="text-sm leading-relaxed" style={{ color: colors.onDarkMuted }}>
                     Countries with volunteers who believe that talent is universal — but opportunity isn't.
                   </div>
                   <div className="mt-5 flex gap-1">
@@ -202,8 +188,8 @@ export default function AboutUs() {
                         whileInView={{ scaleY: 1 }}
                         viewport={{ once: true }}
                         transition={{ delay: i * 0.07, duration: 0.4 }}
-                        style={{ height: `${h * 0.3}px`, originY: 1 }}
-                        className="flex-1 bg-gradient-to-t from-[#e18f23] to-teal-400 rounded-sm opacity-80"
+                        style={{ height: `${h * 0.3}px`, originY: 1, background: `linear-gradient(to top, ${colors.olive}, ${colors.gold})` }}
+                        className="flex-1 rounded-sm opacity-90"
                       />
                     ))}
                   </div>
@@ -211,7 +197,6 @@ export default function AboutUs() {
               </motion.div>
             </div>
 
-            {/* Right — story paragraphs */}
             <div className="space-y-6">
               {[
                 {
@@ -236,11 +221,14 @@ export default function AboutUs() {
                   className="group relative bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300 p-7"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#C97B1A] bg-[#fdf3e3] px-3 py-1 rounded-full">{block.label}</span>
+                    <span className="text-[11px] font-bold tracking-[0.15em] uppercase px-3 py-1 rounded-full border" style={{ color: colors.goldHover, backgroundColor: colors.goldLight, borderColor: colors.gold }}>{block.label}</span>
                     <span className="text-gray-200 font-mono text-sm">0{i + 1}</span>
                   </div>
-                  <p className="text-gray-600 leading-relaxed text-base">{block.text}</p>
-                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-[#e18f23] to-[#E8920F] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl" />
+                  <p className="leading-relaxed text-base" style={{ color: colors.body }}>{block.text}</p>
+                  <div
+                    className="absolute bottom-0 left-0 w-full h-0.5 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-3xl"
+                    style={{ background: `linear-gradient(90deg, ${colors.gold}, ${colors.goldHover})` }}
+                  />
                 </motion.div>
               ))}
             </div>
@@ -248,8 +236,7 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* ── TEAM ────────────────────────────────────────────────────────────── */}
-      <section className="py-28 bg-[#f8faf8] overflow-hidden">
+      <section className="py-28 overflow-hidden" style={{ backgroundColor: colors.pageBg }}>
         <NoiseOverlay />
         <div className="max-w-7xl mx-auto px-6">
 
@@ -261,25 +248,25 @@ export default function AboutUs() {
           >
             <div>
               <div className="flex items-center gap-3 mb-5">
-                <div className="h-px w-8 bg-[#C97B1A]" />
-                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#C97B1A]">The Team</span>
+                <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
+                <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: colors.gold }}>The Team</span>
               </div>
               <h2
-                className="text-5xl lg:text-6xl font-bold text-gray-900 leading-[1.05]"
-                style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+                className="text-5xl lg:text-6xl font-bold leading-[1.05]"
+                style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
               >
                 Faces Behind<br />
-                <em className="text-emerald-500">the Mission</em>
+                <em style={{ color: colors.gold }}>the Mission</em>
               </h2>
             </div>
-            <p className="text-gray-500 text-sm leading-relaxed max-w-xs lg:text-right">
+            <p className="text-sm leading-relaxed max-w-xs lg:text-right" style={{ color: colors.muted }}>
               A diverse crew united by the belief that digital skills change lives.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {teamMembers.map((member, index) => {
-              const g = gradientMap[member.gradient] || { from: '#34d399', to: '#14b8a6' };
+              const g = teamPalette[index % teamPalette.length];
               return (
                 <motion.div
                   key={member.id}
@@ -289,14 +276,12 @@ export default function AboutUs() {
                   transition={{ delay: index * 0.08, duration: 0.55 }}
                   className="group relative bg-white rounded-3xl border border-gray-100 overflow-hidden hover:shadow-xl hover:shadow-black/5 transition-all duration-300"
                 >
-                  {/* Hover gradient top bar */}
                   <div
                     className="absolute top-0 left-0 w-full h-1 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
                     style={{ background: `linear-gradient(90deg, ${g.from}, ${g.to})` }}
                   />
 
                   <div className="p-7">
-                    {/* Avatar row */}
                     <div className="flex items-start justify-between mb-5">
                       <motion.div
                         whileHover={{ scale: 1.1, rotate: 5 }}
@@ -307,32 +292,25 @@ export default function AboutUs() {
                         {member.avatar}
                       </motion.div>
 
-                      {/* Animated online dot */}
-                      <div className="flex items-center gap-1.5 bg-[#fdf3e3] rounded-full px-3 py-1.5">
+                      <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 border" style={{ backgroundColor: colors.goldLight, borderColor: colors.gold }}>
                         <span className="relative flex h-1.5 w-1.5">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C97B1A] opacity-75" />
-                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#fdf3e3]0" />
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: colors.gold }} />
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ backgroundColor: colors.gold }} />
                         </span>
-                        <span className="text-[10px] font-semibold text-[#C97B1A]">Active</span>
+                        <span className="text-[10px] font-semibold" style={{ color: colors.goldHover }}>Active</span>
                       </div>
                     </div>
 
-                    {/* Name + Role */}
-                    <h3 className="text-lg font-bold text-gray-900 mb-0.5">{member.name}</h3>
-                    <p
-                      className="text-sm font-semibold mb-3"
-                      style={{ background: `linear-gradient(90deg, ${g.from}, ${g.to})`, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}
-                    >{member.role}</p>
+                    <h3 className="text-lg font-bold mb-0.5" style={{ color: colors.body }}>{member.name}</h3>
+                    <p className="text-sm font-semibold mb-3" style={{ color: g.from }}>{member.role}</p>
 
-                    {/* Bio */}
-                    <p className="text-gray-500 text-sm leading-relaxed">{member.bio}</p>
+                    <p className="text-sm leading-relaxed" style={{ color: colors.muted }}>{member.bio}</p>
 
-                    {/* Bottom line */}
                     <div className="mt-5 pt-4 border-t border-gray-50 flex items-center justify-between">
                       <span className="text-[10px] text-gray-400 font-medium">GazaBridge Team</span>
                       <motion.div
                         whileHover={{ x: 3 }}
-                        className="text-xs font-semibold text-gray-300 group-hover:text-emerald-500 transition-colors cursor-pointer"
+                        className="text-xs font-semibold text-gray-300 transition-colors cursor-pointer hover:text-[#D4A017]"
                       >
                         Connect →
                       </motion.div>
@@ -345,10 +323,9 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* ── VALUES STRIP ───────────────────────────────────────────────────── */}
       <section className="py-20 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-gray-100 rounded-3xl overflow-hidden">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px rounded-3xl overflow-hidden" style={{ backgroundColor: colors.divider }}>
             {[
               { icon: '🎓', title: 'Education First', desc: "Every decision we make is guided by what's best for our learners." },
               { icon: '🤝', title: 'Radical Generosity', desc: 'Free. Always. No exceptions, no upsells, no gated content.' },
@@ -361,22 +338,20 @@ export default function AboutUs() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.5 }}
-                className="bg-white px-7 py-9 group hover:bg-[#fdf3e3]/40 transition-colors duration-300"
+                className="bg-white px-7 py-9 group transition-colors duration-300 hover:bg-[#A9DFBF]/30"
               >
                 <div className="text-2xl mb-3">{v.icon}</div>
-                <h4 className="font-bold text-gray-900 text-sm mb-1.5">{v.title}</h4>
-                <p className="text-gray-500 text-xs leading-relaxed">{v.desc}</p>
+                <h4 className="font-bold text-sm mb-1.5" style={{ color: colors.body }}>{v.title}</h4>
+                <p className="text-xs leading-relaxed" style={{ color: colors.muted }}>{v.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── JOIN CTA ────────────────────────────────────────────────────────── */}
-      <section className="py-24 bg-[#f8faf8] relative overflow-hidden">
+      <section className="py-24 relative overflow-hidden" style={{ backgroundColor: colors.pageBg }}>
         <NoiseOverlay />
-        
-        {/* Animated grid background */}
+
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div
             className="absolute inset-0"
@@ -384,7 +359,7 @@ export default function AboutUs() {
               __html: `<svg width="100%" height="120%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;opacity:0.5">
                 <defs>
                   <pattern id="ctaGrid" width="80" height="80" patternUnits="userSpaceOnUse">
-                    <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(16,185,129,0.07)" stroke-width="1"/>
+                    <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(26,82,118,0.07)" stroke-width="1"/>
                   </pattern>
                 </defs>
                 <rect width="100%" height="100%" fill="url(#ctaGrid)" />
@@ -393,13 +368,11 @@ export default function AboutUs() {
           />
         </div>
 
-        {/* Glowing orbs */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-[#C97B1A]/8 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] bg-teal-400/6 rounded-full blur-[80px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full blur-[100px] pointer-events-none" style={{ backgroundColor: colors.goldGlow }} />
+        <div className="absolute top-1/3 right-1/4 w-[300px] h-[300px] rounded-full blur-[80px] pointer-events-none" style={{ backgroundColor: colors.oliveGlow }} />
 
-        {/* Architectural circles */}
-        <div className="absolute -right-40 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-emerald-200/40 pointer-events-none" />
-        <div className="absolute -right-20 top-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-[#fdf3e3]/50 pointer-events-none" />
+        <div className="absolute -right-40 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border pointer-events-none" style={{ borderColor: colors.ringBorderSoft }} />
+        <div className="absolute -right-20 top-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full pointer-events-none" style={{ backgroundColor: colors.oliveLight, opacity: 0.5 }} />
 
         <div className="relative max-w-3xl mx-auto px-6 text-center">
           <motion.div
@@ -409,29 +382,28 @@ export default function AboutUs() {
             transition={{ duration: 0.7 }}
           >
             <h2
-              className="text-5xl md:text-6xl font-bold text-gray-900 mb-5 leading-[0.95]"
-              style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
+              className="text-5xl md:text-6xl font-bold mb-5 leading-[0.95]"
+              style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}
             >
               Want to join<br />
-              <em className="text-emerald-500">our team?</em>
+              <em style={{ color: colors.gold }}>our team?</em>
             </h2>
-            <p className="text-gray-500 mb-10 text-base leading-relaxed max-w-sm mx-auto">
+            <p className="mb-10 text-base leading-relaxed max-w-sm mx-auto" style={{ color: colors.muted }}>
               We're always looking for passionate volunteers and collaborators who want to make a real difference.
             </p>
-            
-            {/* Floating Magnetic Buttons */}
+
             <div className="flex flex-wrap justify-center gap-5">
-              {/* Volunteer With Us - Magnetic Button */}
               <MagneticButton strength={0.5}>
                 <Link to="/register">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
-                    className="group relative px-8 py-4 bg-gray-900 text-white font-semibold rounded-full overflow-hidden"
-                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                    className="group relative px-8 py-4 text-white font-semibold rounded-full overflow-hidden"
+                    style={{ fontFamily: "'DM Sans', sans-serif", backgroundColor: colors.sidebar }}
                   >
                     <motion.span
-                      className="absolute inset-0 bg-gradient-to-r from-[#e18f23] to-[#E8920F] opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      style={{ background: `linear-gradient(90deg, ${colors.gold}, ${colors.goldHover})` }}
                     />
                     <span className="relative z-10 flex items-center gap-2 text-sm tracking-wide">
                       Volunteer With Us
@@ -445,14 +417,13 @@ export default function AboutUs() {
                 </Link>
               </MagneticButton>
 
-              {/* Get In Touch - Magnetic Button */}
               <MagneticButton strength={0.4}>
                 <Link to="/contact">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
-                    className="px-8 py-4 rounded-full border border-gray-200 bg-white text-gray-700 font-semibold hover:border-emerald-300 transition-colors text-sm tracking-wide"
-                    style={{ fontFamily: "'DM Sans', sans-serif" }}
+                    className="px-8 py-4 rounded-full border border-gray-200 bg-white font-semibold transition-colors text-sm tracking-wide hover:border-[#D4A017]"
+                    style={{ fontFamily: "'DM Sans', sans-serif", color: colors.body }}
                   >
                     Get In Touch
                   </motion.button>

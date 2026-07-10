@@ -260,7 +260,7 @@ export default function HowItWorks() {
           className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border pointer-events-none" />
         <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]), borderColor: 'rgba(26,82,118,0.2)' }}
           className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border pointer-events-none" />
-        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]), backgroundColor: 'rgba(252,243,207,0.8)' }}
+        <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]), backgroundColor: colors.oliveLight, opacity: 0.7 }}
           className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none" />
 
         {/* Spinning badge — same as Home */}

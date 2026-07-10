@@ -109,6 +109,8 @@ export const colors = {
 
   // ─── GLOWS (soft blurred decorative orbs / faint grid overlays,
   //     used on light backgrounds like the landing-page hero) ────────
+  ringBorderStrong: 'rgba(26,82,118,0.3)',   // Decorative hero ring — stronger navy border
+  ringBorderSoft:   'rgba(26,82,118,0.18)',  // Decorative hero ring — softer navy border
   goldGlow:         'rgba(212,160,23,0.08)',
   oliveGlow:        'rgba(46,125,50,0.06)',
   primaryGlow:      'rgba(26,82,118,0.06)',
