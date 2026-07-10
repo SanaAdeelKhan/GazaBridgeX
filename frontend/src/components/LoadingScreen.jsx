@@ -21,22 +21,12 @@ export default function LoadingScreen() {
           <img src="/logo-full.png" alt="GazaBridge" className="w-full h-full object-contain" />
         </motion.div>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="text-2xl font-bold mb-2"
-          style={{ color: colors.title }}
-        >
-          <span style={{ color: colors.primary }}>Gaza</span>
-          <span style={{ color: colors.gold }}>Bridge</span>
-        </motion.h2>
-
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          style={{ color: colors.body }}
+          className="text-lg font-semibold"
+          style={{ color: colors.title }}
         >
           Building bridges through education...
         </motion.p>
