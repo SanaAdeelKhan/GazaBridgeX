@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { usersAPI } from '../api/users';
+import colors from '../theme/colors';
 
 export default function VerifyEmail() {
   const { token } = useParams();
@@ -27,7 +28,7 @@ export default function VerifyEmail() {
   }, [token]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]">
+    <div className="min-h-screen flex items-center justify-center pt-32 pb-12 px-4" style={{ backgroundColor: colors.primaryLight }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -38,14 +39,15 @@ export default function VerifyEmail() {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-              className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-full flex items-center justify-center"
+              className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center"
+              style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
             >
               <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </motion.div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Verifying your email</h2>
-            <p className="text-gray-600">Please wait a moment...</p>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>Verifying your email</h2>
+            <p style={{ color: colors.body }}>Please wait a moment...</p>
           </>
         )}
 
@@ -54,17 +56,19 @@ export default function VerifyEmail() {
             <motion.div
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 0.5 }}
-              className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-full flex items-center justify-center"
+              className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
+              style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
             >
               <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
               </svg>
             </motion.div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Email Verified!</h2>
-            <p className="text-gray-600 mb-8">{message}</p>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>Email Verified!</h2>
+            <p className="mb-8" style={{ color: colors.body }}>{message}</p>
             <Link
               to="/login"
-              className="inline-block px-8 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="inline-block px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
             >
               Sign In Now
             </Link>
@@ -73,16 +77,17 @@ export default function VerifyEmail() {
 
         {status === 'error' && (
           <>
-            <div className="w-20 h-20 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
-              <svg className="w-10 h-10 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.errorBg }}>
+              <svg className="w-10 h-10" style={{ color: colors.error }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Verification Failed</h2>
-            <p className="text-gray-600 mb-8">{message}</p>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>Verification Failed</h2>
+            <p className="mb-8" style={{ color: colors.body }}>{message}</p>
             <Link
               to="/login"
-              className="inline-block px-8 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="inline-block px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+              style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
             >
               Go to Login
             </Link>

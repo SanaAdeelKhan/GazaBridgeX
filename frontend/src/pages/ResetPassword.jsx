@@ -4,11 +4,12 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { forgetPasswordAPI } from '../api/forgetPassword';
 import PasswordStrengthIndicator from '../components/PasswordStrengthIndicator';
+import colors, { tw } from '../theme/colors';
 
 export default function ResetPassword() {
   const { token } = useParams();
   const navigate = useNavigate();
-  
+
   const [passwords, setPasswords] = useState({
     new_password: '',
     confirm_password: '',
@@ -27,13 +28,13 @@ export default function ResetPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Client-side validation
     if (passwords.new_password.length < 8) {
       setError('Password must be at least 8 characters long.');
       return;
     }
-    
+
     if (passwords.new_password !== passwords.confirm_password) {
       setError('Passwords do not match.');
       return;
@@ -45,13 +46,13 @@ export default function ResetPassword() {
     try {
       await forgetPasswordAPI.confirmReset(token, passwords);
       setSuccess(true);
-      
+
       // Redirect to login after 3 seconds
       setTimeout(() => {
         navigate('/login');
       }, 3000);
     } catch (err) {
-      const message = err.response?.data?.detail || 
+      const message = err.response?.data?.detail ||
         err.response?.data?.new_password?.[0] ||
         err.response?.data?.confirm_password?.[0] ||
         'Password reset failed. The link may be invalid or expired.';
@@ -62,10 +63,10 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
+    <div className="min-h-screen flex items-center justify-center pt-32 pb-12 px-4 sm:px-6 lg:px-8 relative">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]" />
-      
+      <div className="absolute inset-0" style={{ backgroundColor: colors.primaryLight }} />
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -74,14 +75,13 @@ export default function ResetPassword() {
       >
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-xl rotate-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#1a2e1a] to-[#e18f23] bg-clip-text text-transparent">
-              GazaBridge
-            </span>
+          <Link to="/" className="inline-flex items-center justify-center mb-6">
+            <div className="rounded-2xl border-4 p-1 bg-white" style={{ borderColor: colors.gold }}>
+              <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-[126px] object-contain" />
+            </div>
           </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Set new password</h2>
-          <p className="mt-2 text-gray-600">
+          <h2 className="text-3xl font-bold" style={{ color: colors.headingDark }}>Set new password</h2>
+          <p className="mt-2" style={{ color: colors.body }}>
             Your new password must be different from previously used passwords.
           </p>
         </div>
@@ -98,14 +98,15 @@ export default function ResetPassword() {
               <motion.div
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.5 }}
-                className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-full flex items-center justify-center"
+                className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
+                style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
               >
                 <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                 </svg>
               </motion.div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Password reset successful!</h3>
-              <p className="text-gray-600 mb-4">
+              <h3 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>Password reset successful!</h3>
+              <p className="mb-4" style={{ color: colors.body }}>
                 Your password has been successfully reset. You'll be redirected to the login page shortly.
               </p>
               <div className="w-full bg-gray-200 rounded-full h-1.5 mb-6 overflow-hidden">
@@ -113,12 +114,14 @@ export default function ResetPassword() {
                   initial={{ width: '100%' }}
                   animate={{ width: '0%' }}
                   transition={{ duration: 3, ease: 'linear' }}
-                  className="h-full bg-[#e18f23] hover:bg-[#c97a18] rounded-full"
+                  className="h-full rounded-full"
+                  style={{ backgroundColor: colors.gold }}
                 />
               </div>
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 px-8 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                className="inline-flex items-center gap-2 px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
               >
                 Go to Login Now
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -135,20 +138,21 @@ export default function ResetPassword() {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"
+                  className="mb-6 p-4 rounded-xl border"
+                  style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}
                 >
                   <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: colors.error }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <p className="text-sm text-red-700">{error}</p>
+                    <p className="text-sm" style={{ color: colors.error }}>{error}</p>
                   </div>
                 </motion.div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="new_password" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="new_password" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                     New Password
                   </label>
                   <input
@@ -160,7 +164,8 @@ export default function ResetPassword() {
                     value={passwords.new_password}
                     onChange={handleChange}
                     autoFocus
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none text-gray-900 placeholder-gray-400"
+                    className={`${tw.goldInput} placeholder-gray-400`}
+                    style={{ color: colors.headingDark }}
                     placeholder="At least 8 characters"
                   />
                   {passwords.new_password && (
@@ -169,7 +174,7 @@ export default function ResetPassword() {
                 </div>
 
                 <div>
-                  <label htmlFor="confirm_password" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="confirm_password" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                     Confirm New Password
                   </label>
                   <input
@@ -179,24 +184,25 @@ export default function ResetPassword() {
                     required
                     value={passwords.confirm_password}
                     onChange={handleChange}
-                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none text-gray-900 placeholder-gray-400 ${
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 transition-all outline-none placeholder-gray-400 ${
                       passwords.confirm_password && passwords.new_password !== passwords.confirm_password
                         ? 'border-red-300'
                         : 'border-gray-300'
                     }`}
+                    style={{ color: colors.headingDark }}
                     placeholder="Repeat your new password"
                   />
                   {passwords.confirm_password && passwords.new_password !== passwords.confirm_password && (
-                    <p className="mt-2 text-sm text-red-600">Passwords do not match</p>
+                    <p className="mt-2 text-sm" style={{ color: colors.error }}>Passwords do not match</p>
                   )}
                   {passwords.confirm_password && passwords.new_password === passwords.confirm_password && (
-                    <p className="mt-2 text-sm text-[#C97B1A]">✓ Passwords match</p>
+                    <p className="mt-2 text-sm" style={{ color: colors.olive }}>✓ Passwords match</p>
                   )}
                 </div>
 
                 {/* Password Requirements */}
                 <div className="p-4 bg-gray-50 rounded-xl">
-                  <h4 className="text-sm font-medium text-gray-700 mb-3">Password requirements:</h4>
+                  <h4 className="text-sm font-medium mb-3" style={{ color: colors.body }}>Password requirements:</h4>
                   <ul className="space-y-2">
                     {[
                       { label: 'At least 8 characters', met: passwords.new_password.length >= 8 },
@@ -207,13 +213,8 @@ export default function ResetPassword() {
                     ].map((req, index) => (
                       <li key={index} className="flex items-center gap-2 text-sm">
                         <svg
-                          className={`w-4 h-4 flex-shrink-0 ${
-                            passwords.new_password
-                              ? req.met
-                                ? 'text-emerald-500'
-                                : 'text-gray-300'
-                              : 'text-gray-300'
-                          }`}
+                          className="w-4 h-4 flex-shrink-0"
+                          style={{ color: passwords.new_password && req.met ? colors.olive : '#D1D5DB' }}
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -225,7 +226,7 @@ export default function ResetPassword() {
                             d={req.met && passwords.new_password ? 'M5 13l4 4L19 7' : 'M12 8v4m0 4h.01'}
                           />
                         </svg>
-                        <span className={passwords.new_password ? (req.met ? 'text-[#1a2e1a]' : 'text-gray-500') : 'text-gray-500'}>
+                        <span style={{ color: passwords.new_password && req.met ? colors.headingDark : colors.muted }}>
                           {req.label}
                         </span>
                       </li>
@@ -238,7 +239,8 @@ export default function ResetPassword() {
                   disabled={loading || passwords.new_password !== passwords.confirm_password}
                   whileHover={{ scale: loading ? 1 : 1.02 }}
                   whileTap={{ scale: loading ? 1 : 0.98 }}
-                  className="w-full py-3.5 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-3.5 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">
@@ -258,9 +260,9 @@ export default function ResetPassword() {
         </div>
 
         {!success && (
-          <p className="text-center mt-6 text-gray-600">
+          <p className="text-center mt-6" style={{ color: colors.body }}>
             Remember your password?{' '}
-            <Link to="/login" className="text-[#C97B1A] hover:text-[#1a2e1a] font-semibold">
+            <Link to="/login" className="font-semibold" style={{ color: colors.gold }}>
               Sign in
             </Link>
           </p>
