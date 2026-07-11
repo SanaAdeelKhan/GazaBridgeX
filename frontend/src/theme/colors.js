@@ -180,6 +180,10 @@ export const tw = {
   // Divider
   divider:       'border-[#E8EAEC]',
 
+  // Gold-focus form inputs (auth pages: Register, Login-style forms)
+  goldInput:     'w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#D4A017]/25 focus:border-[#D4A017] transition-all outline-none',
+  goldCheckbox:  'text-[#D4A017] focus:ring-[#D4A017]/25 border-gray-300 rounded',
+
   // On-dark surfaces (landing page dark sections)
   onDarkCard:        'bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)]',
   onDarkCardActive:  'bg-white',

@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { usersAPI } from '../api/users';
 import GoogleLoginButton from '../components/GoogleLoginButton';
+import { tw } from '../theme/colors';
+import colors from '../theme/colors';
 
 const COUNTRIES = [
   'Palestine', 'Egypt', 'Jordan', 'Lebanon', 'Syria', 'Saudi Arabia',
@@ -178,7 +180,7 @@ export default function Register() {
           Email address <span className="text-red-500">*</span>
         </label>
         <input id="email" name="email" type="email" required value={formData.email} onChange={handleChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+          className={tw.goldInput}
           placeholder="you@example.com" />
       </div>
       <div>
@@ -187,7 +189,7 @@ export default function Register() {
         </label>
         <div className="relative">
           <input id="password" name="password" type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={handleChange}
-            className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+            className={`${tw.goldInput} pr-12`}
             placeholder="At least 8 characters" />
           <button type="button" onClick={() => setShowPassword(prev => !prev)}
             className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
@@ -205,7 +207,7 @@ export default function Register() {
         </label>
         <div className="relative">
           <input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} required value={formData.confirmPassword} onChange={handleChange}
-            className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+            className={`${tw.goldInput} pr-12`}
             placeholder="Repeat your password" />
           <button type="button" onClick={() => setShowConfirmPassword(prev => !prev)}
             className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
@@ -226,12 +228,12 @@ export default function Register() {
         <div>
           <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">First Name <span className="text-red-500">*</span></label>
           <input id="first_name" name="first_name" type="text" required value={formData.first_name} onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none" />
+            className={tw.goldInput} />
         </div>
         <div>
           <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">Last Name <span className="text-red-500">*</span></label>
           <input id="last_name" name="last_name" type="text" required value={formData.last_name} onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none" />
+            className={tw.goldInput} />
         </div>
       </div>
 
@@ -240,9 +242,9 @@ export default function Register() {
         <label className="block text-sm font-medium text-gray-700 mb-3">I want to... <span className="text-red-500">*</span></label>
         <div className="space-y-3">
           {ROLES.map((role) => (
-            <label key={role.value} className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${formData.roles.includes(role.value) ? 'border-[#C97B1A] bg-[#fdf3e3]' : 'border-gray-200 hover:border-gray-300'}`}>
+            <label key={role.value} className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${formData.roles.includes(role.value) ? 'border-[#D4A017] bg-[#FCF3CF]' : 'border-gray-200 hover:border-gray-300'}`}>
               <input type="checkbox" name="roles" value={role.value} checked={formData.roles.includes(role.value)} onChange={handleChange}
-                className="mt-0.5 h-4 w-4 text-[#C97B1A] focus:ring-emerald-500 border-gray-300 rounded" />
+                className={`mt-0.5 h-4 w-4 ${tw.goldCheckbox}`} />
               <div className="ml-3">
                 <div className="text-sm font-medium text-gray-900">{role.label}</div>
                 <div className="text-sm text-gray-500">{role.description}</div>
@@ -261,7 +263,7 @@ export default function Register() {
           GazaBridge is connected to LinguaDuo — a translation chat app. Messages from other users will be delivered to you in this language. You can change this later in your profile.
         </p>
         <select id="preferred_language" name="preferred_language" value={formData.preferred_language} onChange={handleChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none bg-white">
+          className={`${tw.goldInput} bg-white`}>
           {LANGUAGES.map(l => (
             <option key={l.code} value={l.code}>{l.label}</option>
           ))}
@@ -271,7 +273,7 @@ export default function Register() {
       <div>
         <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">Country <span className="text-red-500">*</span></label>
         <select id="country" name="country" required value={formData.country} onChange={handleChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none">
+          className={tw.goldInput}>
           <option value="">Select your country</option>
           {COUNTRIES.map(country => <option key={country} value={country}>{country}</option>)}
         </select>
@@ -280,7 +282,7 @@ export default function Register() {
       <div>
         <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">Gender <span className="text-red-500">*</span></label>
         <select id="gender" name="gender" required value={formData.gender} onChange={handleChange}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none">
+          className={tw.goldInput}>
           <option value="">Select gender</option>
           {GENDERS.map(gender => <option key={gender.value} value={gender.value}>{gender.label}</option>)}
         </select>
@@ -290,16 +292,16 @@ export default function Register() {
         <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 mb-2">LinkedIn Profile <span className="text-red-500">*</span></label>
         <input id="linkedin" name="linkedin" type="url" required value={formData.linkedin} onChange={handleChange}
           placeholder="https://linkedin.com/in/yourprofile"
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none" />
+          className={tw.goldInput} />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-3">Languages you speak</label>
         <div className="grid grid-cols-2 gap-2">
           {LANGUAGES.map(language => (
-            <label key={language.code} className={`flex items-center p-2 rounded-lg border cursor-pointer transition-all ${formData.languages.includes(language.code) ? 'border-[#C97B1A] bg-[#fdf3e3]' : 'border-gray-200 hover:border-gray-300'}`}>
+            <label key={language.code} className={`flex items-center p-2 rounded-lg border cursor-pointer transition-all ${formData.languages.includes(language.code) ? 'border-[#D4A017] bg-[#FCF3CF]' : 'border-gray-200 hover:border-gray-300'}`}>
               <input type="checkbox" name="languages" value={language.code} checked={formData.languages.includes(language.code)} onChange={handleChange}
-                className="h-4 w-4 text-[#C97B1A] focus:ring-emerald-500 border-gray-300 rounded" />
+                className={`h-4 w-4 ${tw.goldCheckbox}`} />
               <span className="ml-2 text-sm text-gray-700">{language.label}</span>
             </label>
           ))}
@@ -312,7 +314,7 @@ export default function Register() {
         </label>
         <input id="whatsapp_number" name="whatsapp_number" type="tel" value={formData.whatsapp_number} onChange={handleChange}
           placeholder="+1234567890"
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none" />
+          className={tw.goldInput} />
       </div>
     </motion.div>
   );
@@ -320,7 +322,7 @@ export default function Register() {
   const renderStep3 = () => (
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-8">
       <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.5 }}
-        className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-full flex items-center justify-center">
+        className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.gold }}>
         <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
         </svg>
@@ -331,11 +333,11 @@ export default function Register() {
       </p>
       <p className="text-sm text-gray-500 mb-8">
         Didn't receive the email? Check your spam folder or{' '}
-        <button onClick={() => usersAPI.resendVerification(formData.email)} className="text-[#C97B1A] hover:text-[#1a2e1a] font-semibold">
+        <button onClick={() => usersAPI.resendVerification(formData.email)} className="text-[#D4A017] hover:text-[#154360] font-semibold">
           click here to resend
         </button>
       </p>
-      <Link to="/login" className="inline-block px-8 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all">
+      <Link to="/login" className="inline-block px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all" style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>
         Go to Login
       </Link>
     </motion.div>
@@ -343,12 +345,13 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]" />
+      <div className="absolute inset-0" style={{ backgroundColor: colors.primaryLight }} />
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="relative max-w-2xl w-full">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-xl rotate-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#1a2e1a] to-[#e18f23] bg-clip-text text-transparent">GazaBridge</span>
+          <Link to="/" className="inline-flex items-center justify-center mb-6 mt-16">
+            <div className="rounded-2xl border-4 p-1 bg-white" style={{ borderColor: colors.gold }}>
+              <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-[126px] object-contain" />
+            </div>
           </Link>
           <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
           <p className="mt-2 text-gray-600">Join our community of learners and volunteers</p>
@@ -360,11 +363,14 @@ export default function Register() {
               <div className="flex items-center justify-between">
                 {STEPS.map((stepName, index) => (
                   <div key={stepName} className="flex items-center">
-                    <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${index + 1 <= step ? 'bg-[#e18f23] text-white' : 'bg-gray-200 text-gray-500'}`}>
+                    <div
+                      className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-semibold ${index + 1 <= step ? 'text-white' : 'bg-gray-200 text-gray-500'}`}
+                      style={index + 1 <= step ? { backgroundColor: colors.gold } : {}}
+                    >
                       {index + 1 < step ? '✓' : index + 1}
                     </div>
-                    <span className={`ml-2 text-sm font-medium hidden sm:block ${index + 1 <= step ? 'text-[#C97B1A]' : 'text-gray-400'}`}>{stepName}</span>
-                    {index < STEPS.length - 1 && <div className={`w-12 sm:w-20 h-0.5 mx-2 ${index + 1 < step ? 'bg-[#e18f23]' : 'bg-gray-200'}`} />}
+                    <span className={`ml-2 text-sm font-medium hidden sm:block ${index + 1 <= step ? 'text-[#D4A017]' : 'text-gray-400'}`}>{stepName}</span>
+                    {index < STEPS.length - 1 && <div className={`w-12 sm:w-20 h-0.5 mx-2 ${index + 1 < step ? '' : 'bg-gray-200'}`} />}
                   </div>
                 ))}
               </div>
@@ -373,7 +379,9 @@ export default function Register() {
 
           {step === 1 && (
             <>
-              <GoogleLoginButton className="mb-6" />
+              <div className="max-w-xs mx-auto mb-6">
+                <GoogleLoginButton />
+              </div>
               <div className="relative mb-6">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
                 <div className="relative flex justify-center text-sm"><span className="px-4 bg-white text-gray-500">or continue with email</span></div>
@@ -407,12 +415,12 @@ export default function Register() {
                 )}
                 {step < 2 ? (
                   <motion.button type="button" onClick={handleNext} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                    className="flex-1 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg transition-all">
+                    className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg transition-all" style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>
                     Continue
                   </motion.button>
                 ) : (
                   <motion.button type="submit" disabled={loading} whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }}
-                    className="flex-1 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                    className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed" style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>
                     {loading ? (
                       <div className="flex items-center justify-center gap-2">
                         <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
@@ -432,7 +440,7 @@ export default function Register() {
         {step < 3 && (
           <p className="text-center mt-6 text-gray-600">
             Already have an account?{' '}
-            <Link to="/login" className="text-[#C97B1A] hover:text-[#1a2e1a] font-semibold">Sign in</Link>
+            <Link to="/login" className="text-[#D4A017] hover:text-[#154360] font-semibold">Sign in</Link>
           </p>
         )}
       </motion.div>
