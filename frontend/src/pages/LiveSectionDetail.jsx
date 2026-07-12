@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { liveSectionsAPI } from '../api/liveSections';
 import EditLiveSectionModal from '../components/EditLiveSectionModal';
 import AddLiveSectionContentModal from '../components/AddLiveSectionContentModal';
+import colors from '../theme/colors';
 
 // Beautiful Confirmation Modal Component
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete' }) => {
@@ -26,39 +27,39 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
         onClick={(e) => e.stopPropagation()}
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-[#e18f23]'}`} />
-        
+        <div className="h-1" style={{ backgroundColor: type === 'delete' ? colors.error : colors.gold }} />
+
         <div className="p-6">
           <div className="flex justify-center mb-4">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-              className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                type === 'delete' ? 'bg-red-100' : 'bg-[#fdf3e3]'
-              }`}
+              className="w-16 h-16 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: type === 'delete' ? colors.errorBg : colors.goldLight }}
             >
               {type === 'delete' ? (
-                <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8" style={{ color: colors.error }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-[#C97B1A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-8 h-8" style={{ color: colors.gold }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
             </motion.div>
           </div>
 
-          <h3 className="text-xl font-bold text-center text-gray-900 mb-2">{title}</h3>
-          <p className="text-gray-600 text-center mb-6">{message}</p>
+          <h3 className="text-xl font-bold text-center mb-2" style={{ color: colors.headingDark }}>{title}</h3>
+          <p className="text-center mb-6" style={{ color: colors.body }}>{message}</p>
 
           <div className="flex gap-3">
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-colors"
+              className="flex-1 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 font-medium rounded-xl transition-colors"
+              style={{ color: colors.body }}
             >
               Cancel
             </motion.button>
@@ -66,11 +67,8 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onConfirm}
-              className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
-                type === 'delete'
-                  ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  : 'bg-[#e18f23] hover:bg-[#c97a18]'
-              }`}
+              className="flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors"
+              style={{ background: type === 'delete' ? colors.error : `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
             >
               Confirm
             </motion.button>
@@ -107,22 +105,22 @@ export default function LiveSectionDetail() {
   useEffect(() => { fetchLiveSection(); }, [id]);
 
   const handleDeleteLiveSection = async () => {
-    try { 
-      await liveSectionsAPI.deleteLiveSection(id); 
-      navigate('/live-sections'); 
-    } catch (err) { 
-      alert(err.response?.data?.detail || 'Failed to delete'); 
+    try {
+      await liveSectionsAPI.deleteLiveSection(id);
+      navigate('/live-sections');
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete');
     }
   };
 
   const handleDeleteContent = async () => {
     const contentId = deleteContentModal.contentId;
-    try { 
-      await liveSectionsAPI.deleteContent(contentId); 
-      fetchLiveSection(); 
+    try {
+      await liveSectionsAPI.deleteContent(contentId);
+      fetchLiveSection();
       setDeleteContentModal({ isOpen: false, contentId: null, contentTitle: '' });
-    } catch (err) { 
-      alert(err.response?.data?.detail || 'Failed to delete'); 
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to delete');
     }
   };
 
@@ -139,57 +137,97 @@ export default function LiveSectionDetail() {
     return content?.content_title || 'this content';
   };
 
-  if (loading) return <div className="pt-24 min-h-screen flex items-center justify-center"><div className="animate-spin w-12 h-12 border-4 border-[#C97B1A] border-t-transparent rounded-full" /></div>;
-  if (error || !liveSection) return <div className="pt-24 min-h-screen flex items-center justify-center"><div className="text-center"><h2 className="text-2xl font-bold text-gray-900 mb-4">Not found</h2><Link to="/live-sections" className="text-[#C97B1A] font-semibold">← Back</Link></div></div>;
+  if (loading) return <div className="pt-24 min-h-screen flex items-center justify-center"><div className="animate-spin w-12 h-12 border-4 border-t-transparent rounded-full" style={{ borderColor: colors.gold, borderTopColor: 'transparent' }} /></div>;
+  if (error || !liveSection) return <div className="pt-24 min-h-screen flex items-center justify-center"><div className="text-center"><h2 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>Not found</h2><Link to="/live-sections" className="font-semibold" style={{ color: colors.gold }}>← Back</Link></div></div>;
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]">
+    <div className="pt-24 min-h-screen" style={{ backgroundColor: colors.primaryLight }}>
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link to="/live-sections" className="inline-flex items-center gap-2 text-[#C97B1A] font-semibold mb-6">← Back</Link>
+        <Link to="/live-sections" className="inline-flex items-center gap-2 font-semibold mb-6" style={{ color: colors.gold }}>← Back</Link>
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
             <div className="flex justify-between items-start mb-6">
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${effectiveStatus === 'active' ? 'bg-[#fdf3e3] text-[#1a2e1a] border-emerald-200' : 'bg-red-100 text-red-700 border-red-200'}`}>{isEnded ? 'Ended' : effectiveStatus}</span>
-                  {isEnded && <span className="text-xs text-red-500">(Auto-closed, ending date passed)</span>}
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-semibold border"
+                    style={effectiveStatus === 'active'
+                      ? { backgroundColor: colors.oliveLight, color: colors.headingDark, borderColor: colors.olive }
+                      : { backgroundColor: colors.errorBg, color: colors.error, borderColor: colors.error }}
+                  >
+                    {isEnded ? 'Ended' : effectiveStatus}
+                  </span>
+                  {isEnded && <span className="text-xs" style={{ color: colors.error }}>(Auto-closed, ending date passed)</span>}
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{liveSection.title}</h1>
-                <div className="flex items-center gap-2 text-gray-500"><span className="text-2xl">{CATEGORY_ICONS[liveSection.category]}</span><span>{liveSection.category}</span></div>
+                <h1 className="text-3xl font-bold mb-2" style={{ color: colors.headingDark }}>{liveSection.title}</h1>
+                <div className="flex items-center gap-2" style={{ color: colors.muted }}><span className="text-2xl">{CATEGORY_ICONS[liveSection.category]}</span><span>{liveSection.category}</span></div>
               </div>
               <div className="flex gap-2">
-                {canEdit && <button onClick={() => setShowEditModal(true)} className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl font-semibold text-sm">Edit</button>}
-                {canDelete && <button onClick={() => setDeleteLiveSectionModal({ isOpen: true })} className="px-4 py-2 bg-red-100 text-red-700 rounded-xl font-semibold text-sm">Delete</button>}
+                {canEdit && (
+                  <button
+                    onClick={() => setShowEditModal(true)}
+                    className="px-4 py-2 rounded-xl font-semibold text-sm border"
+                    style={{ backgroundColor: colors.goldLight, color: colors.headingDark, borderColor: colors.gold }}
+                  >
+                    Edit
+                  </button>
+                )}
+                {canDelete && (
+                  <button
+                    onClick={() => setDeleteLiveSectionModal({ isOpen: true })}
+                    className="px-4 py-2 rounded-xl font-semibold text-sm border"
+                    style={{ backgroundColor: colors.errorBg, color: colors.error, borderColor: colors.error }}
+                  >
+                    Delete
+                  </button>
+                )}
               </div>
             </div>
-            <p className="text-gray-600 mb-6">{liveSection.description}</p>
+            <p className="mb-6" style={{ color: colors.body }}>{liveSection.description}</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm text-gray-500">Skill Level</div><div className="font-semibold capitalize">{liveSection.skill_level}</div></div>
-              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm text-gray-500">Language</div><div className="font-semibold">{LANGUAGE_LABELS[liveSection.language] || liveSection.language}</div></div>
-              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm text-gray-500">Sessions/Week</div><div className="font-semibold">{liveSection.sessions_per_week}</div></div>
-              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm text-gray-500">Duration</div><div className="font-semibold">{liveSection.session_duration} min</div></div>
-              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm text-gray-500">Total Days</div><div className="font-semibold">{liveSection.duration_days} days</div></div>
-              <div className="p-4 bg-gray-50 rounded-xl col-span-2"><div className="text-sm text-gray-500">Ending Date</div><div className="font-semibold">{new Date(liveSection.ending_date).toLocaleString()}</div></div>
+              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm" style={{ color: colors.muted }}>Skill Level</div><div className="font-semibold capitalize" style={{ color: colors.headingDark }}>{liveSection.skill_level}</div></div>
+              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm" style={{ color: colors.muted }}>Language</div><div className="font-semibold" style={{ color: colors.headingDark }}>{LANGUAGE_LABELS[liveSection.language] || liveSection.language}</div></div>
+              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm" style={{ color: colors.muted }}>Sessions/Week</div><div className="font-semibold" style={{ color: colors.headingDark }}>{liveSection.sessions_per_week}</div></div>
+              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm" style={{ color: colors.muted }}>Duration</div><div className="font-semibold" style={{ color: colors.headingDark }}>{liveSection.session_duration} min</div></div>
+              <div className="p-4 bg-gray-50 rounded-xl"><div className="text-sm" style={{ color: colors.muted }}>Total Days</div><div className="font-semibold" style={{ color: colors.headingDark }}>{liveSection.duration_days} days</div></div>
+              <div className="p-4 bg-gray-50 rounded-xl col-span-2"><div className="text-sm" style={{ color: colors.muted }}>Ending Date</div><div className="font-semibold" style={{ color: colors.headingDark }}>{new Date(liveSection.ending_date).toLocaleString()}</div></div>
             </div>
             <div className="flex items-center gap-3 pt-4 border-t">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white font-bold">{liveSection.user_full_name?.split(' ').map(n => n[0]).join('')}</div>
-              <div><div className="font-medium">{liveSection.user_full_name}</div><div className="text-sm text-gray-500">{liveSection.user_email}</div></div>
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: colors.primary }}>{liveSection.user_full_name?.split(' ').map(n => n[0]).join('')}</div>
+              <div><div className="font-medium" style={{ color: colors.headingDark }}>{liveSection.user_full_name}</div><div className="text-sm" style={{ color: colors.muted }}>{liveSection.user_email}</div></div>
             </div>
           </div>
 
           <div className="bg-white rounded-3xl shadow-xl p-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Contents ({liveSection.contents?.length || 0})</h2>
-              {canAddContent && <button onClick={() => setShowAddContentModal(true)} className="px-4 py-2 bg-[#e18f23] hover:bg-[#c97a18] text-white rounded-xl font-semibold text-sm">Add Content</button>}
+              <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>Contents ({liveSection.contents?.length || 0})</h2>
+              {canAddContent && (
+                <button
+                  onClick={() => setShowAddContentModal(true)}
+                  className="px-4 py-2 text-white rounded-xl font-semibold text-sm"
+                  style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
+                >
+                  Add Content
+                </button>
+              )}
             </div>
-            {liveSection.contents?.length === 0 ? <p className="text-gray-500 text-center py-8">No content yet.</p> : (
+            {liveSection.contents?.length === 0 ? <p className="text-center py-8" style={{ color: colors.muted }}>No content yet.</p> : (
               <div className="space-y-4">
                 {liveSection.contents?.map((c, i) => (
                   <div key={c.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
-                    <div className="w-8 h-8 bg-[#fdf3e3] text-[#1a2e1a] rounded-full flex items-center justify-center font-bold text-sm">{i + 1}</div>
-                    <div className="flex-1"><h3 className="font-semibold">{c.content_title}</h3>{c.description && <p className="text-sm text-gray-600 mt-1">{c.description}</p>}<a href={c.link} target="_blank" rel="noopener noreferrer" className="text-[#C97B1A] text-sm mt-2 inline-block">Open →</a></div>
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
+                      style={{ backgroundColor: colors.goldLight, color: colors.headingDark }}
+                    >
+                      {i + 1}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold" style={{ color: colors.headingDark }}>{c.content_title}</h3>
+                      {c.description && <p className="text-sm mt-1" style={{ color: colors.body }}>{c.description}</p>}
+                      <a href={c.link} target="_blank" rel="noopener noreferrer" className="text-sm mt-2 inline-block" style={{ color: colors.gold }}>Open →</a>
+                    </div>
                     {(c.user === user?.id || user?.is_staff || user?.is_superuser) && (
-                      <button onClick={() => setDeleteContentModal({ isOpen: true, contentId: c.id, contentTitle: c.content_title })} className="text-red-500 hover:text-red-700">
+                      <button onClick={() => setDeleteContentModal({ isOpen: true, contentId: c.id, contentTitle: c.content_title })} style={{ color: colors.error }}>
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
