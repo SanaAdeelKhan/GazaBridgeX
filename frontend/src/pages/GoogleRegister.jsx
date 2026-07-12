@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import colors, { tw } from '../theme/colors';
 
 const COUNTRIES = [
   'Palestine', 'Egypt', 'Jordan', 'Lebanon', 'Syria', 'Saudi Arabia',
@@ -110,26 +111,27 @@ export default function GoogleRegister() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]" />
+    <div className="min-h-screen flex items-center justify-center pt-32 pb-12 px-4 sm:px-6 lg:px-8 relative">
+      <div className="absolute inset-0" style={{ backgroundColor: colors.primaryLight }} />
       <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="relative max-w-2xl w-full">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center space-x-2 mb-6">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#e18f23] to-[#e18f23] rounded-xl rotate-12" />
-            <span className="text-3xl font-bold bg-gradient-to-r from-[#1a2e1a] to-[#e18f23] bg-clip-text text-transparent">GazaBridge</span>
+          <Link to="/" className="inline-flex items-center justify-center mb-6">
+            <div className="rounded-2xl border-4 p-1 bg-white" style={{ borderColor: colors.gold }}>
+              <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-[126px] object-contain" />
+            </div>
           </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Complete Your Profile</h2>
-          <p className="mt-2 text-gray-600">Welcome{googleUser?.first_name ? `, ${googleUser.first_name}` : ''}! Let's set up your account.</p>
+          <h2 className="text-3xl font-bold" style={{ color: colors.headingDark }}>Complete Your Profile</h2>
+          <p className="mt-2" style={{ color: colors.body }}>Welcome{googleUser?.first_name ? `, ${googleUser.first_name}` : ''}! Let's set up your account.</p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
           {error && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 p-4 rounded-xl border" style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}>
               <div className="flex items-center gap-3">
-                <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 flex-shrink-0" style={{ color: colors.error }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-sm text-red-700">{error}</p>
+                <p className="text-sm" style={{ color: colors.error }}>{error}</p>
               </div>
             </motion.div>
           )}
@@ -137,15 +139,21 @@ export default function GoogleRegister() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Roles */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">I want to... <span className="text-red-500">*</span></label>
+              <label className="block text-sm font-medium mb-3" style={{ color: colors.body }}>I want to... <span style={{ color: colors.error }}>*</span></label>
               <div className="space-y-3">
                 {ROLES.map((role) => (
-                  <label key={role.value} className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${formData.roles.includes(role.value) ? 'border-[#C97B1A] bg-[#fdf3e3]' : 'border-gray-200 hover:border-gray-300'}`}>
+                  <label
+                    key={role.value}
+                    className="flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all"
+                    style={formData.roles.includes(role.value)
+                      ? { borderColor: colors.gold, backgroundColor: colors.goldLight }
+                      : { borderColor: '#E5E7EB' }}
+                  >
                     <input type="checkbox" name="roles" value={role.value} checked={formData.roles.includes(role.value)} onChange={handleChange}
-                      className="mt-0.5 h-4 w-4 text-[#C97B1A] focus:ring-emerald-500 border-gray-300 rounded" />
+                      className={tw.goldCheckbox} />
                     <div className="ml-3">
-                      <div className="text-sm font-medium text-gray-900">{role.label}</div>
-                      <div className="text-sm text-gray-500">{role.description}</div>
+                      <div className="text-sm font-medium" style={{ color: colors.headingDark }}>{role.label}</div>
+                      <div className="text-sm" style={{ color: colors.muted }}>{role.description}</div>
                     </div>
                   </label>
                 ))}
@@ -153,15 +161,15 @@ export default function GoogleRegister() {
             </div>
 
             {/* LinguaDuo Preferred Language */}
-            <div className="p-4 rounded-xl border-2 border-blue-100 bg-blue-50">
-              <label htmlFor="preferred_language" className="block text-sm font-medium text-gray-700 mb-1">
-                💬 Preferred language for receiving messages <span className="text-red-500">*</span>
+            <div className="p-4 rounded-xl border-2" style={{ borderColor: colors.secondary, backgroundColor: '#EBF5FB' }}>
+              <label htmlFor="preferred_language" className="block text-sm font-medium mb-1" style={{ color: colors.body }}>
+                💬 Preferred language for receiving messages <span style={{ color: colors.error }}>*</span>
               </label>
-              <p className="text-xs text-gray-500 mb-3">
+              <p className="text-xs mb-3" style={{ color: colors.muted }}>
                 GazaBridge is connected to LinguaDuo — a translation chat app. Messages from other users will be delivered to you in this language. You can change this later in your profile.
               </p>
               <select id="preferred_language" name="preferred_language" value={formData.preferred_language} onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none bg-white">
+                className={`${tw.goldInput} bg-white`}>
                 {LANGUAGES.map(l => (
                   <option key={l.code} value={l.code}>{l.label}</option>
                 ))}
@@ -170,9 +178,9 @@ export default function GoogleRegister() {
 
             {/* Country */}
             <div>
-              <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">Country <span className="text-red-500">*</span></label>
+              <label htmlFor="country" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Country <span style={{ color: colors.error }}>*</span></label>
               <select id="country" name="country" required value={formData.country} onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none">
+                className={tw.goldInput}>
                 <option value="">Select your country</option>
                 {COUNTRIES.map(country => <option key={country} value={country}>{country}</option>)}
               </select>
@@ -180,9 +188,9 @@ export default function GoogleRegister() {
 
             {/* Gender */}
             <div>
-              <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">Gender <span className="text-red-500">*</span></label>
+              <label htmlFor="gender" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Gender <span style={{ color: colors.error }}>*</span></label>
               <select id="gender" name="gender" required value={formData.gender} onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none">
+                className={tw.goldInput}>
                 <option value="">Select gender</option>
                 {GENDERS.map(gender => <option key={gender.value} value={gender.value}>{gender.label}</option>)}
               </select>
@@ -190,21 +198,27 @@ export default function GoogleRegister() {
 
             {/* LinkedIn */}
             <div>
-              <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 mb-2">LinkedIn Profile <span className="text-red-500">*</span></label>
+              <label htmlFor="linkedin" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>LinkedIn Profile <span style={{ color: colors.error }}>*</span></label>
               <input id="linkedin" name="linkedin" type="url" required value={formData.linkedin} onChange={handleChange}
                 placeholder="https://linkedin.com/in/yourprofile"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none" />
+                className={tw.goldInput} />
             </div>
 
             {/* Languages spoken */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">Languages you speak</label>
+              <label className="block text-sm font-medium mb-3" style={{ color: colors.body }}>Languages you speak</label>
               <div className="grid grid-cols-2 gap-2">
                 {LANGUAGES.map(language => (
-                  <label key={language.code} className={`flex items-center p-2 rounded-lg border cursor-pointer transition-all ${formData.languages.includes(language.code) ? 'border-[#C97B1A] bg-[#fdf3e3]' : 'border-gray-200 hover:border-gray-300'}`}>
+                  <label
+                    key={language.code}
+                    className="flex items-center p-2 rounded-lg border cursor-pointer transition-all"
+                    style={formData.languages.includes(language.code)
+                      ? { borderColor: colors.gold, backgroundColor: colors.goldLight }
+                      : { borderColor: '#E5E7EB' }}
+                  >
                     <input type="checkbox" name="languages" value={language.code} checked={formData.languages.includes(language.code)} onChange={handleChange}
-                      className="h-4 w-4 text-[#C97B1A] focus:ring-emerald-500 border-gray-300 rounded" />
-                    <span className="ml-2 text-sm text-gray-700">{language.label}</span>
+                      className={tw.goldCheckbox} />
+                    <span className="ml-2 text-sm" style={{ color: colors.body }}>{language.label}</span>
                   </label>
                 ))}
               </div>
@@ -212,16 +226,17 @@ export default function GoogleRegister() {
 
             {/* WhatsApp */}
             <div>
-              <label htmlFor="whatsapp_number" className="block text-sm font-medium text-gray-700 mb-2">
-                WhatsApp Number <span className="text-gray-400">(optional)</span>
+              <label htmlFor="whatsapp_number" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                WhatsApp Number <span style={{ color: colors.muted }}>(optional)</span>
               </label>
               <input id="whatsapp_number" name="whatsapp_number" type="tel" value={formData.whatsapp_number} onChange={handleChange}
                 placeholder="+1234567890"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none" />
+                className={tw.goldInput} />
             </div>
 
             <motion.button type="submit" disabled={loading} whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }}
-              className="w-full py-3.5 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+              className="w-full py-3.5 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
                   <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
