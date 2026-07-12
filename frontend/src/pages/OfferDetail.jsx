@@ -7,6 +7,7 @@ import { postsAPI } from '../api/posts';
 import LinkCourseModal from '../components/LinkCourseModal';
 import LinkLiveSectionModal from '../components/LinkLiveSectionModal';
 import EditPostModal from '../components/EditPostModal';
+import colors from '../theme/colors';
 
 const CATEGORY_ICONS = {
   learn_language: '🗣️',
@@ -53,13 +54,13 @@ export default function OfferDetail() {
     try {
       const response = await postsAPI.getOffer(id);
       setOffer(response.data);
-      
+
       // Fetch linked courses and live sections
       const [coursesRes, liveSectionsRes] = await Promise.all([
         postsAPI.getOfferLinkedCourses(id).catch(() => ({ data: [] })),
         postsAPI.getOfferLinkedLiveSections(id).catch(() => ({ data: [] })),
       ]);
-      
+
       setLinkedCourses(coursesRes.data || []);
       setLinkedLiveSections(liveSectionsRes.data || []);
     } catch (err) {
@@ -75,7 +76,7 @@ export default function OfferDetail() {
 
   const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this offer?')) return;
-    
+
     try {
       await postsAPI.deleteOffer(id);
       navigate('/posts');
@@ -91,7 +92,7 @@ export default function OfferDetail() {
   if (loading) {
     return (
       <div className="pt-24 min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-12 h-12 border-4 border-[#C97B1A] border-t-transparent rounded-full" />
+        <div className="animate-spin w-12 h-12 border-4 border-t-transparent rounded-full" style={{ borderColor: colors.gold, borderTopColor: 'transparent' }} />
       </div>
     );
   }
@@ -100,17 +101,17 @@ export default function OfferDetail() {
     return (
       <div className="pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Offer not found</h2>
-          <Link to="/posts" className="text-[#C97B1A] font-semibold">← Back to Posts</Link>
+          <h2 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>Offer not found</h2>
+          <Link to="/posts" className="font-semibold" style={{ color: colors.gold }}>← Back to Posts</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]">
+    <div className="pt-24 min-h-screen" style={{ backgroundColor: colors.primaryLight }}>
       <div className="max-w-4xl mx-auto px-6 py-12">
-        <Link to="/posts" className="inline-flex items-center gap-2 text-[#C97B1A] font-semibold mb-6">
+        <Link to="/posts" className="inline-flex items-center gap-2 font-semibold mb-6" style={{ color: colors.gold }}>
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
@@ -123,60 +124,70 @@ export default function OfferDetail() {
             <div className="flex justify-between items-start mb-6">
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold border border-blue-200">
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-semibold border"
+                    style={{ backgroundColor: colors.goldLight, color: colors.headingDark, borderColor: colors.gold }}
+                  >
                     🙌 Offer
                   </span>
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${
-                    offer.status === 'active' ? 'bg-[#fdf3e3] text-[#1a2e1a] border-emerald-200' :
-                    offer.status === 'inactive' ? 'bg-gray-100 text-gray-700 border-gray-200' :
-                    'bg-red-100 text-red-700 border-red-200'
-                  }`}>
+                  <span
+                    className="px-3 py-1 rounded-full text-xs font-semibold border"
+                    style={
+                      offer.status === 'active'
+                        ? { backgroundColor: colors.oliveLight, color: colors.headingDark, borderColor: colors.olive }
+                        : offer.status === 'inactive'
+                        ? { backgroundColor: '#F3F4F6', color: colors.muted, borderColor: '#D1D5DB' }
+                        : { backgroundColor: colors.errorBg, color: colors.error, borderColor: colors.error }
+                    }
+                  >
                     {offer.status}
                   </span>
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{offer.offer_name}</h1>
-                <div className="flex items-center gap-2 text-gray-500 mb-4">
+                <h1 className="text-3xl font-bold mb-2" style={{ color: colors.headingDark }}>{offer.offer_name}</h1>
+                <div className="flex items-center gap-2 mb-4" style={{ color: colors.muted }}>
                   <span className="text-2xl">{CATEGORY_ICONS[offer.category]}</span>
                   <span>{CATEGORY_LABELS[offer.category] || offer.category}</span>
                 </div>
               </div>
-              
+
               <div className="flex gap-2">
                 {canEdit && (
-                  <button onClick={() => setShowEditModal(true)} 
-                    className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-xl font-semibold text-sm hover:bg-yellow-200 transition-colors">
+                  <button onClick={() => setShowEditModal(true)}
+                    className="px-4 py-2 rounded-xl font-semibold text-sm border transition-colors"
+                    style={{ backgroundColor: colors.goldLight, color: colors.headingDark, borderColor: colors.gold }}>
                     Edit
                   </button>
                 )}
                 {canDelete && (
                   <button onClick={handleDelete}
-                    className="px-4 py-2 bg-red-100 text-red-700 rounded-xl font-semibold text-sm hover:bg-red-200 transition-colors">
+                    className="px-4 py-2 rounded-xl font-semibold text-sm border transition-colors"
+                    style={{ backgroundColor: colors.errorBg, color: colors.error, borderColor: colors.error }}>
                     Delete
                   </button>
                 )}
               </div>
             </div>
 
-            <p className="text-gray-600 mb-6 leading-relaxed">{offer.description}</p>
+            <p className="mb-6 leading-relaxed" style={{ color: colors.body }}>{offer.description}</p>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="p-4 bg-gray-50 rounded-xl">
-                <div className="text-sm text-gray-500">Availability</div>
-                <div className="font-semibold">{AVAILABILITY_LABELS[offer.availability] || offer.availability}</div>
+                <div className="text-sm" style={{ color: colors.muted }}>Availability</div>
+                <div className="font-semibold" style={{ color: colors.headingDark }}>{AVAILABILITY_LABELS[offer.availability] || offer.availability}</div>
               </div>
               <div className="p-4 bg-gray-50 rounded-xl">
-                <div className="text-sm text-gray-500">Posted</div>
-                <div className="font-semibold">{new Date(offer.created_at).toLocaleDateString()}</div>
+                <div className="text-sm" style={{ color: colors.muted }}>Posted</div>
+                <div className="font-semibold" style={{ color: colors.headingDark }}>{new Date(offer.created_at).toLocaleDateString()}</div>
               </div>
             </div>
 
             <div className="flex items-center gap-3 pt-4 border-t">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white font-bold">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: colors.primary }}>
                 {offer.user_full_name?.split(' ').map(n => n[0]).join('')}
               </div>
               <div>
-                <div className="font-medium">{offer.user_full_name}</div>
-                <div className="text-sm text-gray-500">{offer.user_email}</div>
+                <div className="font-medium" style={{ color: colors.headingDark }}>{offer.user_full_name}</div>
+                <div className="text-sm" style={{ color: colors.muted }}>{offer.user_email}</div>
               </div>
             </div>
           </div>
@@ -184,12 +195,13 @@ export default function OfferDetail() {
           {/* Linked Courses Section */}
           <div className="bg-white rounded-3xl shadow-xl p-8 mb-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>
                 Linked Courses ({linkedCourses.length})
               </h2>
               {canLink && (
                 <button onClick={() => setShowLinkModal(true)}
-                  className="px-4 py-2 bg-[#e18f23] hover:bg-[#c97a18] text-white rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all">
+                  className="px-4 py-2 text-white rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all"
+                  style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>
                   Manage Links
                 </button>
               )}
@@ -198,10 +210,11 @@ export default function OfferDetail() {
             {linkedCourses.length === 0 ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-4">📚</div>
-                <p className="text-gray-500">No courses linked to this offer yet.</p>
+                <p style={{ color: colors.muted }}>No courses linked to this offer yet.</p>
                 {canLink && (
                   <button onClick={() => setShowLinkModal(true)}
-                    className="mt-4 text-[#C97B1A] font-semibold text-sm hover:text-[#1a2e1a]">
+                    className="mt-4 font-semibold text-sm"
+                    style={{ color: colors.gold }}>
                     Link a course →
                   </button>
                 )}
@@ -212,23 +225,29 @@ export default function OfferDetail() {
                   <Link
                     key={course.id}
                     to={`/courses/${course.id}`}
-                    className="block p-4 bg-gray-50 rounded-xl hover:bg-[#fdf3e3] transition-colors group"
+                    className="block p-4 bg-gray-50 rounded-xl transition-colors group"
+                    style={{ '--tw-hover-bg': colors.goldLight }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.goldLight}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''}
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="font-semibold text-gray-900 group-hover:text-[#C97B1A] transition-colors">
+                        <h3 className="font-semibold transition-colors" style={{ color: colors.headingDark }}>
                           {course.title}
                         </h3>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            course.status === 'active' ? 'bg-[#fdf3e3] text-[#1a2e1a]' : 'bg-gray-100 text-gray-600'
-                          }`}>
+                          <span
+                            className="px-2 py-0.5 rounded-full text-xs font-medium"
+                            style={course.status === 'active'
+                              ? { backgroundColor: colors.oliveLight, color: colors.headingDark }
+                              : { backgroundColor: '#F3F4F6', color: colors.muted }}
+                          >
                             {course.status}
                           </span>
-                          <span className="text-xs text-gray-400">by {course.user_email}</span>
+                          <span className="text-xs" style={{ color: colors.muted }}>by {course.user_email}</span>
                         </div>
                       </div>
-                      <svg className="w-5 h-5 text-gray-400 group-hover:text-emerald-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-5 h-5 transition-colors" style={{ color: colors.muted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
@@ -241,12 +260,13 @@ export default function OfferDetail() {
           {/* Linked Live Sections Section */}
           <div className="bg-white rounded-3xl shadow-xl p-8">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>
                 Linked Live Sections ({linkedLiveSections.length})
               </h2>
               {canLink && (
                 <button onClick={() => setShowLinkLiveSectionModal(true)}
-                  className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all">
+                  className="px-4 py-2 text-white rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all"
+                  style={{ backgroundColor: colors.secondary }}>
                   Manage Live Section Links
                 </button>
               )}
@@ -255,10 +275,11 @@ export default function OfferDetail() {
             {linkedLiveSections.length === 0 ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-4">📡</div>
-                <p className="text-gray-500">No live sections linked to this offer yet.</p>
+                <p style={{ color: colors.muted }}>No live sections linked to this offer yet.</p>
                 {canLink && (
                   <button onClick={() => setShowLinkLiveSectionModal(true)}
-                    className="mt-4 text-purple-600 font-semibold text-sm hover:text-purple-700">
+                    className="mt-4 font-semibold text-sm"
+                    style={{ color: colors.secondary }}>
                     Link a live section →
                   </button>
                 )}
@@ -269,25 +290,30 @@ export default function OfferDetail() {
                   <Link
                     key={ls.id}
                     to={`/live-sections/${ls.id}`}
-                    className="block p-4 bg-gray-50 rounded-xl hover:bg-purple-50 transition-colors group"
+                    className="block p-4 bg-gray-50 rounded-xl transition-colors group"
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = colors.primaryLight}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''}
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">
+                        <h3 className="font-semibold transition-colors" style={{ color: colors.headingDark }}>
                           {ls.title}
                         </h3>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                            ls.effective_status === 'active' ? 'bg-[#fdf3e3] text-[#1a2e1a]' : 'bg-gray-100 text-gray-600'
-                          }`}>
+                          <span
+                            className="px-2 py-0.5 rounded-full text-xs font-medium"
+                            style={ls.effective_status === 'active'
+                              ? { backgroundColor: colors.oliveLight, color: colors.headingDark }
+                              : { backgroundColor: '#F3F4F6', color: colors.muted }}
+                          >
                             {ls.effective_status}
                           </span>
-                          <span className="text-xs text-gray-400">by {ls.user_email}</span>
-                          <span className="text-xs text-gray-400">•</span>
-                          <span className="text-xs text-gray-400">Ends: {new Date(ls.ending_date).toLocaleDateString()}</span>
+                          <span className="text-xs" style={{ color: colors.muted }}>by {ls.user_email}</span>
+                          <span className="text-xs" style={{ color: colors.muted }}>•</span>
+                          <span className="text-xs" style={{ color: colors.muted }}>Ends: {new Date(ls.ending_date).toLocaleDateString()}</span>
                         </div>
                       </div>
-                      <svg className="w-5 h-5 text-gray-400 group-hover:text-purple-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-5 h-5 transition-colors" style={{ color: colors.muted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
