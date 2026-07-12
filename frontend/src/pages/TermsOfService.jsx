@@ -16,7 +16,7 @@ export default function TermsOfService() {
             <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{ color: colors.headingDark }}>
               Terms of <span style={{ color: colors.gold }}>Service</span>
             </h1>
-            <p className="mb-12" style={{ color: colors.muted }}>Last updated: December 2024</p>
+            <p className="mb-12" style={{ color: colors.muted }}>Last updated: July 2026</p>
 
             <div className="prose prose-lg max-w-none space-y-8">
               <section>

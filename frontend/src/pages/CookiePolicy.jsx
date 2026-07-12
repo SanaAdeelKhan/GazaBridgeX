@@ -1,37 +1,38 @@
 // frontend/src/pages/CookiePolicy.jsx
 import { motion } from 'framer-motion';
+import colors from '../theme/colors';
 
 export default function CookiePolicy() {
   return (
     <div className="pt-24">
       <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]" />
+        <div className="absolute inset-0" style={{ backgroundColor: colors.primaryLight }} />
         <div className="relative max-w-4xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6">
-              Cookie <span className="bg-gradient-to-r from-[#1a2e1a] to-[#e18f23] bg-clip-text text-transparent">Policy</span>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{ color: colors.headingDark }}>
+              Cookie <span style={{ color: colors.gold }}>Policy</span>
             </h1>
-            <p className="text-gray-500 mb-12">Last updated: December 2024</p>
+            <p className="mb-12" style={{ color: colors.muted }}>Last updated: July 2026</p>
 
             <div className="prose prose-lg max-w-none space-y-8">
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">What Are Cookies?</h2>
-                <p className="text-gray-600 leading-relaxed">
-                  Cookies are small text files stored on your device when you visit websites. They help websites 
+                <h2 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>What Are Cookies?</h2>
+                <p className="leading-relaxed" style={{ color: colors.body }}>
+                  Cookies are small text files stored on your device when you visit websites. They help websites
                   remember your preferences and improve your browsing experience.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">How We Use Cookies</h2>
-                <p className="text-gray-600 leading-relaxed mb-4">
+                <h2 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>How We Use Cookies</h2>
+                <p className="leading-relaxed mb-4" style={{ color: colors.body }}>
                   GazaBridge uses only essential cookies to:
                 </p>
-                <ul className="list-disc list-inside space-y-2 text-gray-600 ml-4">
+                <ul className="list-disc list-inside space-y-2 ml-4" style={{ color: colors.body }}>
                   <li>Maintain your login session</li>
                   <li>Remember your preferences</li>
                   <li>Ensure platform security</li>
@@ -40,41 +41,41 @@ export default function CookiePolicy() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Types of Cookies We Use</h2>
+                <h2 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>Types of Cookies We Use</h2>
                 <div className="space-y-4">
                   <div>
-                    <h3 className="font-semibold text-gray-900">Session Cookies</h3>
-                    <p className="text-gray-600">Temporary cookies that expire when you close your browser. These are essential for platform functionality.</p>
+                    <h3 className="font-semibold" style={{ color: colors.headingDark }}>Session Cookies</h3>
+                    <p style={{ color: colors.body }}>Temporary cookies that expire when you close your browser. These are essential for platform functionality.</p>
                   </div>
                   <div>
-                    <h3 className="font-semibold text-gray-900">Authentication Cookies</h3>
-                    <p className="text-gray-600">Used to keep you logged in and secure your account during your session.</p>
+                    <h3 className="font-semibold" style={{ color: colors.headingDark }}>Authentication Cookies</h3>
+                    <p style={{ color: colors.body }}>Used to keep you logged in and secure your account during your session.</p>
                   </div>
                 </div>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Third-Party Cookies</h2>
-                <p className="text-gray-600 leading-relaxed">
-                  We do not use third-party tracking cookies or analytics cookies. We respect your privacy and 
+                <h2 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>Third-Party Cookies</h2>
+                <p className="leading-relaxed" style={{ color: colors.body }}>
+                  We do not use third-party tracking cookies or analytics cookies. We respect your privacy and
                   minimize data collection.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Managing Cookies</h2>
-                <p className="text-gray-600 leading-relaxed">
-                  You can control and delete cookies through your browser settings. However, disabling essential 
-                  cookies may affect platform functionality. Most browsers allow you to refuse cookies or alert 
+                <h2 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>Managing Cookies</h2>
+                <p className="leading-relaxed" style={{ color: colors.body }}>
+                  You can control and delete cookies through your browser settings. However, disabling essential
+                  cookies may affect platform functionality. Most browsers allow you to refuse cookies or alert
                   you when cookies are being sent.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact</h2>
-                <p className="text-gray-600 leading-relaxed">
+                <h2 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>Contact</h2>
+                <p className="leading-relaxed" style={{ color: colors.body }}>
                   For questions about our Cookie Policy, contact us at{' '}
-                  <a href="mailto:gazabridgex@gmail.com" className="text-[#C97B1A] hover:text-[#1a2e1a]">
+                  <a href="mailto:gazabridgex@gmail.com" style={{ color: colors.gold }}>
                     gazabridgex@gmail.com
                   </a>
                 </p>
