@@ -74,8 +74,8 @@ export default function CookiePolicy() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-4">Contact</h2>
                 <p className="text-gray-600 leading-relaxed">
                   For questions about our Cookie Policy, contact us at{' '}
-                  <a href="mailto:hello@gazabridge.org" className="text-[#C97B1A] hover:text-[#1a2e1a]">
-                    hello@gazabridge.org
+                  <a href="mailto:gazabridgex@gmail.com" className="text-[#C97B1A] hover:text-[#1a2e1a]">
+                    gazabridgex@gmail.com
                   </a>
                 </p>
               </section>

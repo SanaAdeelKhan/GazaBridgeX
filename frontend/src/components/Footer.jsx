@@ -93,7 +93,7 @@ const socials = [
   },
   {
     label: 'Email',
-    href: 'mailto:hello@gazabridge.org',
+    href: 'mailto:gazabridgex@gmail.com',
     icon: (
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -200,13 +200,13 @@ export default function Footer() {
 
             {/* Email chip */}
             <motion.a
-              href="mailto:hello@gazabridge.org"
+              href="mailto:gazabridgex@gmail.com"
               whileHover={{ scale: 1.02 }}
               className="inline-flex items-center gap-2 text-xs transition-colors group hover:text-[var(--gb-gold)]"
               style={{ color: colors.onDarkMuted }}
             >
               <span className="w-1.5 h-1.5 rounded-full group-hover:animate-pulse" style={{ backgroundColor: colors.gold }} />
-              hello@gazabridge.org
+              gazabridgex@gmail.com
             </motion.a>
           </motion.div>
 

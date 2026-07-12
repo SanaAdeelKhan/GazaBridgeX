@@ -46,6 +46,6 @@ export const faqData = [
   },
   {
     question: 'How do I report inappropriate behavior?',
-    answer: 'If you encounter any issues, you can report users directly through the platform or contact us at hello@gazabridge.org. We take all reports seriously and take appropriate action to maintain a safe community.',
+    answer: 'If you encounter any issues, you can report users directly through the platform or contact us at gazabridgex@gmail.com. We take all reports seriously and take appropriate action to maintain a safe community.',
   },
 ];
