@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { liveSectionsAPI } from '../api/liveSections';
+import colors, { tw } from '../theme/colors';
 
 export default function EditLiveSectionModal({ liveSection, onClose, onUpdated }) {
   const [formData, setFormData] = useState({
@@ -38,16 +39,16 @@ export default function EditLiveSectionModal({ liveSection, onClose, onUpdated }
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
         <div className="p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Edit Live Section</h2>
-          {error && <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl"><p className="text-sm text-red-700">{error}</p></div>}
+          <h2 className="text-2xl font-bold mb-6" style={{ color: colors.headingDark }}>Edit Live Section</h2>
+          {error && <div className="mb-6 p-4 rounded-xl border" style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}><p className="text-sm" style={{ color: colors.error }}>{error}</p></div>}
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div><label className="block text-sm font-medium text-gray-700 mb-2">Title</label><input type="text" name="title" value={formData.title} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none" /></div>
-            <div><label className="block text-sm font-medium text-gray-700 mb-2">Description</label><textarea name="description" value={formData.description} onChange={handleChange} rows={3} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none resize-none" /></div>
-            <div><label className="block text-sm font-medium text-gray-700 mb-2">Ending Date</label><input type="datetime-local" name="ending_date" value={formData.ending_date} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none" /></div>
-            <div><label className="block text-sm font-medium text-gray-700 mb-2">Status</label><select name="status" value={formData.status} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"><option value="active">Active</option><option value="inactive">Inactive</option><option value="closed">Closed</option></select></div>
+            <div><label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Title</label><input type="text" name="title" value={formData.title} onChange={handleChange} className={tw.goldInput} /></div>
+            <div><label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Description</label><textarea name="description" value={formData.description} onChange={handleChange} rows={3} className={`${tw.goldInput} resize-none`} /></div>
+            <div><label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Ending Date</label><input type="datetime-local" name="ending_date" value={formData.ending_date} onChange={handleChange} className={tw.goldInput} /></div>
+            <div><label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Status</label><select name="status" value={formData.status} onChange={handleChange} className={tw.goldInput}><option value="active">Active</option><option value="inactive">Inactive</option><option value="closed">Closed</option></select></div>
             <div className="flex gap-3 pt-4">
-              <button type="button" onClick={onClose} className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50">Cancel</button>
-              <motion.button type="submit" disabled={loading} whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }} className="flex-1 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg disabled:opacity-50">{loading ? 'Saving...' : 'Update'}</motion.button>
+              <button type="button" onClick={onClose} className="flex-1 py-3 border-2 font-semibold rounded-xl hover:bg-gray-50" style={{ borderColor: '#D1D5DB', color: colors.body }}>Cancel</button>
+              <motion.button type="submit" disabled={loading} whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }} className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50" style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>{loading ? 'Saving...' : 'Update'}</motion.button>
             </div>
           </form>
         </div>
