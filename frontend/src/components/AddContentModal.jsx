@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { coursesAPI } from '../api/courses';
+import colors, { tw } from '../theme/colors';
 
 export default function AddContentModal({ courseId, onClose, onAdded }) {
   const [formData, setFormData] = useState({
@@ -78,7 +79,7 @@ export default function AddContentModal({ courseId, onClose, onAdded }) {
         <div className="p-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>
               Add Content
             </h2>
 
@@ -87,7 +88,8 @@ export default function AddContentModal({ courseId, onClose, onAdded }) {
               className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
             >
               <svg
-                className="w-5 h-5 text-gray-500"
+                className="w-5 h-5"
+                style={{ color: colors.muted }}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -104,8 +106,8 @@ export default function AddContentModal({ courseId, onClose, onAdded }) {
 
           {/* Error */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mb-6 p-4 rounded-xl border" style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}>
+              <p className="text-sm" style={{ color: colors.error }}>{error}</p>
             </div>
           )}
 
@@ -113,8 +115,8 @@ export default function AddContentModal({ courseId, onClose, onAdded }) {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Content Title <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                Content Title <span style={{ color: colors.error }}>*</span>
               </label>
 
               <input
@@ -124,14 +126,14 @@ export default function AddContentModal({ courseId, onClose, onAdded }) {
                 onChange={handleChange}
                 required
                 placeholder="e.g., Introduction Video, Lesson 1 Slides"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
               />
             </div>
 
             {/* Link */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Link <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                Link <span style={{ color: colors.error }}>*</span>
               </label>
 
               <input
@@ -141,15 +143,15 @@ export default function AddContentModal({ courseId, onClose, onAdded }) {
                 onChange={handleChange}
                 required
                 placeholder="https://example.com/resource"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
               />
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                 Description{' '}
-                <span className="text-gray-400">(optional)</span>
+                <span style={{ color: colors.muted }}>(optional)</span>
               </label>
 
               <textarea
@@ -158,7 +160,7 @@ export default function AddContentModal({ courseId, onClose, onAdded }) {
                 onChange={handleChange}
                 rows={3}
                 placeholder="Brief description of this content..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none resize-none"
+                className={`${tw.goldInput} resize-none`}
               />
             </div>
 
@@ -167,7 +169,8 @@ export default function AddContentModal({ courseId, onClose, onAdded }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                className="flex-1 py-3 border-2 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                style={{ borderColor: '#D1D5DB', color: colors.body }}
               >
                 Cancel
               </button>
@@ -177,7 +180,8 @@ export default function AddContentModal({ courseId, onClose, onAdded }) {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
               >
                 {loading ? 'Adding...' : 'Add Content'}
               </motion.button>
