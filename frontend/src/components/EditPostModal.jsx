@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { postsAPI } from '../api/posts';
+import colors, { tw } from '../theme/colors';
 
 const CATEGORIES = [
   { value: 'learn_language', label: '🗣️ Learn a Language' },
@@ -39,7 +40,7 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     setLoading(true);
     setError('');
 
@@ -76,25 +77,25 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
       >
         <div className="p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>
               Edit {type === 'offer' ? 'Offer' : 'Request'}
             </h2>
             <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-              <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" style={{ color: colors.muted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mb-6 p-4 rounded-xl border" style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}>
+              <p className="text-sm" style={{ color: colors.error }}>{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                 {type === 'offer' ? 'Offer Name' : 'Request Name'}
               </label>
               <input
@@ -102,17 +103,17 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
                 name={type === 'offer' ? 'offer_name' : 'request_name'}
                 value={formData[type === 'offer' ? 'offer_name' : 'request_name']}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Category</label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -121,24 +122,24 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Description</label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none resize-none"
+                className={`${tw.goldInput} resize-none`}
               />
             </div>
 
             {type === 'offer' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Weekly Availability</label>
+                <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Weekly Availability</label>
                 <select
                   name="availability"
                   value={formData.availability}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                  className={tw.goldInput}
                 >
                   {AVAILABILITY.map(a => (
                     <option key={a.value} value={a.value}>{a.label}</option>
@@ -148,12 +149,12 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Status</label>
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -165,7 +166,8 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                className="flex-1 py-3 border-2 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                style={{ borderColor: '#D1D5DB', color: colors.body }}
               >
                 Cancel
               </button>
@@ -174,7 +176,10 @@ export default function EditPostModal({ post, type, onClose, onUpdated }) {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                style={{ background: type === 'offer'
+                  ? `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})`
+                  : `linear-gradient(135deg, ${colors.primary}, ${colors.primaryHover})` }}
               >
                 {loading ? 'Saving...' : 'Update'}
               </motion.button>
