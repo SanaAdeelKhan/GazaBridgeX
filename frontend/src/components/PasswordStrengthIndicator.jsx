@@ -1,37 +1,38 @@
 // frontend/src/components/PasswordStrengthIndicator.jsx
 import { motion } from 'framer-motion';
+import colors from '../theme/colors';
 
 export default function PasswordStrengthIndicator({ password }) {
   const calculateStrength = (pwd) => {
     let score = 0;
-    
+
     if (pwd.length >= 8) score++;
     if (pwd.length >= 12) score++;
     if (/[A-Z]/.test(pwd)) score++;
     if (/[a-z]/.test(pwd)) score++;
     if (/[0-9]/.test(pwd)) score++;
     if (/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) score++;
-    
+
     return Math.min(score, 5);
   };
 
   const strength = calculateStrength(password);
-  
+
   const getStrengthInfo = (strength) => {
     switch (strength) {
       case 0:
       case 1:
-        return { label: 'Very Weak', color: 'bg-red-500', width: '20%' };
+        return { label: 'Very Weak', color: colors.error, width: '20%' };
       case 2:
-        return { label: 'Weak', color: 'bg-orange-500', width: '40%' };
+        return { label: 'Weak', color: '#F97316', width: '40%' };
       case 3:
-        return { label: 'Fair', color: 'bg-yellow-500', width: '60%' };
+        return { label: 'Fair', color: colors.gold, width: '60%' };
       case 4:
-        return { label: 'Strong', color: 'bg-[#fdf3e3]0', width: '80%' };
+        return { label: 'Strong', color: colors.goldHover, width: '80%' };
       case 5:
-        return { label: 'Very Strong', color: 'bg-[#1a2e1a]', width: '100%' };
+        return { label: 'Very Strong', color: colors.olive, width: '100%' };
       default:
-        return { label: '', color: 'bg-gray-200', width: '0%' };
+        return { label: '', color: '#E5E7EB', width: '0%' };
     }
   };
 
@@ -48,16 +49,12 @@ export default function PasswordStrengthIndicator({ password }) {
           initial={{ width: 0 }}
           animate={{ width: info.width }}
           transition={{ duration: 0.3 }}
-          className={`h-full rounded-full ${info.color}`}
+          className="h-full rounded-full"
+          style={{ backgroundColor: info.color }}
         />
       </div>
       {password && (
-        <p className={`text-xs mt-1 ${
-          strength <= 1 ? 'text-red-500' :
-          strength <= 2 ? 'text-orange-500' :
-          strength <= 3 ? 'text-yellow-600' :
-          'text-[#C97B1A]'
-        }`}>
+        <p className="text-xs mt-1" style={{ color: info.color }}>
           Password strength: {info.label}
         </p>
       )}
