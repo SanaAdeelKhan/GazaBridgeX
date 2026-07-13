@@ -17,7 +17,7 @@ Education has always been highly valued in Gaza. By combining this cultural appr
 
 We invite volunteers worldwide to join our mission. Whether you can teach coding for two hours a week or help someone improve their English, your contribution makes a real difference. Together, we're building bridges to opportunity, one skill at a time.`,
     author: 'Sana Adeel',
-    date: '2024-12-15',
+    date: '2026-06-25',
     readTime: '5 min read',
     image: '🌍',
   },
@@ -42,7 +42,7 @@ But our mission is far from complete. We envision a world where every person in 
 
 Join us in building bridges. Whether you can teach, learn, or simply spread the word, you're part of this story.`,
     author: 'Mir Sadat Bin Rakib',
-    date: '2024-12-10',
+    date: '2026-03-15',
     readTime: '4 min read',
     image: '🌉',
   },
@@ -67,7 +67,7 @@ The volunteer community is diverse — developers, designers, marketers, data sc
 
 If you're considering volunteering, know this: your skills are valuable, and your time matters. Even one hour a week can make a difference. You don't need to be an expert — you just need to be willing to help.`,
     author: 'Sana Adeel',
-    date: '2024-11-28',
+    date: '2026-05-20',
     readTime: '6 min read',
     image: '🤝',
   },
