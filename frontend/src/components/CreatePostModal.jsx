@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { postsAPI } from '../api/posts';
+import colors, { tw } from '../theme/colors';
 
 const CATEGORIES = [
   { value: 'learn_language', label: '🗣️ Learn a Language' },
@@ -41,7 +42,7 @@ export default function CreatePostModal({ onClose, onCreated }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const nameField = postType === 'offer' ? 'offer_name' : 'request_name';
     if (!formData[nameField]?.trim() || !formData.description?.trim()) {
       setError('Please fill in all required fields.');
@@ -85,9 +86,9 @@ export default function CreatePostModal({ onClose, onCreated }) {
       >
         <div className="p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Create Post</h2>
+            <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>Create Post</h2>
             <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-              <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" style={{ color: colors.muted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -95,49 +96,47 @@ export default function CreatePostModal({ onClose, onCreated }) {
 
           {/* Post Type Selector */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium mb-3" style={{ color: colors.body }}>
               What would you like to create?
             </label>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"
                 onClick={() => setPostType('offer')}
-                className={`p-4 rounded-xl border-2 text-left transition-all ${
-                  postType === 'offer'
-                    ? 'border-[#C97B1A] bg-[#fdf3e3] shadow-md'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                className="p-4 rounded-xl border-2 text-left transition-all"
+                style={postType === 'offer'
+                  ? { borderColor: colors.gold, backgroundColor: colors.goldLight, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }
+                  : { borderColor: '#E5E7EB' }}
               >
                 <div className="text-2xl mb-2">🙌</div>
-                <div className="font-semibold text-gray-900">Offer</div>
-                <div className="text-sm text-gray-500">I want to teach/help</div>
+                <div className="font-semibold" style={{ color: colors.headingDark }}>Offer</div>
+                <div className="text-sm" style={{ color: colors.muted }}>I want to teach/help</div>
               </button>
               <button
                 type="button"
                 onClick={() => setPostType('request')}
-                className={`p-4 rounded-xl border-2 text-left transition-all ${
-                  postType === 'request'
-                    ? 'border-[#C97B1A] bg-[#fdf3e3] shadow-md'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                className="p-4 rounded-xl border-2 text-left transition-all"
+                style={postType === 'request'
+                  ? { borderColor: colors.primary, backgroundColor: colors.primaryLight, boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }
+                  : { borderColor: '#E5E7EB' }}
               >
                 <div className="text-2xl mb-2">🌟</div>
-                <div className="font-semibold text-gray-900">Request</div>
-                <div className="text-sm text-gray-500">I want to learn/receive help</div>
+                <div className="font-semibold" style={{ color: colors.headingDark }}>Request</div>
+                <div className="text-sm" style={{ color: colors.muted }}>I want to learn/receive help</div>
               </button>
             </div>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mb-6 p-4 rounded-xl border" style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}>
+              <p className="text-sm" style={{ color: colors.error }}>{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {postType === 'offer' ? 'Offer Name' : 'Request Name'} <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                {postType === 'offer' ? 'Offer Name' : 'Request Name'} <span style={{ color: colors.error }}>*</span>
               </label>
               <input
                 type="text"
@@ -145,20 +144,20 @@ export default function CreatePostModal({ onClose, onCreated }) {
                 value={formData[postType === 'offer' ? 'offer_name' : 'request_name']}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
                 placeholder={postType === 'offer' ? 'e.g., English Tutoring, Web Development Mentoring' : 'e.g., Need help with CV, Want to learn Python'}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                Category <span style={{ color: colors.error }}>*</span>
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -167,8 +166,8 @@ export default function CreatePostModal({ onClose, onCreated }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                Description <span style={{ color: colors.error }}>*</span>
               </label>
               <textarea
                 name="description"
@@ -176,23 +175,23 @@ export default function CreatePostModal({ onClose, onCreated }) {
                 onChange={handleChange}
                 required
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none resize-none"
-                placeholder={postType === 'offer' 
-                  ? 'Describe what you can teach, your experience, and how you can help...' 
+                className={`${tw.goldInput} resize-none`}
+                placeholder={postType === 'offer'
+                  ? 'Describe what you can teach, your experience, and how you can help...'
                   : 'Describe what you need help with, your goals, and what you\'re looking for...'}
               />
             </div>
 
             {postType === 'offer' && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                   Weekly Availability
                 </label>
                 <select
                   name="availability"
                   value={formData.availability}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                  className={tw.goldInput}
                 >
                   {AVAILABILITY.map(a => (
                     <option key={a.value} value={a.value}>{a.label}</option>
@@ -205,7 +204,8 @@ export default function CreatePostModal({ onClose, onCreated }) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                className="flex-1 py-3 border-2 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                style={{ borderColor: '#D1D5DB', color: colors.body }}
               >
                 Cancel
               </button>
@@ -214,7 +214,10 @@ export default function CreatePostModal({ onClose, onCreated }) {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                style={{ background: postType === 'offer'
+                  ? `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})`
+                  : `linear-gradient(135deg, ${colors.primary}, ${colors.primaryHover})` }}
               >
                 {loading ? 'Creating...' : `Create ${postType === 'offer' ? 'Offer' : 'Request'}`}
               </motion.button>
