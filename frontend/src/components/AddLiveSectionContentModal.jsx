@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { liveSectionsAPI } from '../api/liveSections';
+import colors, { tw } from '../theme/colors';
 
 export default function AddLiveSectionContentModal({
   lsId,
@@ -84,13 +85,14 @@ export default function AddLiveSectionContentModal({
         <div className="p-8">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>
               Add Content
             </h2>
 
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              style={{ color: colors.muted }}
             >
               ✕
             </button>
@@ -98,8 +100,8 @@ export default function AddLiveSectionContentModal({
 
           {/* Error */}
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mb-6 p-4 rounded-xl border" style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}>
+              <p className="text-sm" style={{ color: colors.error }}>{error}</p>
             </div>
           )}
 
@@ -107,7 +109,7 @@ export default function AddLiveSectionContentModal({
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                 Title *
               </label>
               <input
@@ -115,13 +117,13 @@ export default function AddLiveSectionContentModal({
                 name="content_title"
                 value={formData.content_title}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
               />
             </div>
 
             {/* Link */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                 Link *
               </label>
               <input
@@ -129,13 +131,13 @@ export default function AddLiveSectionContentModal({
                 name="link"
                 value={formData.link}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
               />
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
                 Description
               </label>
               <textarea
@@ -143,7 +145,7 @@ export default function AddLiveSectionContentModal({
                 value={formData.description}
                 onChange={handleChange}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none resize-none"
+                className={`${tw.goldInput} resize-none`}
               />
             </div>
 
@@ -152,7 +154,8 @@ export default function AddLiveSectionContentModal({
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50"
+                className="flex-1 py-3 border-2 font-semibold rounded-xl hover:bg-gray-50"
+                style={{ borderColor: '#D1D5DB', color: colors.body }}
               >
                 Cancel
               </button>
@@ -162,7 +165,8 @@ export default function AddLiveSectionContentModal({
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
               >
                 {loading ? 'Adding...' : 'Add'}
               </motion.button>
