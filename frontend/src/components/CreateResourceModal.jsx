@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useResources } from '../context/ResourceContext';
+import colors, { tw } from '../theme/colors';
 
 const CATEGORIES = [
   { value: 'job', label: '💼 Job Resources' },
@@ -32,7 +33,7 @@ export default function CreateResourceModal({ onClose, onCreated }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.title.trim() || !formData.description.trim() || !formData.link.trim()) {
       setError('Please fill in all required fields.');
       return;
@@ -42,13 +43,13 @@ export default function CreateResourceModal({ onClose, onCreated }) {
     setError('');
 
     const result = await createResource(formData);
-    
+
     if (result.success) {
       onCreated();
     } else {
       setError(result.error);
     }
-    
+
     setLoading(false);
   };
 
@@ -70,27 +71,27 @@ export default function CreateResourceModal({ onClose, onCreated }) {
       >
         <div className="p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Add Resource</h2>
+            <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>Add Resource</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
             >
-              <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-5 h-5" style={{ color: colors.muted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-              <p className="text-sm text-red-700">{error}</p>
+            <div className="mb-6 p-4 rounded-xl border" style={{ backgroundColor: colors.errorBg, borderColor: colors.error }}>
+              <p className="text-sm" style={{ color: colors.error }}>{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Title <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                Title <span style={{ color: colors.error }}>*</span>
               </label>
               <input
                 type="text"
@@ -98,20 +99,20 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 value={formData.title}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
                 placeholder="Enter resource title"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                Category <span style={{ color: colors.error }}>*</span>
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -120,8 +121,8 @@ export default function CreateResourceModal({ onClose, onCreated }) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                Description <span style={{ color: colors.error }}>*</span>
               </label>
               <textarea
                 name="description"
@@ -129,14 +130,14 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 onChange={handleChange}
                 required
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none resize-none"
+                className={`${tw.goldInput} resize-none`}
                 placeholder="Describe the resource..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Link <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
+                Link <span style={{ color: colors.error }}>*</span>
               </label>
               <input
                 type="url"
@@ -144,7 +145,7 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 value={formData.link}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={tw.goldInput}
                 placeholder="https://example.com/resource"
               />
             </div>
@@ -155,7 +156,8 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={onClose}
-                className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                className="flex-1 py-3 border-2 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                style={{ borderColor: '#D1D5DB', color: colors.body }}
               >
                 Cancel
               </motion.button>
@@ -164,7 +166,8 @@ export default function CreateResourceModal({ onClose, onCreated }) {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all disabled:opacity-50"
+                className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg transition-all disabled:opacity-50"
+                style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
