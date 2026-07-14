@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usersAPI } from '../../api/users';
 import { chatAPI } from '../../api/chat';
+import colors, { tw } from '../../theme/colors';
 
 /**
  * Modal for starting a new 1-on-1 conversation by searching for a user by email.
@@ -81,8 +82,8 @@ export default function StartConversationModal({ onClose, onStarted }) {
         >
           {/* Header */}
           <div className="flex items-center justify-between p-5 border-b border-gray-100">
-            <h2 className="font-bold text-gray-900 text-lg">New Conversation</h2>
-            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400">
+            <h2 className="font-bold text-lg" style={{ color: colors.headingDark }}>New Conversation</h2>
+            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors" style={{ color: colors.muted }}>
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -97,13 +98,14 @@ export default function StartConversationModal({ onClose, onStarted }) {
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); setSearchDone(false); }}
                 placeholder="Search by name or email..."
-                className="flex-1 px-4 py-2.5 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] outline-none"
+                className={`flex-1 ${tw.goldInput} text-sm`}
                 autoFocus
               />
               <button
                 type="submit"
                 disabled={searching || !query.trim()}
-                className="px-4 py-2.5 bg-[#e18f23] hover:bg-[#c97a18] text-white text-sm font-semibold rounded-xl disabled:opacity-50 hover:shadow-md transition-all"
+                className="px-4 py-2.5 text-white text-sm font-semibold rounded-xl disabled:opacity-50 hover:shadow-md transition-all"
+                style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
               >
                 {searching ? (
                   <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
@@ -119,20 +121,21 @@ export default function StartConversationModal({ onClose, onStarted }) {
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: colors.primary }}>
                       {u.first_name?.[0] || u.email?.[0]?.toUpperCase() || '?'}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-sm font-semibold" style={{ color: colors.headingDark }}>
                         {u.first_name} {u.last_name}
                       </p>
-                      <p className="text-xs text-gray-500">{u.email}</p>
+                      <p className="text-xs" style={{ color: colors.muted }}>{u.email}</p>
                     </div>
                   </div>
                   <button
                     onClick={() => handleStartChat(u)}
                     disabled={starting === u.id}
-                    className="px-3 py-1.5 bg-[#fdf3e3]0 text-white text-xs font-semibold rounded-lg hover:bg-[#1a2e1a] transition-colors disabled:opacity-50"
+                    className="px-3 py-1.5 text-white text-xs font-semibold rounded-lg transition-colors disabled:opacity-50"
+                    style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
                   >
                     {starting === u.id ? '...' : 'Chat'}
                   </button>
@@ -140,7 +143,7 @@ export default function StartConversationModal({ onClose, onStarted }) {
               ))}
 
               {searchDone && results.length === 0 && (
-                <p className="text-center text-gray-500 text-sm py-4">No users found.</p>
+                <p className="text-center text-sm py-4" style={{ color: colors.muted }}>No users found.</p>
               )}
             </div>
           </div>
