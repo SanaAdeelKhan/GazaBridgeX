@@ -169,9 +169,9 @@ export default function Courses() {
       }
 
       setPagination({
-        page: data.page || page,
-        totalPages: data.total_pages || 1,
-        totalCount: data.count || (data.results || data).length,
+        page: data.pagination?.page || page,
+        totalPages: data.pagination?.total_pages || 1,
+        totalCount: data.pagination?.count || (data.results || data).length,
       });
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to load courses');
