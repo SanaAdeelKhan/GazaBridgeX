@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { liveSectionsAPI } from '../api/liveSections';
 import LiveSectionCard from '../components/LiveSectionCard';
 import CreateLiveSectionModal from '../components/CreateLiveSectionModal';
+import Pagination from '../components/Pagination';
 import colors from '../theme/colors';
 
 // Beautiful Confirmation Modal Component
@@ -185,9 +186,10 @@ export default function LiveSections() {
     }
   };
 
-  const handleLoadMore = () => {
-    if (!loading && pagination.page < pagination.totalPages) {
-      fetchLiveSections(pagination.page + 1, true);
+  const handlePageChange = (newPage) => {
+    if (!loading && newPage >= 1 && newPage <= pagination.totalPages) {
+      fetchLiveSections(newPage, false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -313,19 +315,12 @@ export default function LiveSections() {
                 ))}
               </AnimatePresence>
             </div>
-            {pagination.page < pagination.totalPages && (
-              <div className="text-center mt-12">
-                <motion.button
-                  whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleLoadMore} disabled={loading}
-                  className="px-8 py-3 font-medium rounded-xl border shadow-sm disabled:opacity-50 transition-all"
-                  style={{ backgroundColor: colors.card, borderColor: colors.cardBorder, color: colors.body }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = colors.primary; e.currentTarget.style.borderColor = colors.primary; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = colors.body; e.currentTarget.style.borderColor = colors.cardBorder; }}
-                >
-                  {loading ? 'Loading...' : 'Load More'}
-                </motion.button>
-              </div>
-            )}
+            <Pagination
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+              disabled={loading}
+            />
             <div className="text-center mt-4 text-sm" style={{ color: colors.muted }}>Showing {liveSections.length} of {pagination.totalCount} live sections</div>
           </>
         )}
