@@ -110,17 +110,26 @@ export default function Chat() {
    * from the "Message" button on a Request post.
    */
   useEffect(() => {
+    // Wait until the conversation list has actually loaded before deciding
+    // whether to reuse an existing DM or create a new one.
+    if (loadingList) return;
     if (location.state?.startChatWith) {
-      handleNewConversation({
-        type: 'dm',
-        id: null,
-        otherUser: location.state.startChatWith,
-      });
+      const targetId = location.state.startChatWith.id;
+      const existing = conversations.find((c) => c.other_user?.id === targetId);
+      if (existing) {
+        selectConversation(existing);
+      } else {
+        handleNewConversation({
+          type: 'dm',
+          id: null,
+          otherUser: location.state.startChatWith,
+        });
+      }
       // Clear router state so refresh/back-button doesn't re-trigger this.
       navigate(location.pathname, { replace: true, state: {} });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.state]);
+  }, [location.state, conversations, loadingList]);
 
   /** Called after group is created in CreateGroupModal */
   const handleGroupCreated = (newGroup) => {

@@ -459,6 +459,7 @@ export default function Posts() {
                     index={index}
                     canEdit={canEditPost(post)}
                     canDelete={canDeletePost(post)}
+                    isOwnPost={!!(user && post.user === user.id)}
                     onEdit={() => setEditingPost(post)}
                     onDelete={() => setDeleteModal({ isOpen: true, postId: post.id })}
                   />

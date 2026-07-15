@@ -26,7 +26,7 @@ const CATEGORY_LABELS = {
 // Some descriptions have literal "\n" (backslash-n) characters instead of real line breaks
 const cleanText = (text) => (text ? text.replace(/\\n/g, '\n') : text);
 
-export default function PostCard({ post, type, index, canEdit, canDelete, onEdit, onDelete }) {
+export default function PostCard({ post, type, index, canEdit, canDelete, isOwnPost, onEdit, onDelete }) {
   const navigate = useNavigate();
   const name = type === 'offer' ? post.offer_name : post.request_name;
 
@@ -140,13 +140,15 @@ export default function PostCard({ post, type, index, canEdit, canDelete, onEdit
             View
           </Link>
         )}
-        <button
-          onClick={handleMessage}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
-          style={{ backgroundColor: colors.primaryLight, color: colors.primary }}
-        >
-          Message
-        </button>
+        {!isOwnPost && (
+          <button
+            onClick={handleMessage}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+            style={{ backgroundColor: colors.primaryLight, color: colors.primary }}
+          >
+            Message
+          </button>
+        )}
         {canEdit && (
           <motion.button
             whileHover={{ scale: 1.1 }}
