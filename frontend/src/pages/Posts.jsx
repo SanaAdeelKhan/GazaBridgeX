@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { postsAPI } from '../api/posts';
 import PostCard from '../components/PostCard';
 import CreatePostModal from '../components/CreatePostModal';
+import Pagination from '../components/Pagination';
 import EditPostModal from '../components/EditPostModal';
 import colors from '../theme/colors';
 
@@ -201,9 +202,10 @@ export default function Posts() {
     setEditingPost(null);
   };
 
-  const handleLoadMore = () => {
-    if (!loading && pagination.page < pagination.totalPages) {
-      fetchPosts(pagination.page + 1, true);
+  const handlePageChange = (newPage) => {
+    if (!loading && newPage >= 1 && newPage <= pagination.totalPages) {
+      fetchPosts(newPage, false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -467,27 +469,13 @@ export default function Posts() {
               </AnimatePresence>
             </div>
 
-            {/* Load More */}
-            {pagination.page < pagination.totalPages && (
-              <div className="text-center mt-12">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleLoadMore}
-                  disabled={loading}
-                  className="px-8 py-3 font-medium rounded-xl transition-all shadow-sm disabled:opacity-50"
-                  style={{
-                    backgroundColor: colors.white,
-                    color: colors.body,
-                    border: `1.5px solid ${colors.inputBorder}`, boxShadow: '0 1px 4px rgba(26,82,118,0.08)',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = colors.primary; e.currentTarget.style.color = colors.primary; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = colors.divider; e.currentTarget.style.color = colors.body; }}
-                >
-                  {loading ? 'Loading...' : `Load More (${pagination.totalPages - pagination.page} pages)`}
-                </motion.button>
-              </div>
-            )}
+            {/* Numbered Pagination */}
+            <Pagination
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+              disabled={loading}
+            />
 
             <div className="text-center mt-4 text-sm" style={{ color: colors.muted }}>
               Showing {posts.length} of {pagination.totalCount} {activeTab}
