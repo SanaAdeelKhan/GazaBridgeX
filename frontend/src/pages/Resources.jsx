@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import ResourceCard from '../components/ResourceCard';
 // import ResourceFilters from '../components/ResourceFilters';
 import CreateResourceModal from '../components/CreateResourceModal';
+import Pagination from '../components/Pagination';
 import colors from '../theme/colors';
 
 const CATEGORIES = [
@@ -65,9 +66,10 @@ export default function Resources() {
     }
   };
 
-  const handleLoadMore = () => {
-    if (!loading && pagination.page < pagination.totalPages) {
-      fetchResources(pagination.page + 1, true);
+  const handlePageChange = (newPage) => {
+    if (!loading && newPage >= 1 && newPage <= pagination.totalPages) {
+      fetchResources(newPage, false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -246,33 +248,13 @@ export default function Resources() {
               </AnimatePresence>
             </div>
 
-            {/* Load More */}
-            {pagination.page < pagination.totalPages && (
-              <div className="text-center mt-12">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleLoadMore}
-                  disabled={loading}
-                  className="px-8 py-3 font-medium rounded-xl border shadow-sm disabled:opacity-50 transition-all"
-                  style={{ backgroundColor: colors.card, borderColor: colors.cardBorder, color: colors.body }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = colors.primary; e.currentTarget.style.borderColor = colors.primary; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = colors.body; e.currentTarget.style.borderColor = colors.cardBorder; }}
-                >
-                  {loading ? (
-                    <span className="flex items-center gap-2">
-                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                      </svg>
-                      Loading...
-                    </span>
-                  ) : (
-                    `Load More (${pagination.totalPages - pagination.page} pages remaining)`
-                  )}
-                </motion.button>
-              </div>
-            )}
+            {/* Numbered Pagination */}
+            <Pagination
+              page={pagination.page}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+              disabled={loading}
+            />
 
             {/* Results Count */}
             <div className="text-center mt-4 text-sm" style={{ color: colors.muted }}>
