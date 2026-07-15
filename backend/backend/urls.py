@@ -30,4 +30,5 @@ urlpatterns = [
     path("admin/", include("admin_app.urls", namespace="admin_app")),
     path("notifications/", include("notifications.urls", namespace="notifications")),
     path("chat/", include("chat.urls", namespace="chat")),
+    path("matches/", include("matches.urls", namespace="matches")),
 ]

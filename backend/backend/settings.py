@@ -52,6 +52,7 @@ EXTERNAL_APPS = [
     "notifications",
     "channels",
     "chat",
+    "matches",
 ]
 
 INSTALLED_APPS += EXTERNAL_APPS

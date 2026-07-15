@@ -11,6 +11,7 @@ from typing import Optional, Dict, Any
 from django.db import transaction
 
 from posts.models import Offer, Request
+from matches.services import compute_matches_for_offer, compute_matches_for_request
 from posts.selectors import (
     get_offer_by_id, get_request_by_id,
     invalidate_offer_cache, invalidate_request_cache,
@@ -49,7 +50,10 @@ def create_offer(
         )
     
     invalidate_offer_cache(offer.pk)
-    
+    try:
+        compute_matches_for_offer(offer)
+    except Exception:
+        logger.exception("Failed to compute matches for offer %s", offer.pk)
     return offer
 
 
@@ -125,7 +129,10 @@ def create_request(
     
     # Invalidate list caches since new request is added
     invalidate_request_cache(request_obj.pk)
-    
+    try:
+        compute_matches_for_request(request_obj)
+    except Exception:
+        logger.exception("Failed to compute matches for request %s", request_obj.pk)
     return request_obj
 
 
