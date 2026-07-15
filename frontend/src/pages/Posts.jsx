@@ -393,19 +393,17 @@ export default function Posts() {
 
         {/* ── Posts Grid ────────────────────────────────────────────── */}
         {loading && posts.length === 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="flex flex-col">
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className="rounded-2xl p-6 shadow-lg animate-pulse"
-                style={{ backgroundColor: colors.white }}
+                className="flex items-center gap-4 py-4 px-2 animate-pulse"
+                style={{ borderBottom: `1px solid ${colors.divider}` }}
               >
-                <div className="h-4 rounded w-3/4 mb-4" style={{ backgroundColor: colors.divider }} />
-                <div className="h-4 rounded w-1/2 mb-6" style={{ backgroundColor: colors.divider }} />
-                <div className="space-y-2">
-                  <div className="h-3 rounded" style={{ backgroundColor: colors.divider }} />
-                  <div className="h-3 rounded" style={{ backgroundColor: colors.divider }} />
-                  <div className="h-3 rounded w-5/6" style={{ backgroundColor: colors.divider }} />
+                <div className="w-11 h-11 rounded-full flex-shrink-0" style={{ backgroundColor: colors.divider }} />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 rounded w-1/3" style={{ backgroundColor: colors.divider }} />
+                  <div className="h-3 rounded w-1/4" style={{ backgroundColor: colors.divider }} />
                 </div>
               </div>
             ))}
@@ -451,7 +449,7 @@ export default function Posts() {
           </motion.div>
         ) : (
           <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex flex-col">
               <AnimatePresence>
                 {posts.map((post, index) => (
                   <PostCard

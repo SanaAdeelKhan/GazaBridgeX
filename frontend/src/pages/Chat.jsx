@@ -1,5 +1,6 @@
 // frontend/src/pages/Chat.jsx
 import { useState, useEffect, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { chatAPI } from '../api/chat';
@@ -23,6 +24,8 @@ import StartConversationModal from '../components/chat/StartConversationModal';
  */
 export default function Chat() {
   const { user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [conversations, setConversations] = useState([]);
   const [groups, setGroups]               = useState([]);
@@ -100,6 +103,24 @@ export default function Chat() {
       loadChats();
     }
   };
+
+  /**
+   * Auto-start a chat when navigated here with router state, e.g.
+   * navigate('/chat', { state: { startChatWith: { id, email, first_name, last_name } } })
+   * from the "Message" button on a Request post.
+   */
+  useEffect(() => {
+    if (location.state?.startChatWith) {
+      handleNewConversation({
+        type: 'dm',
+        id: null,
+        otherUser: location.state.startChatWith,
+      });
+      // Clear router state so refresh/back-button doesn't re-trigger this.
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.state]);
 
   /** Called after group is created in CreateGroupModal */
   const handleGroupCreated = (newGroup) => {

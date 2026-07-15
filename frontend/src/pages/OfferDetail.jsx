@@ -185,10 +185,29 @@ export default function OfferDetail() {
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: colors.primary }}>
                 {offer.user_full_name?.split(' ').map(n => n[0]).join('')}
               </div>
-              <div>
+              <div className="flex-1">
                 <div className="font-medium" style={{ color: colors.headingDark }}>{offer.user_full_name}</div>
                 <div className="text-sm" style={{ color: colors.muted }}>{offer.user_email}</div>
               </div>
+              <button
+                onClick={() => {
+                  const [first_name, ...rest] = (offer.user_full_name || '').split(' ');
+                  navigate('/chat', {
+                    state: {
+                      startChatWith: {
+                        id: offer.user,
+                        email: offer.user_email,
+                        first_name: first_name || '',
+                        last_name: rest.join(' ') || '',
+                      },
+                    },
+                  });
+                }}
+                className="px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+                style={{ backgroundColor: colors.primaryLight, color: colors.primary }}
+              >
+                Message
+              </button>
             </div>
           </div>
 

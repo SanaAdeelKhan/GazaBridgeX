@@ -1,7 +1,6 @@
 // frontend/src/components/PostCard.jsx
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import colors from '../theme/colors';
 
 const CATEGORY_ICONS = {
@@ -24,207 +23,162 @@ const CATEGORY_LABELS = {
   others: 'Others',
 };
 
-const AVAILABILITY_LABELS = {
-  '1_2_hours': '1-2 hours/week',
-  '3_5_hours': '3-5 hours/week',
-  '6_8_hours': '6-8 hours/week',
-  '8_10_hours': '8-10 hours/week',
-  '10_plus_hours': '10+ hours/week',
-};
+// Some descriptions have literal "\n" (backslash-n) characters instead of real line breaks
+const cleanText = (text) => (text ? text.replace(/\\n/g, '\n') : text);
 
 export default function PostCard({ post, type, index, canEdit, canDelete, onEdit, onDelete }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const truncatedDescription = post.description?.length > 150
-    ? post.description.substring(0, 150) + '...'
-    : post.description;
-
+  const navigate = useNavigate();
   const name = type === 'offer' ? post.offer_name : post.request_name;
 
-  // Status badge colors
-  const statusStyle = {
-    active:   { backgroundColor: colors.successBg,  color: colors.success, border: `1px solid ${colors.olive}` },
-    inactive: { backgroundColor: colors.pageBg,      color: colors.muted,   border: `1px solid ${colors.divider}` },
-    closed:   { backgroundColor: colors.errorBg,     color: colors.error,   border: `1px solid ${colors.error}` },
-  }[post.status] || { backgroundColor: colors.successBg, color: colors.success, border: `1px solid ${colors.olive}` };
+  const handleMessage = () => {
+    const [first_name, ...rest] = (post.user_full_name || '').split(' ');
+    navigate('/chat', {
+      state: {
+        startChatWith: {
+          id: post.user,
+          email: post.user_email,
+          first_name: first_name || '',
+          last_name: rest.join(' ') || '',
+        },
+      },
+    });
+  };
+  const cleanDescription = cleanText(post.description);
 
-  // Type badge colors — logo-matched: Offer = gold hand, Request = navy hand
+  const statusStyle = {
+    active:   { backgroundColor: colors.successBg,  color: colors.success },
+    inactive: { backgroundColor: colors.pageBg,      color: colors.muted },
+    closed:   { backgroundColor: colors.errorBg,     color: colors.error },
+  }[post.status] || { backgroundColor: colors.successBg, color: colors.success };
+
   const typeBadgeStyle = type === 'offer'
-    ? { backgroundColor: colors.goldLight,    color: colors.goldHover, border: `1px solid ${colors.gold}` }
-    : { backgroundColor: colors.primaryLight, color: colors.primary,  border: `1px solid ${colors.primary}` };
+    ? { backgroundColor: colors.goldLight,    color: colors.goldHover }
+    : { backgroundColor: colors.primaryLight, color: colors.primary };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.4 }}
-      whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(26,82,118,0.13)' }}
-      className="group relative rounded-2xl overflow-hidden transition-all duration-300"
-      style={{
-        backgroundColor: colors.white,
-        border: `1.5px solid ${colors.divider}`,
-        boxShadow: '0 2px 12px rgba(26,82,118,0.07)',
-      }}
+      transition={{ delay: index * 0.03, duration: 0.3 }}
+      className="flex items-center gap-4 py-4 px-2 transition-colors"
+      style={{ borderBottom: `1px solid ${colors.divider}` }}
+      onMouseEnter={e => e.currentTarget.style.backgroundColor = colors.pageBg}
+      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
     >
-      {/* Top accent line — gold for offer (giving hand), navy for request (receiving hand) */}
-      <div style={{
-        height: 4,
-        backgroundColor: type === 'offer' ? colors.gold : colors.primary,
-      }} />
-
-      {/* Status Badge */}
+      {/* Icon */}
       <div
-        className="absolute top-6 right-4 px-3 py-1 rounded-full text-xs font-semibold"
-        style={statusStyle}
+        className="w-11 h-11 rounded-full flex items-center justify-center text-xl flex-shrink-0"
+        style={{ backgroundColor: type === 'offer' ? colors.goldLight : colors.primaryLight }}
       >
-        {post.status}
+        {CATEGORY_ICONS[post.category] || '📌'}
       </div>
 
-      {/* Type Badge */}
-      <div className="absolute top-6 left-4">
-        <span
-          className="px-3 py-1 rounded-full text-xs font-semibold"
-          style={typeBadgeStyle}
-        >
-          {type === 'offer' ? '🙌 Offer' : '🌟 Request'}
-        </span>
-      </div>
-
-      <div className="p-6 pt-14">
-        {/* Category Icon */}
-        <div className="text-4xl mb-4">
-          {CATEGORY_ICONS[post.category] || '📌'}
-        </div>
-
-        {/* Name */}
-        {type === 'offer' ? (
-          <Link to={`/offers/${post.id}`}>
-            <h3
-              className="text-xl font-bold mb-2 transition-colors"
-              style={{ color: colors.body }}
-              onMouseEnter={e => e.currentTarget.style.color = colors.gold}
-              onMouseLeave={e => e.currentTarget.style.color = colors.body}
-            >
-              {name}
-            </h3>
-          </Link>
-        ) : (
-          <h3 className="text-xl font-bold mb-2" style={{ color: colors.body }}>
-            {name}
-          </h3>
-        )}
-
-        {/* Category */}
-        <div className="mb-3">
-          <span className="text-sm" style={{ color: colors.muted }}>
-            {CATEGORY_LABELS[post.category] || post.category}
+      {/* Title + category */}
+      <div className="min-w-0" style={{ flex: '2 1 0%' }}>
+        <div className="flex items-center gap-2 flex-wrap">
+          {type === 'offer' ? (
+            <Link to={`/offers/${post.id}`}>
+              <span
+                className="font-semibold transition-colors"
+                style={{ color: colors.title }}
+                onMouseEnter={e => e.currentTarget.style.color = colors.gold}
+                onMouseLeave={e => e.currentTarget.style.color = colors.title}
+              >
+                {name}
+              </span>
+            </Link>
+          ) : (
+            <span className="font-semibold" style={{ color: colors.title }}>{name}</span>
+          )}
+          <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={typeBadgeStyle}>
+            {type === 'offer' ? 'Offer' : 'Request'}
           </span>
         </div>
+        <p className="text-sm truncate" style={{ color: colors.muted }}>
+          {CATEGORY_LABELS[post.category] || post.category}
+        </p>
+      </div>
 
-        {/* Description */}
-        <div className="mb-4">
-          <p className="text-sm leading-relaxed" style={{ color: colors.body }}>
-            {isExpanded ? post.description : truncatedDescription}
-          </p>
-          {post.description?.length > 150 && (
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="text-sm font-medium mt-1 transition-colors"
-              style={{ color: colors.secondary }}
-              onMouseEnter={e => e.currentTarget.style.color = colors.primary}
-              onMouseLeave={e => e.currentTarget.style.color = colors.secondary}
-            >
-              {isExpanded ? 'Show less' : 'Read more'}
-            </button>
-          )}
+      {/* Description (hidden on small screens) */}
+      <p
+        className="hidden md:block text-sm truncate cursor-help"
+        style={{ flex: '3 1 0%', color: colors.body }}
+        title={cleanDescription}
+      >
+        {cleanDescription}
+      </p>
+
+      {/* Author + date */}
+      <div className="hidden sm:flex items-center gap-2 flex-shrink-0" style={{ width: 160 }}>
+        <div
+          className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+          style={{ backgroundColor: colors.primary }}
+        >
+          {post.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
         </div>
+        <div className="min-w-0">
+          <p className="text-xs font-medium truncate" style={{ color: colors.title }}>{post.user_full_name}</p>
+          <p className="text-xs" style={{ color: colors.muted }}>
+            {new Date(post.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+          </p>
+        </div>
+      </div>
 
-        {/* Availability (offers only) */}
-        {type === 'offer' && post.availability && (
-          <div className="mb-4 flex items-center gap-2">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ color: colors.olive }}>
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span className="text-sm" style={{ color: colors.muted }}>
-              {AVAILABILITY_LABELS[post.availability] || post.availability}
-            </span>
-          </div>
-        )}
+      {/* Status */}
+      <span className="px-2 py-1 rounded-full text-xs font-semibold flex-shrink-0" style={statusStyle}>
+        {post.status}
+      </span>
 
-        {/* View Details (offers only) */}
+      {/* Actions */}
+      <div className="flex items-center gap-1 flex-shrink-0">
         {type === 'offer' && (
           <Link
             to={`/offers/${post.id}`}
-            className="inline-flex items-center gap-1 text-sm font-medium transition-colors mt-2 mb-3"
-            style={{ color: colors.gold }}
-            onMouseEnter={e => e.currentTarget.style.color = colors.goldHover}
-            onMouseLeave={e => e.currentTarget.style.color = colors.gold}
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+            style={{ backgroundColor: colors.goldLight, color: colors.goldHover }}
           >
-            View Details
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            View
           </Link>
         )}
-
-        {/* Author row */}
-        <div
-          className="flex items-center gap-3 pt-4"
-          style={{ borderTop: `1px solid ${colors.divider}` }}
+        <button
+          onClick={handleMessage}
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+          style={{ backgroundColor: colors.primaryLight, color: colors.primary }}
         >
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
-            style={{ backgroundColor: colors.primary }}
+          Message
+        </button>
+        {canEdit && (
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => onEdit(post)}
+            className="p-2 rounded-lg transition-all"
+            style={{ color: colors.muted }}
+            onMouseEnter={e => { e.currentTarget.style.color = colors.primary; e.currentTarget.style.backgroundColor = colors.primaryLight; }}
+            onMouseLeave={e => { e.currentTarget.style.color = colors.muted; e.currentTarget.style.backgroundColor = 'transparent'; }}
+            title="Edit post"
           >
-            {post.user_full_name?.split(' ').map(n => n[0]).join('') || 'U'}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate" style={{ color: colors.title }}>
-              {post.user_full_name}
-            </p>
-            <p className="text-xs" style={{ color: colors.muted }}>
-              {new Date(post.created_at).toLocaleDateString('en-US', {
-                month: 'short', day: 'numeric', year: 'numeric',
-              })}
-            </p>
-          </div>
-
-          {/* Edit / Delete actions */}
-          <div className={`flex gap-1 transition-opacity ${canEdit || canDelete ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
-            {canEdit && (
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => onEdit(post)}
-                className="p-2 rounded-lg transition-all"
-                style={{ color: colors.muted }}
-                onMouseEnter={e => { e.currentTarget.style.color = colors.primary; e.currentTarget.style.backgroundColor = colors.primaryLight; }}
-                onMouseLeave={e => { e.currentTarget.style.color = colors.muted; e.currentTarget.style.backgroundColor = 'transparent'; }}
-                title="Edit post"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-              </motion.button>
-            )}
-            {canDelete && (
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => onDelete(post.id)}
-                className="p-2 rounded-lg transition-all"
-                style={{ color: colors.muted }}
-                onMouseEnter={e => { e.currentTarget.style.color = colors.error; e.currentTarget.style.backgroundColor = colors.errorBg; }}
-                onMouseLeave={e => { e.currentTarget.style.color = colors.muted; e.currentTarget.style.backgroundColor = 'transparent'; }}
-                title="Delete post"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </motion.button>
-            )}
-          </div>
-        </div>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </motion.button>
+        )}
+        {canDelete && (
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => onDelete(post.id)}
+            className="p-2 rounded-lg transition-all"
+            style={{ color: colors.muted }}
+            onMouseEnter={e => { e.currentTarget.style.color = colors.error; e.currentTarget.style.backgroundColor = colors.errorBg; }}
+            onMouseLeave={e => { e.currentTarget.style.color = colors.muted; e.currentTarget.style.backgroundColor = 'transparent'; }}
+            title="Delete post"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </motion.button>
+        )}
       </div>
     </motion.div>
   );
