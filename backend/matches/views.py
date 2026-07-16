@@ -21,7 +21,11 @@ class MatchListView(generics.ListAPIView):
 
     def get_queryset(self):
         role = self.request.query_params.get("role")
-        return get_matches_for_user(self.request.user, role=role)
+        offer_id = self.request.query_params.get("offer_id")
+        request_id = self.request.query_params.get("request_id")
+        return get_matches_for_user(
+            self.request.user, role=role, offer_id=offer_id, request_id=request_id
+        )
 
 
 class MatchRecheckView(APIView):

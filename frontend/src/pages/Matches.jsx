@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { matchesAPI } from '../api/matches';
+import { postsAPI } from '../api/posts';
 import Pagination from '../components/Pagination';
 import colors from '../theme/colors';
 
@@ -28,17 +29,52 @@ export default function Matches() {
   const navigate = useNavigate();
 
   const [activeRole, setActiveRole] = useState('offerer'); // 'offerer' | 'seeker'
+  const [myPosts, setMyPosts] = useState([]); // this user's own offers or requests, for the dropdown
+  const [selectedPostId, setSelectedPostId] = useState(''); // '' = All
+
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [rechecking, setRechecking] = useState(false);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1, totalCount: 0 });
 
-  const fetchMatches = useCallback(async (page = 1, role = activeRole) => {
+  const youAreOfferer = activeRole === 'offerer';
+
+  // Load the user's own offers/requests whenever the tab changes, for the dropdown.
+  useEffect(() => {
+    if (!user) return;
+    setSelectedPostId('');
+    const fetchMyPosts = async () => {
+      try {
+        const response = youAreOfferer
+          ? await postsAPI.getOffers({ user_id: user.id, page_size: 100 })
+          : await postsAPI.getRequests({ user_id: user.id, page_size: 100 });
+        const data = response.data;
+        const results = data.results || data;
+        setMyPosts(
+          results.map(p => ({
+            id: p.id,
+            name: youAreOfferer ? p.offer_name : p.request_name,
+          }))
+        );
+      } catch {
+        setMyPosts([]);
+      }
+    };
+    fetchMyPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeRole, user]);
+
+  const fetchMatches = useCallback(async (page = 1, role = activeRole, postId = selectedPostId) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await matchesAPI.getMatches({ page, page_size: 12, role });
+      const params = { page, page_size: 12, role };
+      if (postId) {
+        if (role === 'offerer') params.offer_id = postId;
+        else params.request_id = postId;
+      }
+      const response = await matchesAPI.getMatches(params);
       const data = response.data;
       setMatches(data.results || data);
       setPagination({
@@ -51,12 +87,12 @@ export default function Matches() {
     } finally {
       setLoading(false);
     }
-  }, [activeRole]);
+  }, [activeRole, selectedPostId]);
 
   useEffect(() => {
-    fetchMatches(1, activeRole);
+    fetchMatches(1, activeRole, selectedPostId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeRole]);
+  }, [activeRole, selectedPostId]);
 
   const handleTabChange = (role) => {
     if (role !== activeRole) {
@@ -66,7 +102,7 @@ export default function Matches() {
 
   const handlePageChange = (newPage) => {
     if (!loading && newPage >= 1 && newPage <= pagination.totalPages) {
-      fetchMatches(newPage, activeRole);
+      fetchMatches(newPage, activeRole, selectedPostId);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -76,7 +112,7 @@ export default function Matches() {
     setError(null);
     try {
       await matchesAPI.recheckMatches();
-      await fetchMatches(1, activeRole);
+      await fetchMatches(1, activeRole, selectedPostId);
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to check for matches');
     } finally {
@@ -97,8 +133,6 @@ export default function Matches() {
       },
     });
   };
-
-  const youAreOfferer = activeRole === 'offerer';
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -125,7 +159,7 @@ export default function Matches() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-4">
         {[
           { value: 'offerer', label: '🙌 As Volunteer', description: 'Matches for your Offers' },
           { value: 'seeker', label: '🌟 As Seeker', description: 'Matches for your Requests' },
@@ -149,6 +183,30 @@ export default function Matches() {
           </motion.button>
         ))}
       </div>
+
+      {/* Post filter dropdown */}
+      {myPosts.length > 0 && (
+        <div className="mb-6">
+          <label className="text-sm font-semibold block mb-1" style={{ color: colors.label }}>
+            {youAreOfferer ? 'Filter by your Offer' : 'Filter by your Request'}
+          </label>
+          <select
+            value={selectedPostId}
+            onChange={(e) => setSelectedPostId(e.target.value)}
+            className="w-full md:w-80 px-4 py-2.5 rounded-xl outline-none"
+            style={{
+              backgroundColor: colors.inputBg,
+              border: `1.5px solid ${colors.inputBorder}`,
+              color: colors.inputText,
+            }}
+          >
+            <option value="">All {youAreOfferer ? 'Offers' : 'Requests'}</option>
+            {myPosts.map(p => (
+              <option key={p.id} value={p.id}>{p.name}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Error */}
       {error && (
