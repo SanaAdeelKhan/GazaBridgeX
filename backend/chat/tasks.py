@@ -32,6 +32,6 @@ def send_chat_notify_email(*, recipient_email: str, recipient_first_name: str, s
     return send_brevo_email(
         to_email=recipient_email,
         to_name=recipient_first_name,
-        subject=f"{sender_name} sent you a message on GazaBridgeX",
+        subject=f"{sender_name} sent you a message on GazaBridge",
         html_content=html_body,
     )
