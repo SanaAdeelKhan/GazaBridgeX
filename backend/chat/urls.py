@@ -1,6 +1,7 @@
 from django.urls import path
 from chat.views import (
     ConversationListView, ConversationMessagesView,
+    NotifyConversationEmailView,
     MarkMessageReadView, MarkGroupMessageReadView,
     BlockUserView, UnblockUserView, BlockedListView,
     GroupCreateView, GroupListView, GroupDetailView, GroupMessagesView,
@@ -13,6 +14,7 @@ urlpatterns = [
     # Conversations
     path("conversations/", ConversationListView.as_view(), name="conversation-list"),
     path("conversations/<int:conv_id>/messages/", ConversationMessagesView.as_view(), name="conversation-messages"),
+    path("conversations/<int:conv_id>/notify/", NotifyConversationEmailView.as_view(), name="conversation-notify"),
     
     # Read receipts
     path("messages/<int:message_id>/read/", MarkMessageReadView.as_view(), name="mark-read"),

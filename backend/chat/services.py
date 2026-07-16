@@ -7,6 +7,7 @@ Write layer and business-logic enforcement.
 import logging
 from typing import Optional
 
+from django.core.cache import cache
 from django.db import transaction
 
 from chat.models import (
@@ -235,3 +236,49 @@ def delete_group(*, group_id: int, requesting_user_id: int) -> None:
     
     for uid in member_ids:
         invalidate_user_chat_caches(uid)
+
+# ---------------------------------------------------------------------------
+# Notify via Email (manual trigger, per-conversation cooldown)
+# ---------------------------------------------------------------------------
+
+CHAT_NOTIFY_COOLDOWN_SECONDS = 60 * 60  # 1 hour
+
+
+def _chat_notify_cache_key(conversation_id: int) -> str:
+    return f"chat_notify_cooldown:{conversation_id}"
+
+
+def notify_conversation_by_email(*, conversation_id: int, requester_id: int) -> None:
+    """
+    Send a 'you have a new message' email to the other participant.
+
+    Raises:
+        ValueError("not_found")     -- conversation does not exist.
+        PermissionError             -- requester is not a participant.
+        ValueError("cooldown")      -- already notified within the last hour.
+    """
+    conversation = Conversation.objects.select_related("user1", "user2").filter(pk=conversation_id).first()
+    if conversation is None:
+        raise ValueError("not_found")
+
+    if requester_id not in (conversation.user1_id, conversation.user2_id):
+        raise PermissionError("You are not a participant in this conversation.")
+
+    cache_key = _chat_notify_cache_key(conversation_id)
+    if cache.get(cache_key):
+        raise ValueError("cooldown")
+
+    sender = conversation.user1 if requester_id == conversation.user1_id else conversation.user2
+    recipient = conversation.user2 if requester_id == conversation.user1_id else conversation.user1
+
+    sender_name = sender.first_name or sender.email
+    recipient_first_name = recipient.first_name or "there"
+
+    from chat.tasks import send_chat_notify_email
+    send_chat_notify_email(
+        recipient_email=recipient.email,
+        recipient_first_name=recipient_first_name,
+        sender_name=sender_name,
+    )
+
+    cache.set(cache_key, True, timeout=CHAT_NOTIFY_COOLDOWN_SECONDS)

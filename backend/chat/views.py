@@ -18,6 +18,7 @@ from chat.services import (
     create_group, add_member_to_group, remove_member_from_group,
     make_group_admin, delete_group, leave_group,
     mark_message_read, mark_group_message_read,
+    notify_conversation_by_email,
 )
 from chat.selectors import (
     get_user_conversations, get_conversation_messages,
@@ -53,6 +54,26 @@ class ConversationMessagesView(generics.ListAPIView):
     def get_queryset(self):
         conv_id = self.kwargs["conv_id"]
         return get_conversation_messages(conv_id)
+
+
+class NotifyConversationEmailView(generics.GenericAPIView):
+    """POST /chat/conversations/<conv_id>/notify/ -- manual email notify, 1hr cooldown."""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, conv_id, *args, **kwargs):
+        try:
+            notify_conversation_by_email(conversation_id=conv_id, requester_id=request.user.pk)
+        except ValueError as exc:
+            if str(exc) == "cooldown":
+                return Response(
+                    {"detail": "You already notified this person recently. Please wait before trying again."},
+                    status=status.HTTP_429_TOO_MANY_REQUESTS,
+                )
+            return Response({"detail": "Conversation not found."}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionError as exc:
+            raise PermissionDenied(str(exc))
+
+        return Response({"detail": "Email notification sent."})
 
 
 # ---------------------------------------------------------------------------

@@ -125,6 +125,17 @@ class User(AbstractUser):
         default="",
         help_text="Comma-separated language codes from LanguageChoices.",
     )
+    preferred_language = models.CharField(
+        max_length=10,
+        choices=[
+            ("en", "English"), ("ur", "Urdu"), ("ar", "Arabic"),
+            ("fr", "French"), ("es", "Spanish"), ("de", "German"),
+            ("zh", "Chinese"), ("hi", "Hindi"), ("pt", "Portuguese"),
+            ("ru", "Russian"), ("ja", "Japanese"), ("tr", "Turkish"),
+        ],
+        default="en",
+        help_text="Preferred language for receiving messages on LinguaDuo.",
+    )
 
     # Roles
     roles = models.ManyToManyField(Role, blank=True, related_name="users")

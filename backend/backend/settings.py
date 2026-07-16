@@ -323,6 +323,14 @@ EMAIL_USE_TLS       = True
 EMAIL_HOST_USER     = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
+# =============================================================================
+# BREVO (Transactional Email API)
+# Synchronous HTTP calls -- no Celery, fits Render free tier.
+# =============================================================================
+BREVO_API_KEY      = os.getenv("BREVO_API_KEY")
+BREVO_SENDER_EMAIL = os.getenv("BREVO_SENDER_EMAIL")
+BREVO_SENDER_NAME  = os.getenv("BREVO_SENDER_NAME", "GazaBridge")
+
 
 # =============================================================================
 # BACKEND BASE URL

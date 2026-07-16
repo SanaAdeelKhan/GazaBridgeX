@@ -88,7 +88,7 @@ def request_password_reset(*, email: str) -> None:
     _cache_reset_payload(user, token)
 
     from forget_password.tasks import send_password_reset_email
-    send_password_reset_email.delay(user.pk)
+    send_password_reset_email(user.pk)
 
 
 # ---------------------------------------------------------------------------

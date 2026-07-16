@@ -113,6 +113,7 @@ export default function AdminUserList() {
   const [message, setMessage] = useState('');
   const [promoteModal, setPromoteModal] = useState({ isOpen: false, userId: null, userEmail: '' });
   const [demoteModal, setDemoteModal] = useState({ isOpen: false, userId: null, userEmail: '' });
+  const [deleteModal, setDeleteModal] = useState({ isOpen: false, userId: null, userEmail: '' });
 
   const roleInfo = ROLE_LABELS[role] || { title: 'Users', icon: '👥', description: '' };
   const fetchFn = API_MAP[role];
@@ -173,6 +174,23 @@ export default function AdminUserList() {
       setDemoteModal({ isOpen: false, userId: null, userEmail: '' });
     } catch (err) {
       setMessage(err.response?.data?.detail || 'Failed to demote user');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleDelete = async () => {
+    const userId = deleteModal.userId;
+    setActionLoading(userId);
+    setMessage('');
+
+    try {
+      const response = await usersAPI.deleteUser(userId);
+      setMessage(response.data?.detail || 'User deleted successfully.');
+      fetchUsers();
+      setDeleteModal({ isOpen: false, userId: null, userEmail: '' });
+    } catch (err) {
+      setMessage(err.response?.data?.detail || 'Failed to delete user');
     } finally {
       setActionLoading(null);
     }
@@ -256,12 +274,12 @@ export default function AdminUserList() {
                     </td>
                   </tr>
                 ) : (
-                  users.map(user => (
+                  users.map((user, index) => (
                     <motion.tr
                       key={user.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                      className={`border-b border-gray-100 hover:bg-blue-100 transition-colors ${index % 2 === 1 ? 'bg-blue-50' : 'bg-white'}`}
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
@@ -347,6 +365,30 @@ export default function AdminUserList() {
                                 )}
                               </motion.button>
                             )}
+
+                            {/* Delete (available on volunteers, seekers, both, managers) */}
+                            <motion.button
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              onClick={() => setDeleteModal({ isOpen: true, userId: user.id, userEmail: user.email })}
+                              disabled={actionLoading === user.id}
+                              className="px-3 py-1.5 bg-red-600 text-white text-xs font-semibold rounded-lg shadow-md hover:bg-red-700 transition-all disabled:opacity-50 flex items-center gap-1"
+                              title="Delete User"
+                            >
+                              {actionLoading === user.id ? (
+                                <svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                </svg>
+                              ) : (
+                                <>
+                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                  Delete
+                                </>
+                              )}
+                            </motion.button>
                           </div>
                         </td>
                       )}
@@ -428,6 +470,16 @@ export default function AdminUserList() {
         title="Demote from Manager"
         message={`Are you sure you want to demote ${demoteModal.userEmail} from Manager? They will lose their manager privileges.`}
         type="demote"
+      />
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, userId: null, userEmail: '' })}
+        onConfirm={handleDelete}
+        title="Delete User"
+        message={`Are you sure you want to permanently delete ${deleteModal.userEmail}? This action cannot be undone.`}
+        type="delete"
       />
     </div>
   );

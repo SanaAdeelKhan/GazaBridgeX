@@ -50,9 +50,9 @@ def send_notification(
             content=content
         )
     
-    # Queue email task
+    # Send email synchronously via Brevo (no Celery worker on Render free tier)
     from notifications.tasks import send_notification_email
-    send_notification_email.delay(notification.id)
+    send_notification_email(notification.id)
     
     # Invalidate caches for the receiver + flush all list caches
     invalidate_notification_cache_for_user(receiver_id)
@@ -101,7 +101,7 @@ def send_admin_notifications(
     
     from notifications.tasks import send_notification_email
     for notification in created:
-        send_notification_email.delay(notification.id)
+        send_notification_email(notification.id)
     
     # Invalidate all caches
     for user_id in target_user_ids:

@@ -123,7 +123,7 @@ def register_user(
         token = create_verification_token(user)
 
     _cache_registration_payload(user, token)
-    send_verification_email.delay(user.pk)
+    send_verification_email(user.pk)
     
     # Invalidate any cached list that might include this user
     invalidate_users_list_cache()
@@ -262,7 +262,7 @@ def resend_verification_email(*, email: str) -> None:
 
     token = create_verification_token(user)
     _cache_registration_payload(user, token)
-    send_verification_email.delay(user.pk)
+    send_verification_email(user.pk)
 
 
 # ---------------------------------------------------------------------------
