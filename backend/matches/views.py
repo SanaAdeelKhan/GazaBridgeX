@@ -20,7 +20,8 @@ class MatchListView(generics.ListAPIView):
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
-        return get_matches_for_user(self.request.user)
+        role = self.request.query_params.get("role")
+        return get_matches_for_user(self.request.user, role=role)
 
 
 class MatchRecheckView(APIView):

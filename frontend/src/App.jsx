@@ -47,6 +47,7 @@ import Profile from './pages/Profile';
 import Notifications from './pages/Notifications';
 import Resources from './pages/Resources';
 import Posts from './pages/Posts';
+import Matches from './pages/Matches';
 import Courses from './pages/Courses';
 import CourseDetail from './pages/CourseDetail';
 import OfferDetail from './pages/OfferDetail';
@@ -202,6 +203,7 @@ function AppRoutes() {
             <Route path="/notifications" element={<PageTransition><Notifications /></PageTransition>} />
             <Route path="/resources" element={<ResourceProvider><PageTransition><Resources /></PageTransition></ResourceProvider>} />
             <Route path="/posts" element={<PageTransition><Posts /></PageTransition>} />
+            <Route path="/matches" element={<PageTransition><Matches /></PageTransition>} />
             <Route path="/offers/:id" element={<PageTransition><OfferDetail /></PageTransition>} />
             <Route path="/courses" element={<PageTransition><Courses /></PageTransition>} />
             <Route path="/courses/:id" element={<PageTransition><CourseDetail /></PageTransition>} />

@@ -36,7 +36,10 @@ def compute_score(offer, request):
     Returns an integer 50-100 if categories match, else None (no match).
     50 = same category baseline. +up to 50 for keyword overlap between
     the two descriptions (Jaccard similarity of meaningful words).
+    Never matches a user with their own post.
     """
+    if offer.user_id == request.user_id:
+        return None
     if offer.category != request.category:
         return None
 
