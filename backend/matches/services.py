@@ -5,9 +5,12 @@ Core matching logic: given an Offer or Request, find candidates on the
 opposite side with the same category, score them by keyword overlap,
 and persist as Match rows.
 """
+import logging
 import re
 
 from matches.models import Match
+
+logger = logging.getLogger(__name__)
 
 STOPWORDS = {
     "the", "and", "for", "with", "from", "that", "this", "have", "will",
@@ -58,11 +61,28 @@ def compute_score(offer, request):
 
 
 def _upsert_match(offer, request, score):
-    Match.objects.update_or_create(
+    match, created = Match.objects.update_or_create(
         offer=offer,
         request=request,
         defaults={"score": score},
     )
+
+    if created:
+        from matches.tasks import send_match_notification_email
+
+        try:
+            if send_match_notification_email(match=match, role="offer"):
+                match.notified_offer_user = True
+        except Exception:
+            logger.exception("Failed to send match notification (offer side) for match %s.", match.pk)
+
+        try:
+            if send_match_notification_email(match=match, role="request"):
+                match.notified_request_user = True
+        except Exception:
+            logger.exception("Failed to send match notification (request side) for match %s.", match.pk)
+
+        match.save(update_fields=["notified_offer_user", "notified_request_user"])
 
 
 def compute_matches_for_offer(offer):
