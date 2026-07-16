@@ -22,6 +22,9 @@ export const chatAPI = {
   /** GET /chat/conversations/<conv_id>/messages/ — paginated message history */
   getConversationMessages: (convId, params = {}) =>
     api.get(`/chat/conversations/${convId}/messages/`, { params }),
+  /** POST /chat/conversations/<conv_id>/notify/ — email the other participant, 1hr cooldown */
+  notifyConversation: (convId) =>
+    api.post(`/chat/conversations/${convId}/notify/`),
 
   // ── Read Receipts ─────────────────────────────────────────────────────────
 

@@ -1,17 +1,43 @@
 // frontend/src/components/chat/ConversationList.jsx
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import colors from '../../theme/colors';
+import { chatAPI } from '../../api/chat';
 
 export default function ConversationList({ conversations, groups, activeChat, activeTab, onSelectConversation, onSelectGroup }) {
+  const [notifyStatus, setNotifyStatus] = useState({}); // { [convId]: 'sending' | 'sent' | 'cooldown' | 'error' }
+
+  const handleNotify = async (e, convId) => {
+    e.stopPropagation();
+    if (notifyStatus[convId] === 'sending') return;
+
+    setNotifyStatus(prev => ({ ...prev, [convId]: 'sending' }));
+    try {
+      await chatAPI.notifyConversation(convId);
+      setNotifyStatus(prev => ({ ...prev, [convId]: 'sent' }));
+    } catch (err) {
+      if (err.response?.status === 429) {
+        setNotifyStatus(prev => ({ ...prev, [convId]: 'cooldown' }));
+      } else {
+        setNotifyStatus(prev => ({ ...prev, [convId]: 'error' }));
+        setTimeout(() => {
+          setNotifyStatus(prev => (prev[convId] === 'error' ? { ...prev, [convId]: undefined } : prev));
+        }, 3000);
+      }
+    }
+  };
+
   return (
     <div className="divide-y divide-gray-100">
       {/* Direct Messages */}
       {(activeTab === 'all' || activeTab === 'dms') && conversations.map(conv => (
-        <motion.button
+        <motion.div
           key={`dm-${conv.id}`}
+          role="button"
+          tabIndex={0}
           whileHover={{ backgroundColor: '#f9fafb' }}
           onClick={() => onSelectConversation(conv)}
-          className="w-full p-4 text-left transition-colors border-l-4"
+          className="w-full p-4 text-left transition-colors border-l-4 cursor-pointer"
           style={
             activeChat?.type === 'dm' && activeChat?.id === conv.id
               ? { backgroundColor: colors.goldLight, borderColor: colors.gold }
@@ -37,8 +63,42 @@ export default function ConversationList({ conversations, groups, activeChat, ac
                 {conv.last_message?.content || 'Start a conversation'}
               </p>
             </div>
+            <button
+              type="button"
+              onClick={(e) => handleNotify(e, conv.id)}
+              disabled={notifyStatus[conv.id] === 'sending' || notifyStatus[conv.id] === 'cooldown'}
+              title={
+                notifyStatus[conv.id] === 'sent' ? 'Email sent!' :
+                notifyStatus[conv.id] === 'cooldown' ? 'Already notified recently' :
+                notifyStatus[conv.id] === 'error' ? 'Failed to send' :
+                'Notify by email'
+              }
+              className="flex-shrink-0 p-2 rounded-lg transition-colors disabled:opacity-50"
+              style={{
+                color:
+                  notifyStatus[conv.id] === 'sent' ? colors.olive :
+                  notifyStatus[conv.id] === 'error' ? colors.error :
+                  notifyStatus[conv.id] === 'cooldown' ? colors.gold :
+                  colors.muted,
+              }}
+            >
+              {notifyStatus[conv.id] === 'sending' ? (
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              ) : notifyStatus[conv.id] === 'sent' ? (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              )}
+            </button>
           </div>
-        </motion.button>
+        </motion.div>
       ))}
 
       {/* Groups */}
