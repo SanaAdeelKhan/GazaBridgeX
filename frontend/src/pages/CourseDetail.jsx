@@ -221,7 +221,7 @@ export default function CourseDetail() {
               </div>
               <div>
                 <div className="font-medium" style={{ color: colors.headingDark }}>{course.user_full_name}</div>
-                <div className="text-sm" style={{ color: colors.muted }}>{course.user_email}</div>
+                
               </div>
             </div>
           </div>

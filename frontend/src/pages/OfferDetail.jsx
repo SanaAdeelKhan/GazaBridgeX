@@ -187,7 +187,7 @@ export default function OfferDetail() {
               </div>
               <div className="flex-1">
                 <div className="font-medium" style={{ color: colors.headingDark }}>{offer.user_full_name}</div>
-                <div className="text-sm" style={{ color: colors.muted }}>{offer.user_email}</div>
+                
               </div>
               {offer.user !== user?.id && (
                 <button
@@ -265,7 +265,7 @@ export default function OfferDetail() {
                           >
                             {course.status}
                           </span>
-                          <span className="text-xs" style={{ color: colors.muted }}>by {course.user_email}</span>
+                          <span className="text-xs" style={{ color: colors.muted }}>by {course.user_full_name}</span>
                         </div>
                       </div>
                       <svg className="w-5 h-5 transition-colors" style={{ color: colors.muted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -329,7 +329,7 @@ export default function OfferDetail() {
                           >
                             {ls.effective_status}
                           </span>
-                          <span className="text-xs" style={{ color: colors.muted }}>by {ls.user_email}</span>
+                          <span className="text-xs" style={{ color: colors.muted }}>by {ls.user_full_name}</span>
                           <span className="text-xs" style={{ color: colors.muted }}>•</span>
                           <span className="text-xs" style={{ color: colors.muted }}>Ends: {new Date(ls.ending_date).toLocaleDateString()}</span>
                         </div>

@@ -194,7 +194,7 @@ export default function LiveSectionDetail() {
             </div>
             <div className="flex items-center gap-3 pt-4 border-t">
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: colors.primary }}>{liveSection.user_full_name?.split(' ').map(n => n[0]).join('')}</div>
-              <div><div className="font-medium" style={{ color: colors.headingDark }}>{liveSection.user_full_name}</div><div className="text-sm" style={{ color: colors.muted }}>{liveSection.user_email}</div></div>
+              <div><div className="font-medium" style={{ color: colors.headingDark }}>{liveSection.user_full_name}</div></div>
             </div>
           </div>
 
