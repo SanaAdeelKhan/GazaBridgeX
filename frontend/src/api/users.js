@@ -18,7 +18,7 @@ export const usersAPI = {
   
   // Password Management
   changePassword: (userId, passwordData) => 
-    api.post(`/users/change-password/${userId}/`, passwordData),
+    api.patch(`/users/change-password/${userId}/`, passwordData),
   
   // Role Management (Admin only)
   promoteToManager: (userId) => api.post('/users/promote-to-manager/', { user_id: userId }),

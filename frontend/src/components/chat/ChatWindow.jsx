@@ -22,7 +22,7 @@ import colors from '../../theme/colors';
  *   RECEIVE: { "id": 1, "sender_id": 5, "sender_email": "a@b.com", "content": "hello", "created_at": "..." }
  *         OR { "type": "error", "message": "..." }
  */
-export default function ChatWindow({ chat, onNewConversation, onUpdate, onConversationCreated }) {
+export default function ChatWindow({ chat, onNewConversation, onUpdate, onConversationCreated, onMessagesRead }) {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -38,17 +38,19 @@ export default function ChatWindow({ chat, onNewConversation, onUpdate, onConver
     : `/ws/chat/group/${chat?.id}/`;
 
   const markUnread = useCallback((msgs, isGroup) => {
-    msgs.forEach((msg) => {
+    const toMark = msgs.filter((msg) => {
       const senderId = msg.sender_id ?? msg.sender;
-      if (!msg.is_read && senderId !== user?.id) {
-        if (isGroup) {
-          chatAPI.markGroupMessageRead(msg.id).catch(() => {});
-        } else {
-          chatAPI.markMessageRead(msg.id).catch(() => {});
-        }
-      }
+      return !msg.is_read && senderId !== user?.id;
     });
-  }, [user?.id]);
+    if (toMark.length === 0) return;
+    Promise.all(
+      toMark.map((msg) =>
+        (isGroup ? chatAPI.markGroupMessageRead(msg.id) : chatAPI.markMessageRead(msg.id)).catch(() => {})
+      )
+    ).then(() => {
+      onMessagesRead?.();
+    });
+  }, [user?.id, onMessagesRead]);
 
   const handleWsMessage = useCallback((data) => {
     if (data.type === 'error') {

@@ -302,6 +302,7 @@ export default function Chat() {
                 chat={activeChat}
                 onNewConversation={handleNewConversation}
                 onConversationCreated={loadChats}
+                onMessagesRead={loadChats}
                 onUpdate={() => {
                   loadChats();
                   setActiveChat(null);
