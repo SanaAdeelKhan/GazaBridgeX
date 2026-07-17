@@ -19,32 +19,8 @@ const navLinks = [
 ];
 
 // ─── Magnetic wrapper ─────────────────────────────────────────────────────────
-function Magnetic({ children, strength = 0.35 }) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 250, damping: 18 });
-  const sy = useSpring(y, { stiffness: 250, damping: 18 });
-  const ref = useRef(null);
-
-  const onMove = useCallback((e) => {
-    const r = ref.current?.getBoundingClientRect();
-    if (!r) return;
-    x.set((e.clientX - (r.left + r.width / 2)) * strength);
-    y.set((e.clientY - (r.top + r.height / 2)) * strength);
-  }, [strength, x, y]);
-
-  const onLeave = useCallback(() => { x.set(0); y.set(0); }, [x, y]);
-
-  return (
-    <motion.div
-      ref={ref}
-      style={{ x: sx, y: sy }}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-    >
-      {children}
-    </motion.div>
-  );
+function Magnetic({ children }) {
+  return <>{children}</>;
 }
 
 // ─── Animated underline indicator ────────────────────────────────────────────
@@ -77,7 +53,7 @@ export default function Navbar() {
   const location                            = useLocation();
   const { isAuthenticated, user, logout }   = useAuth();
   const containerRef                        = useRef(null);
-  const [hoverStyle, setHoverStyle]         = useState({ left: 0, width: 0, opacity: 0 });
+  const [hoveredIdx, setHoveredIdx]         = useState(null);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20);
@@ -89,21 +65,9 @@ export default function Navbar() {
     setMobileMenu(false);
   }, [location.pathname]);
 
-  // Hover pill tracking
-  const handleLinkEnter = (e) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-    setHoverStyle({
-      left:    rect.left - containerRect.left,
-      width:   rect.width,
-      opacity: 1,
-    });
-  };
-
+  // Hover color tracking (no pill movement)
   const handleContainerLeave = () => {
-    setHoverStyle(prev => ({ ...prev, opacity: 0 }));
+    setHoveredIdx(null);
   };
 
   const isActive = (href) =>
@@ -142,31 +106,27 @@ export default function Navbar() {
             onMouseLeave={handleContainerLeave}
             className="hidden lg:flex items-center relative"
           >
-            {/* Hover background pill */}
-            <motion.div
-              className="absolute top-1 bottom-1 rounded-full pointer-events-none"
-              style={{ backgroundColor: colors.goldLight }}
-              animate={hoverStyle}
-              transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-            />
-
             {/* Active indicator dot */}
             <div className="flex items-center">
               {navLinks.map((link, i) => {
                 const active = isActive(link.href);
+                const hovered = hoveredIdx === i;
                 return (
                   <Link
                     key={link.name}
                     to={link.href}
                     data-active={active}
-                    onMouseEnter={handleLinkEnter}
+                    onMouseEnter={() => setHoveredIdx(i)}
                   >
                     <motion.span
                       initial={{ opacity: 0, y: -12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.07, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                       className="relative flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium rounded-full transition-colors duration-200 select-none"
-                      style={{ color: active ? colors.gold : colors.muted }}
+                      style={{
+                        color: active || hovered ? colors.gold : colors.muted,
+                        backgroundColor: active ? colors.goldLight : 'transparent',
+                      }}
                     >
                       {/* Active dot */}
                       {active && (

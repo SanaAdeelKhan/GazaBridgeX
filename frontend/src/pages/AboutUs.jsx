@@ -22,18 +22,8 @@ function useMagnetic(strength = 0.4) {
   return { ref, x, y, handleMouseMove, handleMouseLeave };
 }
 
-function MagneticButton({ children, strength = 0.4 }) {
-  const magnetic = useMagnetic(strength);
-  return (
-    <motion.div
-      ref={magnetic.ref}
-      onMouseMove={magnetic.handleMouseMove}
-      onMouseLeave={magnetic.handleMouseLeave}
-      style={{ x: magnetic.x, y: magnetic.y }}
-    >
-      {children}
-    </motion.div>
-  );
+function MagneticButton({ children }) {
+  return <>{children}</>;
 }
 
 function NoiseOverlay() {

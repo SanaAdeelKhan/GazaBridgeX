@@ -30,18 +30,7 @@ function useMagnetic(strength = 0.4) {
   // Cache the button's resting position once per hover — measuring on every
   // mousemove was chasing the button's own (already-offset) position, which
   // caused a feedback-loop shake instead of a smooth magnetic pull.
-  const handleMouseMove = useCallback((e) => {
-    const el = ref.current;
-    if (!el) return;
-    if (!restRect.current) {
-      restRect.current = el.getBoundingClientRect();
-    }
-    const rect = restRect.current;
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    x.set((e.clientX - cx) * strength);
-    y.set((e.clientY - cy) * strength);
-  }, [strength, x, y]);
+  const handleMouseMove = useCallback(() => {}, []);
 
   const handleMouseLeave = useCallback(() => {
     x.set(0);
