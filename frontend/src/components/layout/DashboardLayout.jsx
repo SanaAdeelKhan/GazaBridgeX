@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import Sidebar from './Sidebar';
 import AdminSidebar from './AdminSidebar';
 import HeaderBar from './HeaderBar';
+import ProfileFieldsPrompt from '../ProfileFieldsPrompt';
 import colors from '../../theme/colors';
 
 export default function DashboardLayout() {
@@ -25,6 +26,7 @@ export default function DashboardLayout() {
       <div className="min-h-screen" style={{ backgroundColor: colors.pageBg }}>
         <HeaderBar />
         <Outlet />
+        <ProfileFieldsPrompt />
       </div>
     );
   }
@@ -51,6 +53,7 @@ export default function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+      <ProfileFieldsPrompt />
     </div>
   );
 }

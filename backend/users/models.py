@@ -29,6 +29,32 @@ class GenderChoices(models.TextChoices):
     FEMALE = "female", "Female"
 
 
+class FormatChoices(models.TextChoices):
+    ONE_ON_ONE = "1_on_1", "1-on-1"
+    GROUP = "group", "Group"
+    EITHER = "either", "Either"
+
+
+class PlatformChoices(models.TextChoices):
+    ZOOM = "zoom", "Zoom"
+    GOOGLE_MEET = "google_meet", "Google Meet"
+    WHATSAPP_CALL = "whatsapp_call", "WhatsApp call"
+    IN_APP_CHAT_ONLY = "in_app_chat_only", "In-app chat only"
+    NO_PREFERENCE = "no_preference", "No preference"
+
+
+class CommitmentChoices(models.TextChoices):
+    ONE_TIME = "one_time", "One-time sessions"
+    ONGOING_WEEKLY = "ongoing_weekly", "Ongoing (weekly)"
+    FLEXIBLE = "flexible", "Flexible"
+
+
+class UrgencyChoices(models.TextChoices):
+    ASAP = "asap", "ASAP"
+    WITHIN_A_MONTH = "within_a_month", "Within a month"
+    FLEXIBLE = "flexible", "Flexible"
+
+
 # ---------------------------------------------------------------------------
 # Role
 # ---------------------------------------------------------------------------
@@ -136,6 +162,34 @@ class User(AbstractUser):
         default="en",
         help_text="Preferred language for receiving messages on LinguaDuo.",
     )
+
+    # Volunteer matching fields
+    volunteer_teaching_format = models.CharField(
+        max_length=10, choices=FormatChoices.choices, default=FormatChoices.EITHER,
+    )
+    volunteer_preferred_platform = models.CharField(
+        max_length=20, choices=PlatformChoices.choices, default=PlatformChoices.NO_PREFERENCE,
+    )
+    volunteer_commitment = models.CharField(
+        max_length=20, choices=CommitmentChoices.choices, default=CommitmentChoices.FLEXIBLE,
+        blank=True,
+    )
+
+    # Seeker matching fields
+    seeker_preferred_format = models.CharField(
+        max_length=10, choices=FormatChoices.choices, default=FormatChoices.EITHER,
+    )
+    seeker_preferred_platform = models.CharField(
+        max_length=20, choices=PlatformChoices.choices, default=PlatformChoices.NO_PREFERENCE,
+    )
+    seeker_urgency = models.CharField(
+        max_length=20, choices=UrgencyChoices.choices, default=UrgencyChoices.FLEXIBLE,
+        blank=True,
+    )
+
+    # Tracks whether the user has completed (or explicitly submitted) the
+    # matching-preference fields above, for the one-time post-login prompt.
+    profile_fields_completed = models.BooleanField(default=False)
 
     # Roles
     roles = models.ManyToManyField(Role, blank=True, related_name="users")

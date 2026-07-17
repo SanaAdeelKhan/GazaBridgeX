@@ -10,6 +10,13 @@ const LANGUAGE_LABELS = {
   es: 'Spanish', tr: 'Turkish', hi: 'Hindi', zh: 'Chinese', ru: 'Russian',
   pt: 'Portuguese', ja: 'Japanese',
 };
+const FORMAT_LABELS = { '1_on_1': '1-on-1', group: 'Group', either: 'Either' };
+const PLATFORM_LABELS = {
+  zoom: 'Zoom', google_meet: 'Google Meet', whatsapp_call: 'WhatsApp call',
+  in_app_chat_only: 'In-app chat only', no_preference: 'No preference',
+};
+const COMMITMENT_LABELS = { one_time: 'One-time sessions', ongoing_weekly: 'Ongoing (weekly)', flexible: 'Flexible' };
+const URGENCY_LABELS = { asap: 'ASAP', within_a_month: 'Within a month', flexible: 'Flexible' };
 
 const inputStyle = {
   borderColor: colors.inputBorder,
@@ -20,6 +27,8 @@ const inputStyle = {
 export default function Profile() {
   const { user } = useAuth();
   const { profile, loading, updateProfile, changePassword } = useUser();
+  const isVolunteer = profile?.roles?.some(r => r.name === 'volunteer');
+  const isSeeker = profile?.roles?.some(r => r.name === 'seeker');
   const [activeTab, setActiveTab] = useState('profile');
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({});
@@ -41,6 +50,12 @@ export default function Profile() {
       whatsapp_number: profile?.whatsapp_number || '',
       languages: profile?.languages || [],
       preferred_language: profile?.preferred_language || 'en',
+      volunteer_teaching_format: profile?.volunteer_teaching_format || 'either',
+      volunteer_preferred_platform: profile?.volunteer_preferred_platform || 'no_preference',
+      volunteer_commitment: profile?.volunteer_commitment || 'flexible',
+      seeker_preferred_format: profile?.seeker_preferred_format || 'either',
+      seeker_preferred_platform: profile?.seeker_preferred_platform || 'no_preference',
+      seeker_urgency: profile?.seeker_urgency || 'flexible',
     });
     setEditMode(true);
   };
@@ -296,6 +311,52 @@ export default function Profile() {
                     <option value="pt">Portuguese</option>
                   </select>
                 </div>
+                {isVolunteer && (
+                  <div className="space-y-6 pt-2 border-t" style={{ borderColor: colors.divider }}>
+                    <p className="text-sm font-semibold" style={{ color: colors.headingDark }}>Volunteer preferences</p>
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: colors.label }}>Teaching format</label>
+                      <select name="volunteer_teaching_format" value={formData.volunteer_teaching_format} onChange={handleChange} className="w-full px-4 py-3 border rounded-xl outline-none transition-all" style={inputStyle}>
+                        {Object.entries(FORMAT_LABELS).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: colors.label }}>Preferred platform</label>
+                      <select name="volunteer_preferred_platform" value={formData.volunteer_preferred_platform} onChange={handleChange} className="w-full px-4 py-3 border rounded-xl outline-none transition-all" style={inputStyle}>
+                        {Object.entries(PLATFORM_LABELS).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: colors.label }}>Commitment</label>
+                      <select name="volunteer_commitment" value={formData.volunteer_commitment} onChange={handleChange} className="w-full px-4 py-3 border rounded-xl outline-none transition-all" style={inputStyle}>
+                        {Object.entries(COMMITMENT_LABELS).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                )}
+                {isSeeker && (
+                  <div className="space-y-6 pt-2 border-t" style={{ borderColor: colors.divider }}>
+                    <p className="text-sm font-semibold" style={{ color: colors.headingDark }}>Seeker preferences</p>
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: colors.label }}>Preferred format</label>
+                      <select name="seeker_preferred_format" value={formData.seeker_preferred_format} onChange={handleChange} className="w-full px-4 py-3 border rounded-xl outline-none transition-all" style={inputStyle}>
+                        {Object.entries(FORMAT_LABELS).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: colors.label }}>Preferred platform</label>
+                      <select name="seeker_preferred_platform" value={formData.seeker_preferred_platform} onChange={handleChange} className="w-full px-4 py-3 border rounded-xl outline-none transition-all" style={inputStyle}>
+                        {Object.entries(PLATFORM_LABELS).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2" style={{ color: colors.label }}>Urgency</label>
+                      <select name="seeker_urgency" value={formData.seeker_urgency} onChange={handleChange} className="w-full px-4 py-3 border rounded-xl outline-none transition-all" style={inputStyle}>
+                        {Object.entries(URGENCY_LABELS).map(([val, label]) => <option key={val} value={val}>{label}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                )}
                 <div className="flex gap-4">
                   <motion.button
                     type="submit"
@@ -358,6 +419,38 @@ export default function Profile() {
                     <label className="text-sm" style={{ color: colors.muted }}>💬 Preferred message language</label>
                     <p className="font-medium" style={{ color: colors.body }}>{LANGUAGE_LABELS[profile?.preferred_language] || 'English'}</p>
                   </div>
+                  {isVolunteer && (
+                    <>
+                      <div>
+                        <label className="text-sm" style={{ color: colors.muted }}>Teaching format</label>
+                        <p className="font-medium" style={{ color: colors.body }}>{FORMAT_LABELS[profile?.volunteer_teaching_format] || 'Either'}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm" style={{ color: colors.muted }}>Preferred platform (volunteer)</label>
+                        <p className="font-medium" style={{ color: colors.body }}>{PLATFORM_LABELS[profile?.volunteer_preferred_platform] || 'No preference'}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm" style={{ color: colors.muted }}>Commitment</label>
+                        <p className="font-medium" style={{ color: colors.body }}>{COMMITMENT_LABELS[profile?.volunteer_commitment] || 'Flexible'}</p>
+                      </div>
+                    </>
+                  )}
+                  {isSeeker && (
+                    <>
+                      <div>
+                        <label className="text-sm" style={{ color: colors.muted }}>Preferred format</label>
+                        <p className="font-medium" style={{ color: colors.body }}>{FORMAT_LABELS[profile?.seeker_preferred_format] || 'Either'}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm" style={{ color: colors.muted }}>Preferred platform (seeker)</label>
+                        <p className="font-medium" style={{ color: colors.body }}>{PLATFORM_LABELS[profile?.seeker_preferred_platform] || 'No preference'}</p>
+                      </div>
+                      <div>
+                        <label className="text-sm" style={{ color: colors.muted }}>Urgency</label>
+                        <p className="font-medium" style={{ color: colors.body }}>{URGENCY_LABELS[profile?.seeker_urgency] || 'Flexible'}</p>
+                      </div>
+                    </>
+                  )}
                 </div>
                 <button
                   onClick={handleEdit}

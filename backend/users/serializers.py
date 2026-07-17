@@ -8,7 +8,7 @@ No business logic or DB writes live here.
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 
-from users.models import GenderChoices, LanguageChoices, Role, User
+from users.models import GenderChoices, LanguageChoices, FormatChoices, PlatformChoices, CommitmentChoices, UrgencyChoices, Role, User
 
 
 # ---------------------------------------------------------------------------
@@ -42,6 +42,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "id", "email", "first_name", "last_name", "country",
             "gender", "linkedin", "whatsapp_number", "languages",
+            "volunteer_teaching_format", "volunteer_preferred_platform", "volunteer_commitment",
+            "seeker_preferred_format", "seeker_preferred_platform", "seeker_urgency",
+            "profile_fields_completed",
             "roles", "role_names", "is_active", "is_staff", "is_superuser",
             "date_joined", "last_login"
         ]
@@ -74,7 +77,14 @@ class UserUpdateInputSerializer(serializers.Serializer):
         child=serializers.ChoiceField(choices=LanguageChoices.choices),
         required=False
     )
-    
+    volunteer_teaching_format = serializers.ChoiceField(choices=FormatChoices.choices, required=False)
+    volunteer_preferred_platform = serializers.ChoiceField(choices=PlatformChoices.choices, required=False)
+    volunteer_commitment = serializers.ChoiceField(choices=CommitmentChoices.choices, required=False, allow_blank=True)
+    seeker_preferred_format = serializers.ChoiceField(choices=FormatChoices.choices, required=False)
+    seeker_preferred_platform = serializers.ChoiceField(choices=PlatformChoices.choices, required=False)
+    seeker_urgency = serializers.ChoiceField(choices=UrgencyChoices.choices, required=False, allow_blank=True)
+    profile_fields_completed = serializers.BooleanField(required=False)
+
     def validate(self, data):
         """Ensure at least one field is provided for update."""
         if not data:
