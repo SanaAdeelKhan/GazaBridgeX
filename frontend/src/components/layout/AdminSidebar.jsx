@@ -50,6 +50,7 @@ const adminNavItems = [
     section: 'Main App',
     items: [
       { label: 'Posts',          path: '/posts',          icon: '📝' },
+      { label: 'Matches',        path: '/matches',        icon: '⚡' },
       { label: 'Courses',        path: '/courses',        icon: '📖' },
       { label: 'Live Sections',  path: '/live-sections',  icon: '📡' },
       { label: 'Resources',      path: '/resources',      icon: '📚' },
