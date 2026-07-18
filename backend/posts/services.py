@@ -11,6 +11,7 @@ from typing import Optional, Dict, Any
 from django.db import transaction
 
 from posts.models import Offer, Request
+from users.models import Role
 from matches.services import compute_matches_for_offer, compute_matches_for_request
 from posts.selectors import (
     get_offer_by_id, get_request_by_id,
@@ -48,6 +49,9 @@ def create_offer(
             availability=availability,
             status=status
         )
+        volunteer_role = Role.objects.filter(name="volunteer").first()
+        if volunteer_role and not user.roles.filter(pk=volunteer_role.pk).exists():
+            user.roles.add(volunteer_role)
     
     invalidate_offer_cache(offer.pk)
     try:
@@ -126,6 +130,9 @@ def create_request(
             description=description,
             status=status
         )
+        seeker_role = Role.objects.filter(name="seeker").first()
+        if seeker_role and not user.roles.filter(pk=seeker_role.pk).exists():
+            user.roles.add(seeker_role)
     
     # Invalidate list caches since new request is added
     invalidate_request_cache(request_obj.pk)
