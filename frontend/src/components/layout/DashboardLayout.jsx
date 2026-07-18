@@ -12,7 +12,7 @@ import colors from '../../theme/colors';
 export default function DashboardLayout() {
   const { user } = useAuth();
   const location = useLocation();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1024);
 
   const adminRoles = ['manager', 'admin', 'superuser'];
   const isAdmin = user?.roles?.some(r => adminRoles.includes(r)) ||
@@ -35,16 +35,22 @@ export default function DashboardLayout() {
     <div className="min-h-screen flex" style={{ backgroundColor: colors.pageBg }}>
       <AnimatePresence>
         {sidebarOpen && (
-          <motion.aside
-            initial={{ x: -280 }}
-            animate={{ x: 0 }}
-            exit={{ x: -280 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="w-64 lg:w-72 flex-shrink-0 h-screen sticky top-0 overflow-y-auto z-30"
-            style={{ backgroundColor: colors.sidebar, borderRight: `1px solid ${colors.sidebarBorder}` }}
-          >
-            {isAdmin ? <AdminSidebar /> : <Sidebar />}
-          </motion.aside>
+          <>
+            <motion.aside
+              initial={{ x: -280 }}
+              animate={{ x: 0 }}
+              exit={{ x: -280 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="w-64 lg:w-72 flex-shrink-0 h-screen fixed lg:sticky top-0 left-0 overflow-y-auto z-40"
+              style={{ backgroundColor: colors.sidebar, borderRight: `1px solid ${colors.sidebarBorder}` }}
+            >
+              {isAdmin ? <AdminSidebar /> : <Sidebar />}
+            </motion.aside>
+            <div
+              className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+          </>
         )}
       </AnimatePresence>
       <div className="flex-1 flex flex-col min-w-0">
