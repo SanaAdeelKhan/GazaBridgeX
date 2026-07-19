@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { adminAPI } from '../../api/admin';
 import { usersAPI } from '../../api/users';
+import { colors, tw } from '../../theme/colors';
 import { useAuth } from '../../context/AuthContext';
 
 // Beautiful Confirmation Modal Component
@@ -223,7 +224,7 @@ export default function AdminUserList() {
             className={`mb-6 p-4 rounded-xl border ${
               message.includes('Failed') || message.includes('failed')
                 ? 'bg-red-50 border-red-200 text-red-700'
-                : 'bg-[#fdf3e3] border-emerald-200 text-[#1a2e1a]'
+                : `bg-[${colors.goldLight}] border-[${colors.gold}] text-[${colors.body}]`
             }`}
           >
             <div className="flex items-center gap-3">
@@ -232,7 +233,7 @@ export default function AdminUserList() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-5 h-5 text-[${colors.olive}] flex-shrink-0`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
@@ -283,7 +284,7 @@ export default function AdminUserList() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-gradient-to-br from-[#e18f23] to-[#E8920F] rounded-full flex items-center justify-center text-white text-xs font-bold">
+                          <div className={`w-8 h-8 bg-gradient-to-br from-[${colors.gold}] to-[${colors.goldHover}] rounded-full flex items-center justify-center text-white text-xs font-bold`}>
                             {(user.first_name?.[0] || '') + (user.last_name?.[0] || '') || user.email?.[0]?.toUpperCase() || 'U'}
                           </div>
                           <span className="font-medium text-gray-900">
@@ -301,7 +302,7 @@ export default function AdminUserList() {
                                 r === 'manager' ? 'bg-purple-100 text-purple-700' :
                                 r === 'admin' ? 'bg-yellow-100 text-yellow-700' :
                                 r === 'superuser' ? 'bg-red-100 text-red-700' :
-                                r === 'volunteer' ? 'bg-[#fdf3e3] text-[#1a2e1a]' :
+                                r === 'volunteer' ? `bg-[${colors.goldLight}] text-[${colors.body}]` :
                                 r === 'seeker' ? 'bg-blue-100 text-blue-700' :
                                 'bg-gray-100 text-gray-700'
                               }`}
