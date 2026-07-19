@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { chatAPI } from '../../api/chat';
+import { colors, tw } from '../../theme/colors';
 
 export default function GroupInfoModal({ groupId, onClose, onUpdate }) {
   const { user } = useAuth();
@@ -196,7 +197,7 @@ export default function GroupInfoModal({ groupId, onClose, onUpdate }) {
                             <p className="text-sm font-medium text-gray-900">
                               {member.first_name} {member.last_name}
                               {member.id === group.owner && (
-                                <span className="ml-2 text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">Owner</span>
+                                <span className={`ml-2 text-xs bg-[${colors.goldLight}] text-[${colors.gold}] px-1.5 py-0.5 rounded-full`}>Owner</span>
                               )}
                               {member.is_admin && member.id !== group.owner && (
                                 <span className="ml-2 text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">Admin</span>
@@ -249,15 +250,15 @@ export default function GroupInfoModal({ groupId, onClose, onUpdate }) {
 
                 {/* Leave Group (non-owner members only) */}
                 {!isOwner && currentMembership && (
-                  <div className="border border-orange-200 rounded-xl p-4">
-                    <h3 className="text-sm font-semibold text-orange-600 mb-2">Leave Group</h3>
+                  <div className={`border border-[${colors.warning}] rounded-xl p-4`}>
+                    <h3 className={`text-sm font-semibold text-[${colors.warning}] mb-2`}>Leave Group</h3>
                     {leaveError && (
                       <p className="text-red-500 text-xs mb-2">{leaveError}</p>
                     )}
                     <button
                       onClick={handleLeaveGroup}
                       disabled={leaveLoading}
-                      className="w-full py-2 text-sm font-semibold text-white bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors disabled:opacity-50"
+                      className={`w-full py-2 text-sm font-semibold text-white bg-[${colors.warning}] hover:bg-[${colors.goldHover}] rounded-lg transition-colors disabled:opacity-50`}
                     >
                       {leaveLoading ? 'Leaving…' : 'Leave Group'}
                     </button>
