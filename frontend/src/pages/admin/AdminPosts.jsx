@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useSearchParams } from 'react-router-dom';
 import { postsAPI } from '../../api/posts';
 import { useAuth } from '../../context/AuthContext';
+import { colors, tw } from '../../theme/colors';
 
 // Beautiful Confirmation Modal Component
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 'delete' }) => {
@@ -24,7 +25,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
         onClick={(e) => e.stopPropagation()}
         className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
       >
-        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : 'bg-[#e18f23]'}`} />
+        <div className={`h-1 ${type === 'delete' ? 'bg-gradient-to-r from-red-400 to-red-600' : `bg-[${colors.gold}]`}`} />
         
         <div className="p-6">
           <div className="flex justify-center mb-4">
@@ -33,7 +34,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               animate={{ scale: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
               className={`w-16 h-16 rounded-full flex items-center justify-center ${
-                type === 'delete' ? 'bg-red-100' : 'bg-[#fdf3e3]'
+                type === 'delete' ? 'bg-red-100' : `bg-[${colors.goldLight}]`
               }`}
             >
               {type === 'delete' ? (
@@ -41,7 +42,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               ) : (
-                <svg className="w-8 h-8 text-[#C97B1A]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-8 h-8 text-[${colors.gold}]`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               )}
@@ -67,7 +68,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, type = 
               className={`flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-colors ${
                 type === 'delete'
                   ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  : 'bg-[#e18f23] hover:bg-[#c97a18]'
+                  : `bg-[${colors.gold}] hover:bg-[${colors.goldHover}]`
               }`}
             >
               Confirm
@@ -211,7 +212,7 @@ export default function AdminPosts() {
   const isAdmin = user?.is_staff || user?.is_superuser;
 
   return (
-    <div className="pt-24 min-h-screen bg-gradient-to-br from-[#fdf3e3] via-white to-[#fdf3e3]">
+    <div className={`pt-24 min-h-screen bg-gradient-to-br from-[${colors.goldLight}] via-white to-[${colors.goldLight}]`}>
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Header */}
         <motion.div
@@ -237,7 +238,7 @@ export default function AdminPosts() {
               onClick={() => setActiveTab('offers')}
               className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                 activeTab === 'offers'
-                  ? 'bg-white shadow-lg text-[#C97B1A] border-2 border-[#C97B1A]'
+                  ? `bg-white shadow-lg text-[${colors.gold}] border-2 border-[${colors.gold}]`
                   : 'bg-white/50 text-gray-600 border-2 border-transparent hover:border-gray-200'
               }`}
             >
@@ -247,7 +248,7 @@ export default function AdminPosts() {
               onClick={() => setActiveTab('requests')}
               className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                 activeTab === 'requests'
-                  ? 'bg-white shadow-lg text-[#C97B1A] border-2 border-[#C97B1A]'
+                  ? `bg-white shadow-lg text-[${colors.gold}] border-2 border-[${colors.gold}]`
                   : 'bg-white/50 text-gray-600 border-2 border-transparent hover:border-gray-200'
               }`}
             >
@@ -260,7 +261,7 @@ export default function AdminPosts() {
             <select
               value={filters.category}
               onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
-              className="px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+              className={`px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-[${colors.gold}]/25 outline-none`}
             >
               {CATEGORIES.map(cat => (
                 <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -270,7 +271,7 @@ export default function AdminPosts() {
             <select
               value={filters.status}
               onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-              className="px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+              className={`px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-[${colors.gold}]/25 outline-none`}
             >
               {STATUS_OPTIONS.map(s => (
                 <option key={s.value} value={s.value}>{s.label}</option>
@@ -281,7 +282,7 @@ export default function AdminPosts() {
               <select
                 value={filters.availability}
                 onChange={(e) => setFilters(prev => ({ ...prev, availability: e.target.value }))}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                className={`px-4 py-2 rounded-xl border border-gray-300 text-sm focus:ring-2 focus:ring-[${colors.gold}]/25 outline-none`}
               >
                 {AVAILABILITY.map(a => (
                   <option key={a.value} value={a.value}>{a.label}</option>
@@ -357,7 +358,7 @@ export default function AdminPosts() {
                           value={post.status}
                           onChange={(e) => handleStatusChange(post, e.target.value)}
                           className={`px-2 py-1 rounded-lg text-xs font-semibold border outline-none cursor-pointer ${
-                            post.status === 'active' ? 'bg-[#fdf3e3] text-[#1a2e1a] border-emerald-200' :
+                            post.status === 'active' ? `bg-[${colors.goldLight}] text-[${colors.body}] border-[${colors.gold}]` :
                             post.status === 'inactive' ? 'bg-gray-50 text-gray-700 border-gray-200' :
                             'bg-red-50 text-red-700 border-red-200'
                           }`}
@@ -518,7 +519,7 @@ function PostEditModal({ post, type, onClose, onSubmit }) {
                 name={type === 'offer' ? 'offer_name' : 'request_name'}
                 value={formData[type === 'offer' ? 'offer_name' : 'request_name']}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={`w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[${colors.gold}]/25 focus:border-[${colors.gold}] transition-all outline-none`}
               />
             </div>
 
@@ -528,7 +529,7 @@ function PostEditModal({ post, type, onClose, onSubmit }) {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={`w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[${colors.gold}]/25 focus:border-[${colors.gold}] transition-all outline-none`}
               >
                 {CATEGORIES.filter(c => c.value).map(cat => (
                   <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -543,7 +544,7 @@ function PostEditModal({ post, type, onClose, onSubmit }) {
                 value={formData.description}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none resize-none"
+                className={`w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[${colors.gold}]/25 focus:border-[${colors.gold}] transition-all outline-none resize-none`}
               />
             </div>
 
@@ -554,7 +555,7 @@ function PostEditModal({ post, type, onClose, onSubmit }) {
                   name="availability"
                   value={formData.availability}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                  className={`w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[${colors.gold}]/25 focus:border-[${colors.gold}] transition-all outline-none`}
                 >
                   {AVAILABILITY.filter(a => a.value).map(a => (
                     <option key={a.value} value={a.value}>{a.label}</option>
@@ -569,7 +570,7 @@ function PostEditModal({ post, type, onClose, onSubmit }) {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-[#C97B1A] transition-all outline-none"
+                className={`w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[${colors.gold}]/25 focus:border-[${colors.gold}] transition-all outline-none`}
               >
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
@@ -590,7 +591,7 @@ function PostEditModal({ post, type, onClose, onSubmit }) {
                 disabled={loading}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
-                className="flex-1 py-3 bg-[#e18f23] hover:bg-[#c97a18] text-white font-semibold rounded-xl shadow-lg disabled:opacity-50"
+                className={`flex-1 py-3 bg-[${colors.gold}] hover:bg-[${colors.goldHover}] text-white font-semibold rounded-xl shadow-lg disabled:opacity-50`}
               >
                 {loading ? 'Saving...' : 'Update'}
               </motion.button>
