@@ -174,6 +174,7 @@ def register_oauth_user(
     roles: List[str],
     languages: Optional[List[str]] = None,
     whatsapp_number: str = "",
+    preferred_language: str = "en",
 ) -> User:
     """
     Create a new user verified via OAuth.
@@ -206,6 +207,7 @@ def register_oauth_user(
             linkedin=linkedin,
             whatsapp_number=whatsapp_number,
             languages=languages_str,
+            preferred_language=preferred_language,
             is_active=True,
         )
         user.set_unusable_password()
