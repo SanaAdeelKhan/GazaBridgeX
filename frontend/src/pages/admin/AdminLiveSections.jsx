@@ -26,7 +26,7 @@ export default function AdminLiveSections() {
       const response = await liveSectionsAPI.getLiveSections(params);
       const data = response.data;
       setLiveSections(data.results || data);
-      setPagination({ page: data.page || page, totalPages: data.total_pages || 1 });
+      setPagination({ page: data.page || page, totalPages: data.pagination?.total_pages || 1 });
     } catch (err) {
       console.error('Error:', err);
     } finally {

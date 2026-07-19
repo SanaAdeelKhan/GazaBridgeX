@@ -137,7 +137,7 @@ export default function AdminCourses() {
       setCourses(data.results || data);
       setPagination({
         page: data.page || page,
-        totalPages: data.total_pages || 1,
+        totalPages: data.pagination?.total_pages || 1,
       });
     } catch (err) {
       console.error('Error fetching courses:', err);

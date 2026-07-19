@@ -126,7 +126,7 @@ export default function AdminResources() {
       setResources(data.results || data);
       setPagination({
         page: data.page || page,
-        totalPages: data.total_pages || 1,
+        totalPages: data.pagination?.total_pages || 1,
       });
     } catch (err) {
       setError('Failed to load resources');
