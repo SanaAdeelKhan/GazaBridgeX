@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { useChatNav } from '../context/ChatNavContext';
 import { chatAPI } from '../api/chat';
 import colors, { tw } from '../theme/colors';
 import ChatWindow from '../components/chat/ChatWindow';
@@ -33,6 +34,19 @@ export default function Chat() {
   const [activeTab, setActiveTab]         = useState('all'); // 'all' | 'dms' | 'groups'
   const [loadingList, setLoadingList]     = useState(true);
   const [sidebarOpen, setSidebarOpen]     = useState(true); // mobile toggle
+  const { setBackHandler } = useChatNav() || {};
+
+  // Wire the shared header's "Back" button to return to the conversation
+  // list (instead of navigating to Dashboard) whenever a chat is open on mobile.
+  useEffect(() => {
+    if (!setBackHandler) return;
+    if (!sidebarOpen) {
+      setBackHandler(() => () => setSidebarOpen(true));
+    } else {
+      setBackHandler(null);
+    }
+    return () => setBackHandler(null);
+  }, [sidebarOpen, setBackHandler]);
   const [showCreateGroup, setShowCreateGroup]     = useState(false);
   const [showStartConv,   setShowStartConv]       = useState(false);
   const [searchQuery, setSearchQuery]             = useState('');
@@ -170,7 +184,7 @@ export default function Chat() {
       <aside
         className={`
           flex flex-col border-r shadow-sm transition-all duration-300
-          ${sidebarOpen ? 'w-80 min-w-[20rem]' : 'w-0 overflow-hidden min-w-0'}
+          ${sidebarOpen ? 'w-full' : 'w-0 overflow-hidden min-w-0'}
           md:w-80 md:min-w-[20rem] md:overflow-visible
         `}
         style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
@@ -273,7 +287,7 @@ export default function Chat() {
       </aside>
 
       {/* ── Main Panel ────────────────────────────────────────────────────── */}
-      <main className="flex-1 flex flex-col min-w-0 relative">
+      <main className={`flex-1 flex-col min-w-0 relative ${sidebarOpen ? 'hidden md:flex' : 'flex'}`}>
         {/* Mobile: back button */}
         {!sidebarOpen && (
           <button

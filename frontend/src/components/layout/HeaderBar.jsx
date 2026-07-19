@@ -4,12 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
+import { useChatNav } from '../../context/ChatNavContext';
 import colors from '../../theme/colors';
 
 export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
+  const chatNav = useChatNav();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileRef = useRef(null);
 
@@ -63,15 +65,27 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
               </svg>
             </button>
           )}
-          <Link
-            to={isAdmin ? '/admin' : '/dashboard'}
-            className="px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
-            style={{ color: colors.navText }}
-            onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
-            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
-          >
-            Back
-          </Link>
+          {chatNav?.backHandler ? (
+            <button
+              onClick={chatNav.backHandler}
+              className="px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+              style={{ color: colors.navText }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              Back
+            </button>
+          ) : (
+            <Link
+              to={isAdmin ? '/admin' : '/dashboard'}
+              className="px-3 py-2 rounded-lg text-sm font-semibold transition-colors"
+              style={{ color: colors.navText }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              Back
+            </Link>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

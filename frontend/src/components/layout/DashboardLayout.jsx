@@ -7,6 +7,7 @@ import Sidebar from './Sidebar';
 import AdminSidebar from './AdminSidebar';
 import HeaderBar from './HeaderBar';
 import ProfileFieldsPrompt from '../ProfileFieldsPrompt';
+import { ChatNavProvider } from '../../context/ChatNavContext';
 import colors from '../../theme/colors';
 
 export default function DashboardLayout() {
@@ -23,11 +24,13 @@ export default function DashboardLayout() {
 
   if (isChatPage) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: colors.pageBg }}>
-        <HeaderBar />
-        <Outlet />
-        <ProfileFieldsPrompt />
-      </div>
+      <ChatNavProvider>
+        <div className="min-h-screen" style={{ backgroundColor: colors.pageBg }}>
+          <HeaderBar />
+          <Outlet />
+          <ProfileFieldsPrompt />
+        </div>
+      </ChatNavProvider>
     );
   }
 
