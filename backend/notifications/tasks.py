@@ -40,6 +40,7 @@ def send_notification_email(notification_id: int) -> None:
         "notification_type": notification.get_type_display(),
         "created_at": notification.created_at.strftime("%B %d, %Y at %I:%M %p"),
         "support_email": settings.BREVO_SENDER_EMAIL,
+        "notification_url": f"{settings.FRONTEND_BASE_URL.rstrip('/')}/notifications",
     }
 
     html_body = render_to_string("notifications/notification_email.html", context)
