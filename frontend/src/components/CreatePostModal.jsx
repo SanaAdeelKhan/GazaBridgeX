@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { postsAPI } from '../api/posts';
+import { useAuth } from '../context/AuthContext';
 import colors, { tw } from '../theme/colors';
 
 const CATEGORIES = [
@@ -23,6 +24,7 @@ const AVAILABILITY = [
 ];
 
 export default function CreatePostModal({ onClose, onCreated }) {
+  const { refreshUser } = useAuth();
   const [postType, setPostType] = useState('offer'); // 'offer' or 'request'
   const [formData, setFormData] = useState({
     offer_name: '',
@@ -60,6 +62,8 @@ export default function CreatePostModal({ onClose, onCreated }) {
         const { offer_name, availability, ...requestData } = formData;
         await postsAPI.createRequest(requestData);
       }
+      // Refresh user so a newly auto-granted role (volunteer/seeker) shows immediately
+      await refreshUser();
       onCreated();
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to create post');

@@ -1,6 +1,7 @@
 // frontend/src/context/AuthContext.jsx - Updated initializeAuth
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authAPI } from '../api/auth';
+import { usersAPI } from '../api/users';
 
 const AuthContext = createContext(null);
 
@@ -149,6 +150,19 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const response = await usersAPI.getCurrentUser();
+      const userData = response.data;
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+      return userData;
+    } catch (err) {
+      console.error('Error refreshing user:', err);
+      return null;
+    }
+  }, []);
+
   const value = {
     user,
     loading,
@@ -158,6 +172,7 @@ export function AuthProvider({ children }) {
     googleLogin,
     googleRegister,
     clearAuth,
+    refreshUser,
   };
 
   return (
