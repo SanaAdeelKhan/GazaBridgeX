@@ -47,7 +47,7 @@ export function NotificationProvider({ children }) {
       });
 
       const newNotifications = response.data.results || response.data;
-      const totalPages = response.data.total_pages || 1;
+      const totalPages = response.data.pagination?.total_pages || 1;
 
       if (append) {
         setNotifications(prev => [...prev, ...newNotifications]);
