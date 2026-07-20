@@ -175,7 +175,7 @@ function AppRoutes() {
       {showPublicLayout && <Navbar />}
 
       <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
+        <Routes location={location}>
           {/* Auth Routes */}
           <Route path="/login" element={
             <PublicOnlyRoute><PageTransition><Login /></PageTransition></PublicOnlyRoute>

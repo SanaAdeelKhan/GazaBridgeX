@@ -59,7 +59,11 @@ export default function DashboardLayout() {
       <div className="flex-1 flex flex-col min-w-0">
         <HeaderBar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} sidebarOpen={sidebarOpen} />
         <main className="flex-1 p-6">
-          <Outlet />
+          <AnimatePresence mode="wait">
+            <div key={location.pathname}>
+              <Outlet />
+            </div>
+          </AnimatePresence>
         </main>
       </div>
       <ProfileFieldsPrompt />
