@@ -176,9 +176,10 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
               {notification.content}
             </p>
 
-            {notification.sender_email && (
+            {notification.sender_name && (
               <p className="text-xs mt-2" style={{ color: colors.muted }}>
-                From: {notification.sender_email}
+                From: {notification.sender_name}
+                {notification.sender_role && ` (${notification.sender_role})`}
               </p>
             )}
           </div>
@@ -232,6 +233,11 @@ export default function Notifications() {
   const [filter, setFilter] = useState('all'); // all, unread, urgent
   const [actionLoading, setActionLoading] = useState(false);
   const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+
+  // Auto-clear the unread badge as soon as the notifications page is viewed
+  useEffect(() => {
+    markAllAsRead();
+  }, []);
 
   const filteredNotifications = notifications.filter(n => {
     if (filter === 'unread') return !n.is_read;
