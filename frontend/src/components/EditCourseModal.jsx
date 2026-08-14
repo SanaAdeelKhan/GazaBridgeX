@@ -40,6 +40,7 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
     title: course.title || '',
     category: course.category || 'tech_coding_ai',
     description: course.description || '',
+    link: course.link || '',
     skill_level: course.skill_level || 'beginner',
     language: course.language || 'en',
     sessions_per_week: course.sessions_per_week || 2,
@@ -143,6 +144,18 @@ export default function EditCourseModal({ course, onClose, onUpdated }) {
                 onChange={handleChange}
                 rows={3}
                 className={`${tw.goldInput} resize-none`}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Link</label>
+              <input
+                type="url"
+                name="link"
+                value={formData.link}
+                onChange={handleChange}
+                className={tw.goldInput}
+                placeholder="e.g., https://www.youtube.com/playlist?list=..."
               />
             </div>
 

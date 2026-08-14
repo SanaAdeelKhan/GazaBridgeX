@@ -175,6 +175,22 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
             >
               View Course
             </Link>
+            {course.link && (
+              <a
+                href={course.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg transition-all"
+                style={{ color: colors.muted }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = colors.gold; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = colors.muted; }}
+                title="Open course link"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            )}
             {canDelete && (
               <motion.button
                 whileHover={{ scale: 1.1 }}

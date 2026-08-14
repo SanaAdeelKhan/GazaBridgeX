@@ -23,6 +23,7 @@ class CourseInputSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
     category = serializers.ChoiceField(choices=CourseCategoryChoices.choices)
     description = serializers.CharField()
+    link = serializers.URLField(max_length=500, required=False, allow_blank=True, default="")
     skill_level = serializers.ChoiceField(choices=SkillLevelChoices.choices)
     language = serializers.ChoiceField(choices=LanguageChoices.choices)
     sessions_per_week = serializers.IntegerField(min_value=1)
@@ -48,6 +49,7 @@ class CourseUpdateSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255, required=False)
     category = serializers.ChoiceField(choices=CourseCategoryChoices.choices, required=False)
     description = serializers.CharField(required=False)
+    link = serializers.URLField(max_length=500, required=False, allow_blank=True)
     skill_level = serializers.ChoiceField(choices=SkillLevelChoices.choices, required=False)
     language = serializers.ChoiceField(choices=LanguageChoices.choices, required=False)
     sessions_per_week = serializers.IntegerField(min_value=1, required=False)
@@ -79,7 +81,7 @@ class CourseOutputSerializer(serializers.ModelSerializer):
         model = Course
         fields = [
             "id", "user", "user_email", "user_full_name",
-            "title", "category", "description", "skill_level",
+            "title", "category", "description", "link", "skill_level",
             "language", "sessions_per_week", "session_duration",
             "course_duration_days", "status", "contents_count",
             "created_at", "updated_at"
@@ -103,7 +105,7 @@ class CourseDetailOutputSerializer(serializers.ModelSerializer):
         model = Course
         fields = [
             "id", "user", "user_email", "user_full_name",
-            "title", "category", "description", "skill_level",
+            "title", "category", "description", "link", "skill_level",
             "language", "sessions_per_week", "session_duration",
             "course_duration_days", "status", "contents",
             "created_at", "updated_at"

@@ -59,6 +59,7 @@ class CourseCreateView(generics.CreateAPIView):
                 category=data["category"],
                 description=data["description"],
                 skill_level=data["skill_level"],
+                link=data.get("link", ""),
                 language=data["language"],
                 sessions_per_week=data["sessions_per_week"],
                 session_duration=data["session_duration"],

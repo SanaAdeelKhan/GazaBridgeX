@@ -40,6 +40,7 @@ export default function CreateCourseModal({ onClose, onCreated }) {
     title: '',
     category: 'tech_coding_ai',
     description: '',
+    link: '',
     skill_level: 'beginner',
     language: 'en',
     sessions_per_week: 2,
@@ -145,6 +146,18 @@ export default function CreateCourseModal({ onClose, onCreated }) {
                 rows={3}
                 className={`${tw.goldInput} resize-none`}
                 placeholder="Describe your course..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: colors.body }}>Link (optional)</label>
+              <input
+                type="url"
+                name="link"
+                value={formData.link}
+                onChange={handleChange}
+                className={tw.goldInput}
+                placeholder="e.g., https://www.youtube.com/playlist?list=..."
               />
             </div>
 

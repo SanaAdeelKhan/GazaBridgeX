@@ -68,6 +68,7 @@ class Course(models.Model):
     title = models.CharField(max_length=255, help_text="Title of the course.")
     category = models.CharField(max_length=50, choices=CourseCategoryChoices.choices, help_text="Category of the course.")
     description = models.TextField(help_text="Detailed description of the course.")
+    link = models.URLField(max_length=500, blank=True, default="", help_text="Optional URL link to the course (e.g. YouTube playlist).")
     skill_level = models.CharField(max_length=20, choices=SkillLevelChoices.choices, help_text="Required skill level for the course.")
     language = models.CharField(max_length=10, choices=LanguageChoices.choices, help_text="Language of instruction.")
     sessions_per_week = models.PositiveIntegerField(help_text="Number of sessions per week.")
