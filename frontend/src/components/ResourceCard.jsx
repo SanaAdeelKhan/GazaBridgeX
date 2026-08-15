@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import colors from '../theme/colors';
+import RichText from './RichText';
 
 const CATEGORY_ICONS = {
   job: '💼',
@@ -70,9 +71,9 @@ export default function ResourceCard({ resource, index, canManage, onEdit, onDel
 
         {/* Description */}
         <div className="mb-4">
-          <p className="text-sm leading-relaxed" style={{ color: colors.body }}>
-            {isExpanded ? resource.description : truncatedDescription}
-          </p>
+          <div className="text-sm leading-relaxed" style={{ color: colors.body }}>
+            <RichText text={isExpanded ? resource.description : truncatedDescription} fullMarkdown />
+          </div>
           {resource.description.length > 150 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
