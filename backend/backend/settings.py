@@ -106,7 +106,9 @@ DATABASES = {
         'USER': os.getenv("DB_USER"),   
         'PASSWORD': os.getenv("PASSWORD"),    
         'HOST': os.getenv("HOST"),      
-        'PORT': os.getenv('DB_PORT', '5432')       
+        'PORT': os.getenv('DB_PORT', '5432'),       
+        'CONN_MAX_AGE': 120,
+        'CONN_HEALTH_CHECKS': True
     }
 }
 
