@@ -23,41 +23,21 @@ def get_user_stats() -> Dict[str, int]:
 
     Superusers excluded from all counts.
     """
-    base_qs = User.objects.filter(is_superuser=False)
+    inactive = User.objects.filter(is_superuser=False, is_active=False).count()
+    admins = User.objects.filter(is_superuser=False, is_active=True, is_staff=True).count()
+    managers = User.objects.filter(is_superuser=False, is_active=True, is_staff=False, roles__name="manager").distinct().count()
 
-    volunteers = 0
-    seekers = 0
-    both = 0
-    managers = 0
-    admins = 0
-    inactive = 0
+    volunteers = User.objects.filter(
+        is_superuser=False, is_active=True, is_staff=False, roles__name="volunteer"
+    ).exclude(roles__name="seeker").exclude(roles__name="manager").distinct().count()
 
-    for user in base_qs.prefetch_related("roles"):
-        # Inactive first — only in inactive
-        if not user.is_active:
-            inactive += 1
-            continue
+    seekers = User.objects.filter(
+        is_superuser=False, is_active=True, is_staff=False, roles__name="seeker"
+    ).exclude(roles__name="volunteer").exclude(roles__name="manager").distinct().count()
 
-        # Admin (is_staff) — only in admin
-        if user.is_staff:
-            admins += 1
-            continue
-
-        # Manager role — only in manager
-        if user.is_manager:
-            managers += 1
-            continue
-
-        # Volunteer/Seeker/Both
-        is_volunteer = user.is_volunteer
-        is_seeker = user.is_seeker
-
-        if is_volunteer and is_seeker:
-            both += 1
-        elif is_volunteer:
-            volunteers += 1
-        elif is_seeker:
-            seekers += 1
+    both = User.objects.filter(
+        is_superuser=False, is_active=True, is_staff=False, roles__name="volunteer"
+    ).filter(roles__name="seeker").exclude(roles__name="manager").distinct().count()
 
     total = volunteers + seekers + both + managers + admins + inactive
 
