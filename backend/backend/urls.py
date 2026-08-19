@@ -31,4 +31,5 @@ urlpatterns = [
     path("notifications/", include("notifications.urls", namespace="notifications")),
     path("chat/", include("chat.urls", namespace="chat")),
     path("matches/", include("matches.urls", namespace="matches")),
+    path("feedback/", include("feedback.urls", namespace="feedback")),
 ]
