@@ -98,19 +98,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('ENGINE'),
-        'NAME': os.getenv("DB_NAME"),    
-        'USER': os.getenv("DB_USER"),   
-        'PASSWORD': os.getenv("PASSWORD"),    
-        'HOST': os.getenv("HOST"),      
-        'PORT': os.getenv('DB_PORT', '5432'),       
-        'CONN_MAX_AGE': 120,
-        'CONN_HEALTH_CHECKS': True
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': os.getenv('ENGINE'),
+#         'NAME': os.getenv("DB_NAME"),    
+#         'USER': os.getenv("DB_USER"),   
+#         'PASSWORD': os.getenv("PASSWORD"),    
+#         'HOST': os.getenv("HOST"),      
+#         'PORT': os.getenv('DB_PORT', '5432'),       
+#         'CONN_MAX_AGE': 120,
+#         'CONN_HEALTH_CHECKS': True
+#     }
+# }
 
 
 
