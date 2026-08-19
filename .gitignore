@@ -196,3 +196,6 @@ sketch
 *.env*
 backend/.env
 frontend/.env
+# .gitignore mein add karo
+.env
+.env.*
