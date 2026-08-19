@@ -11,6 +11,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(BASE_DIR / '.env')
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 backend_production_url = os.getenv('BACKEND_PRODUCTION_URL')
