@@ -1,12 +1,92 @@
 """
 Admin Configuration
 ===================
-Register Feedback and RatingSummary models for Django admin.
+Register Feedback, FeedbackReply, and RatingSummary models for Django admin.
 """
 
 from django.contrib import admin
 
-from feedback.models import Feedback, RatingSummary, FeedbackTypeChoices
+from feedback.models import Feedback, FeedbackReply, RatingSummary, FeedbackTypeChoices
+
+
+# ---------------------------------------------------------------------------
+# Feedback Reply Admin
+# ---------------------------------------------------------------------------
+
+@admin.register(FeedbackReply)
+class FeedbackReplyAdmin(admin.ModelAdmin):
+    """Admin interface for FeedbackReply model."""
+    
+    list_display = [
+        "id",
+        "feedback",
+        "replied_by",
+        "reply_text_preview",
+        "is_public",
+        "created_at",
+    ]
+    
+    list_filter = [
+        "is_public",
+        "created_at",
+    ]
+    
+    search_fields = [
+        "reply_text",
+        "replied_by__email",
+        "feedback__feedback_text",
+    ]
+    
+    readonly_fields = [
+        "created_at",
+        "updated_at",
+    ]
+    
+    fieldsets = (
+        ("Reply Information", {
+            "fields": (
+                "feedback",
+                "replied_by",
+                "reply_text",
+                "is_public",
+            )
+        }),
+        ("Timestamps", {
+            "fields": (
+                "created_at",
+                "updated_at",
+            ),
+            "classes": ("collapse",),
+        }),
+    )
+    
+    def reply_text_preview(self, obj):
+        """Show truncated reply text in list display."""
+        if len(obj.reply_text) > 50:
+            return f"{obj.reply_text[:50]}..."
+        return obj.reply_text
+    
+    reply_text_preview.short_description = "Reply"
+    
+    def get_queryset(self, request):
+        """Optimize queryset for admin list display."""
+        return (
+            super()
+            .get_queryset(request)
+            .select_related("replied_by", "feedback")
+        )
+    
+    def has_add_permission(self, request):
+        """Allow admins/superusers to add replies from admin."""
+        return request.user.is_staff or request.user.is_superuser
+    
+    def has_change_permission(self, request, obj=None):
+        """Allow admins/superusers to edit replies."""
+        return request.user.is_staff or request.user.is_superuser
+    
+    def has_delete_permission(self, request, obj=None):
+        """Allow admins/superusers to delete replies."""
+        return request.user.is_staff or request.user.is_superuser
 
 
 # ---------------------------------------------------------------------------
@@ -83,7 +163,7 @@ class FeedbackAdmin(admin.ModelAdmin):
             super()
             .get_queryset(request)
             .select_related("user", "content_type")
-            .prefetch_related("user__roles")
+            .prefetch_related("user__roles", "replies")
         )
     
     def has_add_permission(self, request):

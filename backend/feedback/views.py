@@ -19,19 +19,30 @@ from feedback.serializers import (
     FeedbackListQuerySerializer,
     RatingSummaryQuerySerializer,
     RatingSummaryOutputSerializer,
+    ReplyCreateInputSerializer,
+    ReplyUpdateInputSerializer,
+    ReplyOutputSerializer,
 )
 from feedback.services import (
     create_feedback,
     update_feedback,
     delete_feedback,
+    create_reply,
+    update_reply,
+    delete_reply,
 )
 from feedback.selectors import (
     get_feedback_by_id,
     get_feedback_with_filters,
     get_rating_summary,
     get_all_rating_summaries,
+    get_reply_by_id,
 )
-from feedback.permissions import IsOwnerOrReadOnly
+from feedback.permissions import (
+    IsOwnerOrReadOnly,
+    CanCreateReply,
+    CanModifyReply,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -52,10 +63,6 @@ class FeedbackListCreateView(generics.ListCreateAPIView):
         if self.request.method == 'POST':
             return FeedbackCreateInputSerializer
         return FeedbackOutputSerializer
-    
-    def get_queryset(self):
-        """Return public feedback only."""
-        return get_feedback_by_id.__self__ if False else None  # Placeholder
     
     def list(self, request, *args, **kwargs):
         query_serializer = FeedbackListQuerySerializer(data=request.query_params)
@@ -211,6 +218,186 @@ class FeedbackDetailView(generics.RetrieveUpdateDestroyAPIView):
         
         return Response(
             {"detail": "Feedback deleted successfully."},
+            status=status.HTTP_204_NO_CONTENT,
+        )
+
+
+# ---------------------------------------------------------------------------
+# Reply Views
+# ---------------------------------------------------------------------------
+
+class ReplyListCreateView(generics.ListCreateAPIView):
+    """
+    GET /feedback/{feedback_id}/replies/ - List public replies
+    POST /feedback/{feedback_id}/replies/ - Create reply (owner/superuser only)
+    """
+    
+    permission_classes = [CanCreateReply]
+    
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ReplyCreateInputSerializer
+        return ReplyOutputSerializer
+    
+    def get_feedback(self, feedback_id):
+        feedback = get_feedback_by_id(feedback_id)
+        if not feedback:
+            return None
+        
+        # Check object permissions
+        self.check_object_permissions(self.request, feedback)
+        
+        return feedback
+    
+    def list(self, request, feedback_id=None):
+        feedback = self.get_feedback(feedback_id)
+        if not feedback:
+            return Response(
+                {"detail": "Feedback not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        replies = feedback.replies.filter(is_public=True)
+        serializer = ReplyOutputSerializer(replies, many=True)
+        
+        return Response({"replies": serializer.data})
+    
+    def create(self, request, feedback_id=None):
+        feedback = self.get_feedback(feedback_id)
+        if not feedback:
+            return Response(
+                {"detail": "Feedback not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        input_serializer = self.get_serializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        data = input_serializer.validated_data
+        
+        try:
+            reply = create_reply(
+                feedback_id=feedback.pk,
+                replied_by=request.user,
+                reply_text=data["reply_text"],
+                is_public=data.get("is_public", True),
+            )
+        except (ValueError, PermissionError) as exc:
+            status_code = (
+                status.HTTP_403_FORBIDDEN
+                if isinstance(exc, PermissionError)
+                else status.HTTP_400_BAD_REQUEST
+            )
+            return Response(
+                {"detail": str(exc)},
+                status=status_code,
+            )
+        except Exception:
+            logger.exception("Unexpected error during reply creation.")
+            return Response(
+                {"detail": "Reply creation failed due to a server error."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        
+        output = ReplyOutputSerializer(reply).data
+        return Response(
+            {
+                **output,
+                "message": "Reply added successfully.",
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class ReplyDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET /feedback/{feedback_id}/replies/{reply_id}/ - Get reply detail (public)
+    PUT/PATCH /feedback/{feedback_id}/replies/{reply_id}/ - Update reply
+    DELETE /feedback/{feedback_id}/replies/{reply_id}/ - Delete reply
+    """
+    
+    permission_classes = [CanModifyReply]
+    
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return ReplyUpdateInputSerializer
+        return ReplyOutputSerializer
+    
+    def get_object(self):
+        reply_id = self.kwargs.get('reply_id')
+        reply = get_reply_by_id(reply_id)
+        
+        if not reply:
+            return None
+        
+        # Check object permissions
+        self.check_object_permissions(self.request, reply)
+        
+        return reply
+    
+    def retrieve(self, request, feedback_id=None, reply_id=None):
+        instance = self.get_object()
+        if not instance:
+            return Response(
+                {"detail": "Reply not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        serializer = ReplyOutputSerializer(instance)
+        return Response(serializer.data)
+    
+    def update(self, request, feedback_id=None, reply_id=None):
+        instance = self.get_object()
+        if not instance:
+            return Response(
+                {"detail": "Reply not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        if instance.replied_by != request.user and not request.user.is_superuser:
+            raise PermissionDenied("You don't have permission to update this reply.")
+        
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        try:
+            updated_reply = update_reply(
+                reply_id=instance.pk,
+                user=request.user,
+                update_data=serializer.validated_data,
+            )
+        except (ValueError, PermissionError) as exc:
+            return Response(
+                {"detail": str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        output_serializer = ReplyOutputSerializer(updated_reply)
+        return Response(output_serializer.data)
+    
+    def delete(self, request, feedback_id=None, reply_id=None):
+        instance = self.get_object()
+        if not instance:
+            return Response(
+                {"detail": "Reply not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        if instance.replied_by != request.user and not request.user.is_superuser:
+            raise PermissionDenied("You don't have permission to delete this reply.")
+        
+        try:
+            delete_reply(
+                reply_id=instance.pk,
+                user=request.user,
+            )
+        except (ValueError, PermissionError) as exc:
+            return Response(
+                {"detail": str(exc)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        return Response(
+            {"detail": "Reply deleted successfully."},
             status=status.HTTP_204_NO_CONTENT,
         )
 

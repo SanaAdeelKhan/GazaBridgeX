@@ -7,7 +7,75 @@ No business logic or DB writes live here.
 
 from rest_framework import serializers
 
-from feedback.models import Feedback, RatingSummary
+from feedback.models import Feedback, FeedbackReply, RatingSummary
+
+
+# ---------------------------------------------------------------------------
+# Feedback Reply Serializers
+# ---------------------------------------------------------------------------
+
+class ReplyCreateInputSerializer(serializers.Serializer):
+    """Validates POST /feedback/{id}/reply/ payload."""
+    
+    reply_text = serializers.CharField(min_length=1, max_length=1000)
+    is_public = serializers.BooleanField(default=True)
+
+
+class ReplyUpdateInputSerializer(serializers.Serializer):
+    """Validates PUT/PATCH /feedback/{id}/reply/{reply_id}/ payload."""
+    
+    reply_text = serializers.CharField(min_length=1, max_length=1000, required=False)
+    is_public = serializers.BooleanField(required=False)
+    
+    def validate(self, data):
+        """Ensure at least one field is provided for update."""
+        if not data:
+            raise serializers.ValidationError(
+                "At least one field must be provided for update."
+            )
+        return data
+
+
+class ReplyOutputSerializer(serializers.ModelSerializer):
+    """Output shape for reply responses."""
+    
+    replied_by_name = serializers.SerializerMethodField()
+    replied_by_role = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = FeedbackReply
+        fields = [
+            "id",
+            "replied_by",
+            "replied_by_name",
+            "replied_by_role",
+            "reply_text",
+            "is_public",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = fields
+    
+    def get_replied_by_name(self, obj) -> str:
+        """Return full name if user exists, else 'Anonymous'."""
+        if obj.replied_by:
+            return f"{obj.replied_by.first_name} {obj.replied_by.last_name}".strip()
+        return "Anonymous"
+    
+    def get_replied_by_role(self, obj) -> str:
+        """Return user's role names for display."""
+        if not obj.replied_by:
+            return ""
+        
+        roles = obj.replied_by.roles.all()
+        if not roles:
+            if obj.replied_by.is_superuser:
+                return "Superuser"
+            if obj.replied_by.is_staff:
+                return "Admin"
+            return ""
+        
+        return ", ".join(role.name.title() for role in roles)
 
 
 # ---------------------------------------------------------------------------
@@ -74,6 +142,7 @@ class FeedbackOutputSerializer(serializers.ModelSerializer):
     
     user_name = serializers.SerializerMethodField()
     user_role = serializers.SerializerMethodField()
+    replies = serializers.SerializerMethodField()
     
     class Meta:
         model = Feedback
@@ -87,6 +156,7 @@ class FeedbackOutputSerializer(serializers.ModelSerializer):
             "rating",
             "feedback_text",
             "is_public",
+            "replies",
             "created_at",
             "updated_at",
         ]
@@ -108,6 +178,11 @@ class FeedbackOutputSerializer(serializers.ModelSerializer):
             return ""
         
         return ", ".join(role.name.title() for role in roles)
+    
+    def get_replies(self, obj) -> list:
+        """Return public replies for this feedback."""
+        replies = obj.replies.filter(is_public=True)
+        return ReplyOutputSerializer(replies, many=True).data
 
 
 class FeedbackListQuerySerializer(serializers.Serializer):

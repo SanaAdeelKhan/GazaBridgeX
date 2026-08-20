@@ -14,26 +14,8 @@ from typing import Optional, Dict, Any, List
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import QuerySet, Q
 
-from feedback.models import Feedback, RatingSummary, FeedbackTypeChoices
+from feedback.models import Feedback, FeedbackReply, RatingSummary, FeedbackTypeChoices
 from cache_utils import get_cached_list, set_cached_list, get_cache_version
-
-
-# ---------------------------------------------------------------------------
-# Cache helpers
-# ---------------------------------------------------------------------------
-
-def invalidate_feedback_cache(
-    feedback_type: Optional[str] = None,
-    object_id: Optional[int] = None,
-) -> None:
-    """
-    Invalidate feedback list caches.
-    If feedback_type/object_id provided, only invalidate that specific cache.
-    Otherwise invalidate all feedback list caches (e.g., platform feedback).
-    """
-    # We use version-based invalidation for simplicity
-    # This is a no-op placeholder - actual invalidation happens in services
-    pass
 
 
 # ---------------------------------------------------------------------------
@@ -41,12 +23,28 @@ def invalidate_feedback_cache(
 # ---------------------------------------------------------------------------
 
 def get_feedback_by_id(feedback_id: int) -> Optional[Feedback]:
-    """Get feedback by ID with user and roles prefetched."""
+    """Get feedback by ID with user, roles, and replies prefetched."""
     return (
         Feedback.objects
         .select_related("user", "content_type")
-        .prefetch_related("user__roles")
+        .prefetch_related(
+            "user__roles",
+            "replies",
+            "replies__replied_by",
+            "replies__replied_by__roles",
+        )
         .filter(pk=feedback_id)
+        .first()
+    )
+
+
+def get_reply_by_id(reply_id: int) -> Optional[FeedbackReply]:
+    """Get reply by ID with user and roles prefetched."""
+    return (
+        FeedbackReply.objects
+        .select_related("replied_by", "feedback")
+        .prefetch_related("replied_by__roles")
+        .filter(pk=reply_id)
         .first()
     )
 
@@ -83,7 +81,12 @@ def get_feedback_with_filters(
     queryset = (
         Feedback.objects
         .select_related("user", "content_type")
-        .prefetch_related("user__roles")
+        .prefetch_related(
+            "user__roles",
+            "replies",
+            "replies__replied_by",
+            "replies__replied_by__roles",
+        )
     )
     
     if only_public:

@@ -109,6 +109,66 @@ class Feedback(models.Model):
     @property
     def is_platform_feedback(self) -> bool:
         return self.feedback_type == FeedbackTypeChoices.PLATFORM
+    
+    def get_owner(self):
+        """Get the owner of the target object (for course/live_section feedback)."""
+        if self.content_object:
+            return getattr(self.content_object, 'user', None)
+        return None
+
+
+# ---------------------------------------------------------------------------
+# Feedback Reply Model
+# ---------------------------------------------------------------------------
+
+class FeedbackReply(models.Model):
+    """
+    Reply to feedback.
+    
+    - Course/LiveSection feedback: Owner of the course/live_section can reply.
+    - Platform feedback: Superuser can reply.
+    - Multiple replies allowed per feedback.
+    """
+    
+    feedback = models.ForeignKey(
+        Feedback,
+        on_delete=models.CASCADE,
+        related_name="replies",
+        help_text="The feedback this reply belongs to."
+    )
+    
+    replied_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="feedback_replies",
+        help_text="User who wrote this reply."
+    )
+    
+    reply_text = models.TextField(
+        help_text="The reply content."
+    )
+    
+    is_public = models.BooleanField(
+        default=True,
+        help_text="Whether this reply should be publicly visible."
+    )
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ["created_at"]
+        verbose_name = "Feedback Reply"
+        verbose_name_plural = "Feedback Replies"
+        indexes = [
+            models.Index(fields=["feedback", "created_at"]),
+            models.Index(fields=["replied_by"]),
+        ]
+    
+    def __str__(self) -> str:
+        return f"Reply to {self.feedback.id} by {self.replied_by}"
 
 
 # ---------------------------------------------------------------------------
