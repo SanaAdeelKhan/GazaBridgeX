@@ -14,7 +14,8 @@ export default function FeedbackList({
     showPagination = true,
     compact = false,
     showFilters = false,
-    onFeedbackChanged = null // Add callback for parent refresh
+    onFeedbackChanged = null,
+    itemOwnerId = null // Add owner ID for course/live section feedback
 }) {
     const { user } = useAuth();
     const [feedbacks, setFeedbacks] = useState([]);
@@ -79,10 +80,134 @@ export default function FeedbackList({
         fetchFeedbacks(1);
     }, [feedbackType, objectId, sort, activeRating]);
 
-    // Check if user can edit/delete feedback
+    // Check if user is superuser
+    const isSuperuser = user?.is_superuser ||
+        user?.roles?.includes('superuser') ||
+        user?.roles?.some(r => r === 'superuser' || r?.name === 'superuser');
+
+    // Check if user is the owner of the course/live section
+    const isItemOwner = itemOwnerId && user?.id === itemOwnerId;
+
+    // Check if user can edit/delete feedback (only owner)
     const canModifyFeedback = (feedback) => {
         if (!user) return false;
         return feedback.user === user.id;
+    };
+
+    // Check if user can reply (any authenticated user)
+    const canReply = () => {
+        return !!user;
+    };
+
+    // Get role badge for feedback author
+    const getFeedbackRoleBadge = (feedback) => {
+        const role = feedback.user_role || '';
+
+        if (role === 'Superuser' || feedback.user === user?.id && isSuperuser) {
+            return {
+                icon: '🛡️',
+                label: 'Superuser',
+                style: {
+                    backgroundColor: colors.goldLight,
+                    color: colors.goldHover,
+                    border: `1px solid ${colors.gold}`,
+                }
+            };
+        }
+
+        if (role === 'Manager') {
+            return {
+                icon: '👔',
+                label: 'Manager',
+                style: {
+                    backgroundColor: colors.primaryLight,
+                    color: colors.primary,
+                    border: `1px solid ${colors.primary}`,
+                }
+            };
+        }
+
+        if (role === 'Volunteer, Seeker') {
+            return {
+                icon: '🌟',
+                label: 'Volunteer & Seeker',
+                style: {
+                    backgroundColor: colors.oliveLight,
+                    color: colors.olive,
+                    border: `1px solid ${colors.olive}`,
+                }
+            };
+        }
+
+        if (role === 'Volunteer') {
+            return {
+                icon: '🙌',
+                label: 'Volunteer',
+                style: {
+                    backgroundColor: colors.oliveLight,
+                    color: colors.olive,
+                    border: `1px solid ${colors.olive}`,
+                }
+            };
+        }
+
+        if (role === 'Seeker') {
+            return {
+                icon: '🎯',
+                label: 'Seeker',
+                style: {
+                    backgroundColor: colors.primaryLight,
+                    color: colors.primary,
+                    border: `1px solid ${colors.primary}`,
+                }
+            };
+        }
+
+        return null;
+    };
+
+    // Get role badge for reply author
+    const getReplyRoleBadge = (reply) => {
+        const role = reply.replied_by_role || '';
+
+        if (role === 'Superuser') {
+            return {
+                icon: '🛡️',
+                label: 'Superuser',
+                style: {
+                    backgroundColor: colors.goldLight,
+                    color: colors.goldHover,
+                    border: `1px solid ${colors.gold}`,
+                }
+            };
+        }
+
+        // Check if reply is from item owner (course/live section owner)
+        if (itemOwnerId && reply.replied_by === itemOwnerId) {
+            return {
+                icon: '👑',
+                label: 'Owner',
+                style: {
+                    backgroundColor: colors.goldLight,
+                    color: colors.goldHover,
+                    border: `1px solid ${colors.gold}`,
+                }
+            };
+        }
+
+        if (role === 'Manager') {
+            return {
+                icon: '👔',
+                label: 'Manager',
+                style: {
+                    backgroundColor: colors.primaryLight,
+                    color: colors.primary,
+                    border: `1px solid ${colors.primary}`,
+                }
+            };
+        }
+
+        return null;
     };
 
     // Start editing feedback
@@ -173,21 +298,6 @@ export default function FeedbackList({
         } finally {
             setReplyLoading(false);
         }
-    };
-
-    // Check if user can reply to feedback
-    const canReply = (feedback) => {
-        if (!user) return false;
-
-        // For platform feedback, only superuser can reply
-        if (feedback.feedback_type === 'platform') {
-            return user.is_superuser ||
-                user.roles?.includes('superuser') ||
-                user.roles?.some(r => r === 'superuser' || r?.name === 'superuser');
-        }
-
-        // For course/live_section, check if user is owner
-        return true; // Backend will enforce ownership
     };
 
     const handlePageChange = (newPage) => {
@@ -340,295 +450,319 @@ export default function FeedbackList({
                 </motion.div>
             ) : (
                 <AnimatePresence mode="popLayout">
-                    {feedbacks.map((feedback, index) => (
-                        <motion.div
-                            key={feedback.id}
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ delay: index * 0.05, duration: 0.4 }}
-                            className={`rounded-2xl border shadow-sm hover:shadow-md transition-shadow ${compact ? 'p-5' : 'p-6'
-                                }`}
-                            style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
-                        >
-                            {/* Header */}
-                            <div className="flex items-start justify-between mb-4">
-                                <div className="flex items-center gap-3">
-                                    <motion.div
-                                        whileHover={{ scale: 1.1, rotate: 5 }}
-                                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                                        style={{ backgroundColor: colors.primary }}
-                                    >
-                                        {feedback.user_name?.split(' ').map(n => n[0]).join('') || 'A'}
-                                    </motion.div>
-                                    <div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-semibold text-sm" style={{ color: colors.headingDark }}>
-                                                {feedback.user_name}
-                                            </span>
-                                            {feedback.user_role && (
-                                                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{
-                                                    backgroundColor: colors.goldLight,
-                                                    color: colors.gold
-                                                }}>
-                                                    {feedback.user_role}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div className="text-xs mt-0.5" style={{ color: colors.muted }}>
-                                            {new Date(feedback.created_at).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric',
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
+                    {feedbacks.map((feedback, index) => {
+                        const feedbackRoleBadge = getFeedbackRoleBadge(feedback);
 
-                                <div className="flex items-center gap-2">
-                                    {editingFeedback !== feedback.id ? (
-                                        <>
-                                            <RatingStars value={feedback.rating} size="sm" readOnly />
-                                            <span className="text-sm font-bold" style={{ color: colors.gold }}>
-                                                {feedback.rating}.0
-                                            </span>
-                                        </>
-                                    ) : null}
-                                </div>
-                            </div>
-
-                            {/* Edit mode or display mode */}
-                            {editingFeedback === feedback.id ? (
-                                <div className="space-y-4">
-                                    {/* Edit rating */}
-                                    <div>
-                                        <label className="block text-sm font-semibold mb-2" style={{ color: colors.label }}>
-                                            Update Rating
-                                        </label>
-                                        <RatingStars
-                                            value={editRating}
-                                            onChange={setEditRating}
-                                            size="md"
-                                            showValue
-                                        />
-                                    </div>
-
-                                    {/* Edit text */}
-                                    <div>
-                                        <label className="block text-sm font-semibold mb-2" style={{ color: colors.label }}>
-                                            Update Feedback
-                                        </label>
-                                        <textarea
-                                            value={editText}
-                                            onChange={(e) => setEditText(e.target.value)}
-                                            rows={4}
-                                            className="w-full px-4 py-3 border rounded-xl outline-none transition-all resize-none"
-                                            style={{
-                                                borderColor: colors.inputBorder,
-                                                color: colors.body,
-                                            }}
-                                            onFocus={(e) => (e.target.style.borderColor = colors.inputBorderFocus)}
-                                            onBlur={(e) => (e.target.style.borderColor = colors.inputBorder)}
-                                            maxLength={1000}
-                                        />
-                                        <div className="text-right text-xs mt-1" style={{ color: colors.muted }}>
-                                            {editText.length}/1000
-                                        </div>
-                                    </div>
-
-                                    {/* Edit public toggle */}
+                        return (
+                            <motion.div
+                                key={feedback.id}
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ delay: index * 0.05, duration: 0.4 }}
+                                className={`rounded-2xl border shadow-sm hover:shadow-md transition-shadow ${compact ? 'p-5' : 'p-6'
+                                    }`}
+                                style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
+                            >
+                                {/* Header */}
+                                <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <button
-                                            type="button"
-                                            onClick={() => setEditIsPublic(!editIsPublic)}
-                                            className={`relative w-12 h-6 rounded-full transition-colors duration-300 flex-shrink-0 ${editIsPublic ? 'bg-green-500' : 'bg-gray-300'}`}
-                                        >
-                                            <motion.div
-                                                animate={{ x: editIsPublic ? 24 : 0 }}
-                                                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                                                className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow"
-                                            />
-                                        </button>
-                                        <span className="text-sm" style={{ color: colors.body }}>
-                                            {editIsPublic ? 'Public' : 'Private'}
-                                        </span>
-                                    </div>
-
-                                    {/* Edit error */}
-                                    {editError && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: -5 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className="p-3 rounded-xl text-sm"
-                                            style={{ backgroundColor: colors.errorBg, color: colors.error }}
+                                            whileHover={{ scale: 1.1, rotate: 5 }}
+                                            className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
+                                            style={{
+                                                backgroundColor: feedbackRoleBadge?.icon === '🛡️' ? colors.gold : colors.primary
+                                            }}
                                         >
-                                            {editError}
+                                            {feedback.user_name?.split(' ').map(n => n[0]).join('') || 'A'}
                                         </motion.div>
-                                    )}
-
-                                    {/* Edit actions */}
-                                    <div className="flex gap-2 justify-end">
-                                        <button
-                                            onClick={handleCancelEdit}
-                                            className="px-4 py-2 text-sm font-medium rounded-xl transition-colors"
-                                            style={{ backgroundColor: colors.pageBg, color: colors.body }}
-                                        >
-                                            Cancel
-                                        </button>
-                                        <motion.button
-                                            whileHover={{ scale: 1.05 }}
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={() => handleSaveEdit(feedback.id)}
-                                            disabled={editLoading}
-                                            className="px-4 py-2 text-sm font-semibold text-white rounded-xl transition-all"
-                                            style={{ backgroundColor: colors.gold, opacity: editLoading ? 0.7 : 1 }}
-                                        >
-                                            {editLoading ? 'Saving...' : 'Save Changes'}
-                                        </motion.button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <>
-                                    {/* Feedback text */}
-                                    <p className="text-sm leading-relaxed mb-4" style={{ color: colors.body }}>
-                                        {feedback.feedback_text}
-                                    </p>
-                                </>
-                            )}
-
-                            {/* Replies */}
-                            {feedback.replies?.length > 0 && editingFeedback !== feedback.id && (
-                                <div className="space-y-3 mb-4">
-                                    {feedback.replies.map((reply) => (
-                                        <motion.div
-                                            key={reply.id}
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            className="ml-8 p-4 rounded-xl"
-                                            style={{ backgroundColor: colors.pageBg }}
-                                        >
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold" style={{ backgroundColor: colors.olive }}>
-                                                    {reply.replied_by_name?.split(' ').map(n => n[0]).join('') || 'R'}
-                                                </div>
-                                                <span className="text-xs font-semibold" style={{ color: colors.headingDark }}>
-                                                    {reply.replied_by_name}
+                                        <div>
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <span className="font-semibold text-sm" style={{ color: colors.headingDark }}>
+                                                    {feedback.user_name}
                                                 </span>
-                                                <span className="text-[10px] px-2 py-0.5 rounded-full" style={{
-                                                    backgroundColor: colors.oliveLight,
-                                                    color: colors.olive
-                                                }}>
-                                                    Reply
-                                                </span>
+                                                {feedbackRoleBadge && (
+                                                    <span
+                                                        className="text-[10px] px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1"
+                                                        style={feedbackRoleBadge.style}
+                                                    >
+                                                        <span>{feedbackRoleBadge.icon}</span>
+                                                        {feedbackRoleBadge.label}
+                                                    </span>
+                                                )}
                                             </div>
-                                            <p className="text-xs" style={{ color: colors.body }}>
-                                                {reply.reply_text}
-                                            </p>
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            )}
-
-                            {/* Action buttons */}
-                            {editingFeedback !== feedback.id && (
-                                <div className="flex items-center justify-between">
-                                    {/* Left side - reply button */}
-                                    <div>
-                                        {canReply(feedback) && (
-                                            <button
-                                                onClick={() => setShowReplyInput({ ...showReplyInput, [feedback.id]: !showReplyInput[feedback.id] })}
-                                                className="text-xs font-medium flex items-center gap-1.5 hover:underline transition-all"
-                                                style={{ color: colors.gold }}
-                                            >
-                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                                                </svg>
-                                                {showReplyInput[feedback.id] ? 'Cancel Reply' : 'Reply'}
-                                            </button>
-                                        )}
+                                            <div className="text-xs mt-0.5" style={{ color: colors.muted }}>
+                                                {new Date(feedback.created_at).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                })}
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    {/* Right side - edit/delete buttons for owner */}
-                                    {canModifyFeedback(feedback) && (
-                                        <div className="flex items-center gap-2">
-                                            <motion.button
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() => handleStartEdit(feedback)}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
-                                                style={{
-                                                    backgroundColor: colors.primaryLight,
-                                                    color: colors.primary,
-                                                }}
-                                                title="Edit feedback"
-                                            >
-                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                                Edit
-                                            </motion.button>
-                                            <motion.button
-                                                whileHover={{ scale: 1.05 }}
-                                                whileTap={{ scale: 0.95 }}
-                                                onClick={() => setDeleteModal({ isOpen: true, feedbackId: feedback.id })}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
-                                                style={{
-                                                    backgroundColor: colors.errorBg,
-                                                    color: colors.error,
-                                                }}
-                                                title="Delete feedback"
-                                            >
-                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                Delete
-                                            </motion.button>
-                                        </div>
-                                    )}
+                                    <div className="flex items-center gap-2">
+                                        {editingFeedback !== feedback.id ? (
+                                            <>
+                                                <RatingStars value={feedback.rating} size="sm" readOnly />
+                                                <span className="text-sm font-bold" style={{ color: colors.gold }}>
+                                                    {feedback.rating}.0
+                                                </span>
+                                            </>
+                                        ) : null}
+                                    </div>
                                 </div>
-                            )}
 
-                            {/* Reply input */}
-                            <AnimatePresence>
-                                {showReplyInput[feedback.id] && editingFeedback !== feedback.id && (
-                                    <motion.div
-                                        initial={{ opacity: 0, height: 0 }}
-                                        animate={{ opacity: 1, height: 'auto' }}
-                                        exit={{ opacity: 0, height: 0 }}
-                                        className="overflow-hidden"
-                                    >
-                                        <div className="mt-4 ml-8">
+                                {/* Edit mode or display mode */}
+                                {editingFeedback === feedback.id ? (
+                                    <div className="space-y-4">
+                                        {/* Edit rating */}
+                                        <div>
+                                            <label className="block text-sm font-semibold mb-2" style={{ color: colors.label }}>
+                                                Update Rating
+                                            </label>
+                                            <RatingStars
+                                                value={editRating}
+                                                onChange={setEditRating}
+                                                size="md"
+                                                showValue
+                                            />
+                                        </div>
+
+                                        {/* Edit text */}
+                                        <div>
+                                            <label className="block text-sm font-semibold mb-2" style={{ color: colors.label }}>
+                                                Update Feedback
+                                            </label>
                                             <textarea
-                                                value={replyText[feedback.id] || ''}
-                                                onChange={(e) => setReplyText({ ...replyText, [feedback.id]: e.target.value })}
-                                                rows={3}
-                                                placeholder="Write your reply..."
-                                                className="w-full px-3 py-2 border rounded-xl text-sm outline-none transition-all resize-none"
+                                                value={editText}
+                                                onChange={(e) => setEditText(e.target.value)}
+                                                rows={4}
+                                                className="w-full px-4 py-3 border rounded-xl outline-none transition-all resize-none"
                                                 style={{
                                                     borderColor: colors.inputBorder,
                                                     color: colors.body,
                                                 }}
                                                 onFocus={(e) => (e.target.style.borderColor = colors.inputBorderFocus)}
                                                 onBlur={(e) => (e.target.style.borderColor = colors.inputBorder)}
+                                                maxLength={1000}
                                             />
-                                            <div className="flex justify-end mt-2">
+                                            <div className="text-right text-xs mt-1" style={{ color: colors.muted }}>
+                                                {editText.length}/1000
+                                            </div>
+                                        </div>
+
+                                        {/* Edit public toggle */}
+                                        <div className="flex items-center gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={() => setEditIsPublic(!editIsPublic)}
+                                                className={`relative w-12 h-6 rounded-full transition-colors duration-300 flex-shrink-0 ${editIsPublic ? 'bg-green-500' : 'bg-gray-300'}`}
+                                            >
+                                                <motion.div
+                                                    animate={{ x: editIsPublic ? 24 : 0 }}
+                                                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                                    className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow"
+                                                />
+                                            </button>
+                                            <span className="text-sm" style={{ color: colors.body }}>
+                                                {editIsPublic ? 'Public' : 'Private'}
+                                            </span>
+                                        </div>
+
+                                        {/* Edit error */}
+                                        {editError && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -5 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="p-3 rounded-xl text-sm"
+                                                style={{ backgroundColor: colors.errorBg, color: colors.error }}
+                                            >
+                                                {editError}
+                                            </motion.div>
+                                        )}
+
+                                        {/* Edit actions */}
+                                        <div className="flex gap-2 justify-end">
+                                            <button
+                                                onClick={handleCancelEdit}
+                                                className="px-4 py-2 text-sm font-medium rounded-xl transition-colors"
+                                                style={{ backgroundColor: colors.pageBg, color: colors.body }}
+                                            >
+                                                Cancel
+                                            </button>
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={() => handleSaveEdit(feedback.id)}
+                                                disabled={editLoading}
+                                                className="px-4 py-2 text-sm font-semibold text-white rounded-xl transition-all"
+                                                style={{ backgroundColor: colors.gold, opacity: editLoading ? 0.7 : 1 }}
+                                            >
+                                                {editLoading ? 'Saving...' : 'Save Changes'}
+                                            </motion.button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {/* Feedback text */}
+                                        <p className="text-sm leading-relaxed mb-4" style={{ color: colors.body }}>
+                                            {feedback.feedback_text}
+                                        </p>
+                                    </>
+                                )}
+
+                                {/* Replies */}
+                                {feedback.replies?.length > 0 && editingFeedback !== feedback.id && (
+                                    <div className="space-y-3 mb-4">
+                                        {feedback.replies.map((reply) => {
+                                            const replyRoleBadge = getReplyRoleBadge(reply);
+
+                                            return (
+                                                <motion.div
+                                                    key={reply.id}
+                                                    initial={{ opacity: 0, x: -20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    className="ml-8 p-4 rounded-xl"
+                                                    style={{
+                                                        backgroundColor: replyRoleBadge?.icon === '🛡️' || replyRoleBadge?.icon === '👑'
+                                                            ? colors.goldLight
+                                                            : colors.pageBg
+                                                    }}
+                                                >
+                                                    <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                                        <div
+                                                            className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
+                                                            style={{
+                                                                backgroundColor: replyRoleBadge?.icon === '🛡️' ? colors.gold :
+                                                                    replyRoleBadge?.icon === '👑' ? colors.goldHover : colors.olive
+                                                            }}
+                                                        >
+                                                            {reply.replied_by_name?.split(' ').map(n => n[0]).join('') || 'R'}
+                                                        </div>
+                                                        <span className="text-xs font-semibold" style={{ color: colors.headingDark }}>
+                                                            {reply.replied_by_name}
+                                                        </span>
+                                                        {replyRoleBadge && (
+                                                            <span
+                                                                className="text-[10px] px-2 py-0.5 rounded-full font-medium inline-flex items-center gap-1"
+                                                                style={replyRoleBadge.style}
+                                                            >
+                                                                <span>{replyRoleBadge.icon}</span>
+                                                                {replyRoleBadge.label}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-xs" style={{ color: colors.body }}>
+                                                        {reply.reply_text}
+                                                    </p>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {/* Action buttons */}
+                                {editingFeedback !== feedback.id && (
+                                    <div className="flex items-center justify-between">
+                                        {/* Left side - reply button (any authenticated user) */}
+                                        <div>
+                                            {canReply() && (
+                                                <button
+                                                    onClick={() => setShowReplyInput({ ...showReplyInput, [feedback.id]: !showReplyInput[feedback.id] })}
+                                                    className="text-xs font-medium flex items-center gap-1.5 hover:underline transition-all"
+                                                    style={{ color: colors.gold }}
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                                                    </svg>
+                                                    {showReplyInput[feedback.id] ? 'Cancel Reply' : 'Reply'}
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {/* Right side - edit/delete buttons for owner */}
+                                        {canModifyFeedback(feedback) && (
+                                            <div className="flex items-center gap-2">
                                                 <motion.button
                                                     whileHover={{ scale: 1.05 }}
                                                     whileTap={{ scale: 0.95 }}
-                                                    onClick={() => handleReply(feedback.id)}
-                                                    disabled={replyLoading}
-                                                    className="px-4 py-1.5 text-xs font-semibold text-white rounded-lg"
-                                                    style={{ backgroundColor: colors.gold }}
+                                                    onClick={() => handleStartEdit(feedback)}
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
+                                                    style={{
+                                                        backgroundColor: colors.primaryLight,
+                                                        color: colors.primary,
+                                                    }}
+                                                    title="Edit feedback"
                                                 >
-                                                    {replyLoading ? 'Sending...' : 'Send Reply'}
+                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                    </svg>
+                                                    Edit
+                                                </motion.button>
+                                                <motion.button
+                                                    whileHover={{ scale: 1.05 }}
+                                                    whileTap={{ scale: 0.95 }}
+                                                    onClick={() => setDeleteModal({ isOpen: true, feedbackId: feedback.id })}
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
+                                                    style={{
+                                                        backgroundColor: colors.errorBg,
+                                                        color: colors.error,
+                                                    }}
+                                                    title="Delete feedback"
+                                                >
+                                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                    Delete
                                                 </motion.button>
                                             </div>
-                                        </div>
-                                    </motion.div>
+                                        )}
+                                    </div>
                                 )}
-                            </AnimatePresence>
-                        </motion.div>
-                    ))}
+
+                                {/* Reply input */}
+                                <AnimatePresence>
+                                    {showReplyInput[feedback.id] && editingFeedback !== feedback.id && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="overflow-hidden"
+                                        >
+                                            <div className="mt-4 ml-8">
+                                                <textarea
+                                                    value={replyText[feedback.id] || ''}
+                                                    onChange={(e) => setReplyText({ ...replyText, [feedback.id]: e.target.value })}
+                                                    rows={3}
+                                                    placeholder="Write your reply..."
+                                                    className="w-full px-3 py-2 border rounded-xl text-sm outline-none transition-all resize-none"
+                                                    style={{
+                                                        borderColor: colors.inputBorder,
+                                                        color: colors.body,
+                                                    }}
+                                                    onFocus={(e) => (e.target.style.borderColor = colors.inputBorderFocus)}
+                                                    onBlur={(e) => (e.target.style.borderColor = colors.inputBorder)}
+                                                />
+                                                <div className="flex justify-end mt-2">
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        onClick={() => handleReply(feedback.id)}
+                                                        disabled={replyLoading}
+                                                        className="px-4 py-1.5 text-xs font-semibold text-white rounded-lg"
+                                                        style={{ backgroundColor: colors.gold }}
+                                                    >
+                                                        {replyLoading ? 'Sending...' : 'Send Reply'}
+                                                    </motion.button>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </motion.div>
+                        );
+                    })}
                 </AnimatePresence>
             )}
 

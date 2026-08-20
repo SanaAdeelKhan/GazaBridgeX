@@ -314,6 +314,7 @@ export default function FeedbackDetailPage({
                             objectId={id}
                             page_size={10}
                             showFilters={true}
+                            itemOwnerId={item?.user}
                         />
                     </motion.div>
                 </div>
