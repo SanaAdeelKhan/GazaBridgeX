@@ -138,7 +138,7 @@ export default function FeedbackList({
 
     return (
         <div className="space-y-6">
-            {/* Filters */}
+            {/* Filters - same style as platform feedback */}
             {showFilters && (
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -341,7 +341,7 @@ export default function FeedbackList({
                                 </div>
                             )}
 
-                            {/* Reply button - only for superuser on platform feedback */}
+                            {/* Reply button */}
                             {canReply(feedback) && (
                                 <div className="flex justify-end">
                                     <button
@@ -352,7 +352,7 @@ export default function FeedbackList({
                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                                         </svg>
-                                        {showReplyInput[feedback.id] ? 'Cancel Reply' : 'Reply as Admin'}
+                                        {showReplyInput[feedback.id] ? 'Cancel Reply' : 'Reply'}
                                     </button>
                                 </div>
                             )}
@@ -371,7 +371,7 @@ export default function FeedbackList({
                                                 value={replyText[feedback.id] || ''}
                                                 onChange={(e) => setReplyText({ ...replyText, [feedback.id]: e.target.value })}
                                                 rows={3}
-                                                placeholder="Write your reply as admin..."
+                                                placeholder="Write your reply..."
                                                 className="w-full px-3 py-2 border rounded-xl text-sm outline-none transition-all resize-none"
                                                 style={{
                                                     borderColor: colors.inputBorder,

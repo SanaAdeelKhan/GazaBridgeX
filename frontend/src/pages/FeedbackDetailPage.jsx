@@ -27,8 +27,6 @@ export default function FeedbackDetailPage({
     const [error, setError] = useState(null);
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [activeFilter, setActiveFilter] = useState('all');
-    const [sortBy, setSortBy] = useState('newest');
 
     useEffect(() => {
         fetchItem();
@@ -49,11 +47,6 @@ export default function FeedbackDetailPage({
     };
 
     const handleFeedbackSubmitted = () => {
-        setRefreshKey(prev => prev + 1);
-    };
-
-    const handleFilterChange = (filter) => {
-        setActiveFilter(filter);
         setRefreshKey(prev => prev + 1);
     };
 
@@ -298,67 +291,29 @@ export default function FeedbackDetailPage({
                         </div>
                     </motion.div>
 
-                    {/* Right - feedback list */}
+                    {/* Right - feedback list with filters */}
                     <motion.div
                         initial={{ opacity: 0, x: 50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.4, duration: 0.6 }}
                     >
-                        {/* Filter tabs */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5 }}
-                            className="mb-8"
-                        >
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>
-                                    Student Feedback
-                                </h2>
-                                <span className="text-sm" style={{ color: colors.muted }}>
-                                    Share your experience to help others
-                                </span>
-                            </div>
+                        {/* Header */}
+                        <div className="mb-6">
+                            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>
+                                Student Feedback
+                            </h2>
+                            <p className="text-sm" style={{ color: colors.muted }}>
+                                Share your experience to help others
+                            </p>
+                        </div>
 
-                            {/* Rating filter */}
-                            <div className="flex flex-wrap gap-2">
-                                {[
-                                    { value: 'all', label: 'All Ratings', icon: '📊' },
-                                    { value: '5', label: '5 Stars', icon: '⭐' },
-                                    { value: '4', label: '4 Stars', icon: '⭐' },
-                                    { value: '3', label: '3 Stars', icon: '⭐' },
-                                    { value: '2', label: '2 Stars', icon: '⭐' },
-                                    { value: '1', label: '1 Star', icon: '⭐' },
-                                ].map((filter) => (
-                                    <motion.button
-                                        key={filter.value}
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={() => handleFilterChange(filter.value)}
-                                        className={`px-4 py-2 rounded-full text-xs font-medium transition-all ${activeFilter === filter.value ? 'text-white' : ''
-                                            }`}
-                                        style={activeFilter === filter.value ? {
-                                            backgroundColor: colors.gold,
-                                            boxShadow: `0 4px 12px ${colors.goldGlow}`
-                                        } : {
-                                            backgroundColor: colors.card,
-                                            color: colors.muted,
-                                            border: `1px solid ${colors.cardBorder}`
-                                        }}
-                                    >
-                                        {filter.icon} {filter.label}
-                                    </motion.button>
-                                ))}
-                            </div>
-                        </motion.div>
-
-                        {/* Feedback list with filter */}
+                        {/* Feedback list with consistent filters */}
                         <FeedbackList
-                            key={`${refreshKey}-${activeFilter}`}
+                            key={refreshKey}
                             feedbackType={feedbackType}
                             objectId={id}
-                            rating={activeFilter !== 'all' ? parseInt(activeFilter) : null}
                             page_size={10}
+                            showFilters={true}
                         />
                     </motion.div>
                 </div>

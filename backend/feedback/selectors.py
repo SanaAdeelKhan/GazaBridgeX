@@ -133,6 +133,24 @@ def get_feedback_with_filters(
     return result
 
 
+# def _get_content_type_for_feedback_type(feedback_type: str) -> Optional[ContentType]:
+#     """Map feedback type to ContentType."""
+#     from django.apps import apps
+    
+#     model_map = {
+#         FeedbackTypeChoices.COURSE: "courses.Course",
+#         FeedbackTypeChoices.LIVE_SECTION: "live_sections.LiveSection",
+#     }
+    
+#     model_path = model_map.get(feedback_type)
+#     if not model_path:
+#         return None
+    
+#     app_label, model_name = model_path.split(".")
+#     try:
+#         return ContentType.objects.get(app_label=app_label, model=model_name)
+#     except ContentType.DoesNotExist:
+#         return None
 def _get_content_type_for_feedback_type(feedback_type: str) -> Optional[ContentType]:
     """Map feedback type to ContentType."""
     from django.apps import apps
@@ -146,12 +164,12 @@ def _get_content_type_for_feedback_type(feedback_type: str) -> Optional[ContentT
     if not model_path:
         return None
     
-    app_label, model_name = model_path.split(".")
     try:
-        return ContentType.objects.get(app_label=app_label, model=model_name)
-    except ContentType.DoesNotExist:
+        app_label, model_name = model_path.split(".")
+        model_class = apps.get_model(app_label, model_name)
+        return ContentType.objects.get_for_model(model_class)
+    except (LookupError, ContentType.DoesNotExist):
         return None
-
 
 # ---------------------------------------------------------------------------
 # Rating summary selectors
