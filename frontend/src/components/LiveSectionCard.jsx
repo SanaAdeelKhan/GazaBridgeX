@@ -52,21 +52,41 @@ export default function LiveSectionCard({ liveSection, index, canDelete, onDelet
       className="group relative rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border overflow-hidden"
       style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
     >
-      <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold border" style={statusStyle}>
+      {/* Status Badge - keep at top right */}
+      <div className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full text-xs font-semibold border" style={statusStyle}>
         {isEnded ? 'Ended' : effectiveStatus}
       </div>
 
       <div className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="text-4xl">{CATEGORY_ICONS[liveSection.category] || '📌'}</div>
+        {/* Category Icon - with padding to avoid overlap */}
+        <div className="text-4xl mb-4 pr-24">
+          {CATEGORY_ICONS[liveSection.category] || '📌'}
+        </div>
 
-          {/* Rating Display */}
+        <Link to={`/live-sections/${liveSection.id}`}>
+          <h3
+            className="text-xl font-bold mb-2 transition-colors"
+            style={{ color: colors.body }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = colors.gold)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = colors.body)}
+          >
+            {liveSection.title}
+          </h3>
+        </Link>
+
+        {/* Category and Rating Row */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm" style={{ color: colors.muted }}>
+            {liveSection.category.replace(/_/g, ' ')}
+          </span>
+
+          {/* Rating Display - moved here, below title */}
           {ratingSummary && ratingSummary.total_feedbacks > 0 && (
             <Link to={`/live-sections/${liveSection.id}/feedback`}>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all"
                 style={{
                   backgroundColor: colors.goldLight,
                   border: `1px solid ${colors.gold}`,
@@ -92,16 +112,6 @@ export default function LiveSectionCard({ liveSection, index, canDelete, onDelet
           )}
         </div>
 
-        <Link to={`/live-sections/${liveSection.id}`}>
-          <h3
-            className="text-xl font-bold mb-2 transition-colors"
-            style={{ color: colors.body }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = colors.gold)}
-            onMouseLeave={(e) => (e.currentTarget.style.color = colors.body)}
-          >
-            {liveSection.title}
-          </h3>
-        </Link>
         <div className="mb-4">
           <p className="text-sm leading-relaxed" style={{ color: colors.body }}>{isExpanded ? liveSection.description : truncated}</p>
           {liveSection.description?.length > 120 && (

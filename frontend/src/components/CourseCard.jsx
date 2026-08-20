@@ -77,28 +77,47 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
       className="group relative rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border overflow-hidden"
       style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
     >
-      {/* Status Badge */}
+      {/* Status Badge - keep at top right */}
       <div
-        className="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold border"
+        className="absolute top-4 right-4 z-10 px-3 py-1 rounded-full text-xs font-semibold border"
         style={statusStyle}
       >
         {course.status}
       </div>
 
       <div className="p-6">
-        {/* Category Icon and Rating */}
-        <div className="flex items-start justify-between mb-4">
+        {/* Category Icon and Rating - move rating to not overlap with status */}
+        <div className="flex items-start justify-between mb-4 pr-24">
           <div className="text-4xl">
             {CATEGORY_ICONS[course.category] || '📌'}
           </div>
+        </div>
 
-          {/* Rating Display */}
+        {/* Title */}
+        <Link to={`/courses/${course.id}`}>
+          <h3
+            className="text-xl font-bold mb-2 transition-colors"
+            style={{ color: colors.body }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = colors.gold)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = colors.body)}
+          >
+            {course.title}
+          </h3>
+        </Link>
+
+        {/* Category and Rating Row */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm" style={{ color: colors.muted }}>
+            {CATEGORY_LABELS[course.category] || course.category}
+          </span>
+
+          {/* Rating Display - moved here, below title */}
           {ratingSummary && ratingSummary.total_feedbacks > 0 && (
             <Link to={`/courses/${course.id}/feedback`}>
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all"
                 style={{
                   backgroundColor: colors.goldLight,
                   border: `1px solid ${colors.gold}`,
@@ -122,25 +141,6 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
               </motion.div>
             </Link>
           )}
-        </div>
-
-        {/* Title */}
-        <Link to={`/courses/${course.id}`}>
-          <h3
-            className="text-xl font-bold mb-2 transition-colors"
-            style={{ color: colors.body }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = colors.gold)}
-            onMouseLeave={(e) => (e.currentTarget.style.color = colors.body)}
-          >
-            {course.title}
-          </h3>
-        </Link>
-
-        {/* Category */}
-        <div className="mb-3">
-          <span className="text-sm" style={{ color: colors.muted }}>
-            {CATEGORY_LABELS[course.category] || course.category}
-          </span>
         </div>
 
         {/* Description */}
