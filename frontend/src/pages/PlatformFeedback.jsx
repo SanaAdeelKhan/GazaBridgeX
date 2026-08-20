@@ -1,19 +1,26 @@
 // frontend/src/pages/PlatformFeedback.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import RatingSummaryCard from '../components/RatingSummaryCard';
 import FeedbackList from '../components/FeedbackList';
-import FeedbackModal from '../components/FeedbackModal';
 import colors from '../theme/colors';
 
 export default function PlatformFeedback() {
-    const { user, isAuthenticated } = useAuth();
-    const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+    const { isAuthenticated } = useAuth();
+    const navigate = useNavigate();
     const [refreshKey, setRefreshKey] = useState(0);
 
-    const handleFeedbackSubmitted = () => {
-        setRefreshKey(prev => prev + 1);
+    // Redirect authenticated users to dashboard feedback
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/dashboard/feedback', { replace: true });
+        }
+    }, [isAuthenticated, navigate]);
+
+    const handleRateClick = () => {
+        navigate('/login', { state: { from: '/feedback' } });
     };
 
     return (
@@ -44,7 +51,7 @@ export default function PlatformFeedback() {
                     >
                         <span className="text-2xl">🌟</span>
                         <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: colors.navText }}>
-                            Your Voice Matters
+                            Community Feedback
                         </span>
                     </motion.div>
 
@@ -56,30 +63,29 @@ export default function PlatformFeedback() {
                     </h1>
 
                     <p className="text-lg mb-8 max-w-2xl mx-auto" style={{ color: colors.navText }}>
-                        Help us improve GazaBridge. Share your experience, suggestions, and ideas
-                        to make this platform even better for everyone.
+                        See what our community is saying about GazaBridge. Your feedback helps us
+                        improve and grow together.
                     </p>
 
-                    {/* Show button for all users, but handle auth in modal */}
                     <motion.button
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => setShowFeedbackModal(true)}
+                        onClick={handleRateClick}
                         className="px-8 py-3.5 text-white font-bold rounded-full shadow-lg flex items-center gap-2 mx-auto"
                         style={{ backgroundColor: colors.gold }}
                     >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                        Share Your Feedback
+                        Login to Rate
                     </motion.button>
                 </div>
             </motion.div>
 
-            {/* Content section */}
+            {/* Content section - read only */}
             <div className="max-w-7xl mx-auto px-6 py-12">
                 <div className="grid lg:grid-cols-[350px_1fr] gap-8">
                     {/* Left sidebar - rating summary */}
@@ -93,7 +99,6 @@ export default function PlatformFeedback() {
                             <RatingSummaryCard
                                 key={refreshKey}
                                 feedbackType="platform"
-                                onRate={() => setShowFeedbackModal(true)}
                             />
 
                             {/* Stats cards */}
@@ -136,7 +141,7 @@ export default function PlatformFeedback() {
                     >
                         <div className="mb-6">
                             <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>
-                                Recent Feedback
+                                Community Feedback
                             </h2>
                             <p className="text-sm" style={{ color: colors.muted }}>
                                 See what others are saying about GazaBridge
@@ -147,18 +152,11 @@ export default function PlatformFeedback() {
                             key={refreshKey}
                             feedbackType="platform"
                             page_size={10}
+                            showFilters={true}
                         />
                     </motion.div>
                 </div>
             </div>
-
-            {/* Feedback modal */}
-            <FeedbackModal
-                isOpen={showFeedbackModal}
-                onClose={() => setShowFeedbackModal(false)}
-                feedbackType="platform"
-                onSubmitted={handleFeedbackSubmitted}
-            />
         </div>
     );
 }

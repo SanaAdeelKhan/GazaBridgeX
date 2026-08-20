@@ -1,4 +1,4 @@
-// frontend/src/App.jsx - Complete with fixed showPublicLayout logic
+// frontend/src/App.jsx - Complete with feedback routes
 import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -57,6 +57,7 @@ import Chat from './pages/Chat';
 
 // Feedback Pages
 import PlatformFeedback from './pages/PlatformFeedback';
+import DashboardFeedback from './pages/DashboardFeedback';
 import CourseFeedbackDetail from './pages/CourseFeedbackDetail';
 import LiveSectionFeedbackDetail from './pages/LiveSectionFeedbackDetail';
 
@@ -122,6 +123,19 @@ function DashboardRedirect() {
   return <Navigate to={isAdmin ? '/admin' : '/dashboard'} replace />;
 }
 
+// FeedbackRoute - conditionally renders with or without sidebar
+function FeedbackRoute() {
+  const { isAuthenticated, user } = useAuth();
+
+  // If authenticated, redirect to dashboard feedback with sidebar
+  if (isAuthenticated && user) {
+    return <Navigate to="/dashboard/feedback" replace />;
+  }
+
+  // Public feedback page for non-authenticated users
+  return <PageTransition><PlatformFeedback /></PageTransition>;
+}
+
 // AppRoutes - inside AuthProvider context
 function AppRoutes() {
   const location = useLocation();
@@ -140,7 +154,7 @@ function AppRoutes() {
   // Landing page and informational pages - always show Navbar
   const infoPaths = [
     '/', '/how-it-works', '/services', '/faq', '/about', '/mission',
-    '/blog', '/feedback',  // Added /feedback here
+    '/blog', '/feedback',
   ];
 
   // Check if current path starts with certain patterns
@@ -153,21 +167,20 @@ function AppRoutes() {
     location.pathname.startsWith('/google-register');
 
   const isInfoPath = infoPaths.includes(location.pathname) ||
-    location.pathname.startsWith('/blog/');  // This catches /blog/:slug
+    location.pathname.startsWith('/blog/');
 
   const isLandingPage = location.pathname === '/';
 
-  // FIXED: Show Navbar + Footer for:
+  // Show Navbar + Footer for:
   // 1. Always-public pages (legal docs, verification)
   // 2. Info pages (how-it-works, services, faq, about, mission, blog, feedback)
-  // 3. Landing page (when not authenticated, or always show it)
+  // 3. Landing page
   // 4. Auth pages (when not authenticated)
   const showPublicLayout =
     isAlwaysPublic ||
     isInfoPath ||
     isLandingPage ||
     (!isAuthenticated && isAuthPath);
-
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: colors.pageBg }}>
@@ -204,6 +217,7 @@ function AppRoutes() {
           {/* Authenticated Routes with Sidebar Layout */}
           <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
             <Route path="/dashboard" element={<PageTransition><UserDashboard /></PageTransition>} />
+            <Route path="/dashboard/feedback" element={<PageTransition><DashboardFeedback /></PageTransition>} />
             <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
             <Route path="/notifications" element={<PageTransition><Notifications /></PageTransition>} />
             <Route path="/resources" element={<ResourceProvider><PageTransition><Resources /></PageTransition></ResourceProvider>} />
@@ -241,8 +255,8 @@ function AppRoutes() {
           <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
           <Route path="/mission" element={<PageTransition><Mission /></PageTransition>} />
 
-          {/* Platform Feedback - Public Route */}
-          <Route path="/feedback" element={<PageTransition><PlatformFeedback /></PageTransition>} />
+          {/* Platform Feedback - conditional route */}
+          <Route path="/feedback" element={<FeedbackRoute />} />
 
           {/* Always public legal pages */}
           <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />

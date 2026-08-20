@@ -17,8 +17,8 @@ export default function DashboardLayout() {
 
   const adminRoles = ['manager', 'admin', 'superuser'];
   const isAdmin = user?.roles?.some(r => adminRoles.includes(r)) ||
-                  user?.is_staff ||
-                  user?.is_superuser;
+    user?.is_staff ||
+    user?.is_superuser;
 
   const isChatPage = location.pathname === '/chat';
 

@@ -170,7 +170,7 @@ def _send_feedback_email_to_owner(feedback: Feedback) -> None:
     Send email notification to the owner of the course/live_section
     when new feedback is received. Uses Brevo client.
     """
-    from brevo_client import send_brevo_email
+    from backend.brevo_client import send_brevo_email
     
     target_object = feedback.content_object
     if not target_object:
@@ -219,7 +219,7 @@ def _send_reply_email_to_feedback_author(feedback: Feedback, reply: FeedbackRepl
     Send email notification to the original feedback author
     when someone replies to their feedback. Uses Brevo client.
     """
-    from brevo_client import send_brevo_email
+    from backend.brevo_client import send_brevo_email
     
     if not feedback.user or not feedback.user.email:
         return

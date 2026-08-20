@@ -29,34 +29,35 @@ const adminNavItems = [
   {
     section: 'User Management',
     items: [
-      { label: 'Volunteers',    path: '/admin/users/volunteers', icon: '🙌' },
-      { label: 'Seekers',       path: '/admin/users/seekers',    icon: '🌟' },
-      { label: 'Both Roles',    path: '/admin/users/both',       icon: '🔄' },
-      { label: 'Managers',      path: '/admin/users/managers',   icon: '👔' },
-      { label: 'Admins',        path: '/admin/users/admins',     icon: '🛡️' },
-      { label: 'Inactive Users',path: '/admin/users/inactive',   icon: '⏸️' },
+      { label: 'Volunteers', path: '/admin/users/volunteers', icon: '🙌' },
+      { label: 'Seekers', path: '/admin/users/seekers', icon: '🌟' },
+      { label: 'Both Roles', path: '/admin/users/both', icon: '🔄' },
+      { label: 'Managers', path: '/admin/users/managers', icon: '👔' },
+      { label: 'Admins', path: '/admin/users/admins', icon: '🛡️' },
+      { label: 'Inactive Users', path: '/admin/users/inactive', icon: '⏸️' },
     ],
   },
   {
     section: 'Content Management',
     items: [
-      { label: 'Resources',     path: '/admin/resources',        icon: '📚' },
-      { label: 'Posts',         path: '/admin/posts',            icon: '📝' },
-      { label: 'Courses',       path: '/admin/courses',          icon: '📖' },
-      { label: 'Live Sections', path: '/admin/live-sections',    icon: '📡' },
+      { label: 'Resources', path: '/admin/resources', icon: '📚' },
+      { label: 'Posts', path: '/admin/posts', icon: '📝' },
+      { label: 'Courses', path: '/admin/courses', icon: '📖' },
+      { label: 'Live Sections', path: '/admin/live-sections', icon: '📡' },
     ],
   },
   {
     section: 'Main App',
     items: [
-      { label: 'Posts',          path: '/posts',          icon: '📝' },
-      { label: 'Matches',        path: '/matches',        icon: '⚡' },
-      { label: 'Courses',        path: '/courses',        icon: '📖' },
-      { label: 'Live Sections',  path: '/live-sections',  icon: '📡' },
-      { label: 'Resources',      path: '/resources',      icon: '📚' },
-      { label: 'Chat',           path: '/chat',           icon: '💬' },
-      { label: 'Notifications',  path: '/notifications',  icon: '🔔' },
-      { label: 'Profile',        path: '/profile',        icon: '👤' },
+      { label: 'Posts', path: '/posts', icon: '📝' },
+      { label: 'Matches', path: '/matches', icon: '⚡' },
+      { label: 'Courses', path: '/courses', icon: '📖' },
+      { label: 'Live Sections', path: '/live-sections', icon: '📡' },
+      { label: 'Resources', path: '/resources', icon: '📚' },
+      { label: 'Chat', path: '/chat', icon: '💬' },
+      { label: 'Notifications', path: '/notifications', icon: '🔔' },
+      { label: 'Profile', path: '/profile', icon: '👤' },
+      { label: 'Feedback', path: '/dashboard/feedback', icon: '⭐' },
     ],
   },
 ];
@@ -68,7 +69,7 @@ export default function AdminSidebar() {
     <div className="py-6">
       <div className="px-6 pt-4 mb-8 flex items-center gap-3">
         <div className="rounded-full overflow-hidden border-4 p-2 bg-white inline-flex" style={{ borderColor: '#D4A017' }}>
-          <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-auto object-contain" onError={e => e.target.style.display='none'} />
+          <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-auto object-contain" onError={e => e.target.style.display = 'none'} />
         </div>
       </div>
 
