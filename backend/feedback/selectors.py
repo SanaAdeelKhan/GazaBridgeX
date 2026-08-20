@@ -15,7 +15,32 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import QuerySet, Q
 
 from feedback.models import Feedback, FeedbackReply, RatingSummary, FeedbackTypeChoices
-from cache_utils import get_cached_list, set_cached_list, get_cache_version
+from cache_utils import (
+    get_cached_list, 
+    set_cached_list, 
+    increment_cache_version,
+    CACHE_TTL_SINGLE,
+)
+
+
+# ---------------------------------------------------------------------------
+# Cache invalidation helpers
+# ---------------------------------------------------------------------------
+
+def invalidate_feedback_list_cache() -> None:
+    """Invalidate all feedback list caches by incrementing version."""
+    increment_cache_version("feedback_list")
+
+
+def invalidate_rating_summary_cache() -> None:
+    """Invalidate all rating summary caches by incrementing version."""
+    increment_cache_version("rating_summaries")
+
+
+def invalidate_all_feedback_caches() -> None:
+    """Invalidate all feedback-related caches."""
+    invalidate_feedback_list_cache()
+    invalidate_rating_summary_cache()
 
 
 # ---------------------------------------------------------------------------
@@ -133,24 +158,6 @@ def get_feedback_with_filters(
     return result
 
 
-# def _get_content_type_for_feedback_type(feedback_type: str) -> Optional[ContentType]:
-#     """Map feedback type to ContentType."""
-#     from django.apps import apps
-    
-#     model_map = {
-#         FeedbackTypeChoices.COURSE: "courses.Course",
-#         FeedbackTypeChoices.LIVE_SECTION: "live_sections.LiveSection",
-#     }
-    
-#     model_path = model_map.get(feedback_type)
-#     if not model_path:
-#         return None
-    
-#     app_label, model_name = model_path.split(".")
-#     try:
-#         return ContentType.objects.get(app_label=app_label, model=model_name)
-#     except ContentType.DoesNotExist:
-#         return None
 def _get_content_type_for_feedback_type(feedback_type: str) -> Optional[ContentType]:
     """Map feedback type to ContentType."""
     from django.apps import apps
@@ -170,6 +177,7 @@ def _get_content_type_for_feedback_type(feedback_type: str) -> Optional[ContentT
         return ContentType.objects.get_for_model(model_class)
     except (LookupError, ContentType.DoesNotExist):
         return None
+
 
 # ---------------------------------------------------------------------------
 # Rating summary selectors

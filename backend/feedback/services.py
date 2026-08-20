@@ -22,6 +22,7 @@ from feedback.selectors import (
     get_feedback_by_id,
     get_reply_by_id,
     _get_content_type_for_feedback_type,
+    invalidate_all_feedback_caches,
 )
 
 logger = logging.getLogger(__name__)
@@ -318,6 +319,9 @@ def create_feedback(
             object_id=validated_object_id,
         )
     
+    # INVALIDATE CACHE AFTER SUCCESSFUL CREATION
+    transaction.on_commit(invalidate_all_feedback_caches)
+    
     # Send email to owner for course/live_section feedback
     if feedback_type != FeedbackTypeChoices.PLATFORM:
         _send_feedback_email_to_owner(feedback)
@@ -355,6 +359,9 @@ def update_feedback(
             object_id=feedback.object_id,
         )
     
+    # INVALIDATE CACHE AFTER SUCCESSFUL UPDATE
+    transaction.on_commit(invalidate_all_feedback_caches)
+    
     return feedback
 
 
@@ -386,6 +393,9 @@ def delete_feedback(
             content_type=content_type,
             object_id=object_id,
         )
+    
+    # INVALIDATE CACHE AFTER SUCCESSFUL DELETION
+    transaction.on_commit(invalidate_all_feedback_caches)
 
 
 # ---------------------------------------------------------------------------
@@ -413,6 +423,9 @@ def create_reply(
             reply_text=reply_text,
             is_public=is_public,
         )
+    
+    # INVALIDATE CACHE AFTER REPLY CREATION (replies appear in feedback detail)
+    transaction.on_commit(invalidate_all_feedback_caches)
     
     # Send email to feedback author
     _send_reply_email_to_feedback_author(feedback, reply)
@@ -443,6 +456,9 @@ def update_reply(
         
         reply.save()
     
+    # INVALIDATE CACHE AFTER REPLY UPDATE
+    transaction.on_commit(invalidate_all_feedback_caches)
+    
     return reply
 
 
@@ -463,3 +479,6 @@ def delete_reply(
     
     with transaction.atomic():
         reply.delete()
+    
+    # INVALIDATE CACHE AFTER REPLY DELETION
+    transaction.on_commit(invalidate_all_feedback_caches)
