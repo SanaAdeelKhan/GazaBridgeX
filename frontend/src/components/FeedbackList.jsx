@@ -13,7 +13,8 @@ export default function FeedbackList({
     limit = null,
     showPagination = true,
     compact = false,
-    showFilters = false
+    showFilters = false,
+    onFeedbackChanged = null // Add callback for parent refresh
 }) {
     const { user } = useAuth();
     const [feedbacks, setFeedbacks] = useState([]);
@@ -25,6 +26,18 @@ export default function FeedbackList({
     const [replyText, setReplyText] = useState({});
     const [showReplyInput, setShowReplyInput] = useState({});
     const [replyLoading, setReplyLoading] = useState(false);
+
+    // Edit state
+    const [editingFeedback, setEditingFeedback] = useState(null);
+    const [editRating, setEditRating] = useState(0);
+    const [editText, setEditText] = useState('');
+    const [editIsPublic, setEditIsPublic] = useState(true);
+    const [editLoading, setEditLoading] = useState(false);
+    const [editError, setEditError] = useState(null);
+
+    // Delete state
+    const [deleteModal, setDeleteModal] = useState({ isOpen: false, feedbackId: null });
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
     const fetchFeedbacks = async (page = 1) => {
         setLoading(true);
@@ -65,6 +78,83 @@ export default function FeedbackList({
     useEffect(() => {
         fetchFeedbacks(1);
     }, [feedbackType, objectId, sort, activeRating]);
+
+    // Check if user can edit/delete feedback
+    const canModifyFeedback = (feedback) => {
+        if (!user) return false;
+        return feedback.user === user.id;
+    };
+
+    // Start editing feedback
+    const handleStartEdit = (feedback) => {
+        setEditingFeedback(feedback.id);
+        setEditRating(feedback.rating);
+        setEditText(feedback.feedback_text);
+        setEditIsPublic(feedback.is_public);
+        setEditError(null);
+    };
+
+    // Cancel editing
+    const handleCancelEdit = () => {
+        setEditingFeedback(null);
+        setEditRating(0);
+        setEditText('');
+        setEditIsPublic(true);
+        setEditError(null);
+    };
+
+    // Save edited feedback
+    const handleSaveEdit = async (feedbackId) => {
+        if (editRating === 0) {
+            setEditError('Please select a rating');
+            return;
+        }
+
+        if (editText.length < 10) {
+            setEditError('Feedback must be at least 10 characters');
+            return;
+        }
+
+        setEditLoading(true);
+        setEditError(null);
+
+        try {
+            const data = {
+                rating: editRating,
+                feedback_text: editText,
+                is_public: editIsPublic,
+            };
+
+            await feedbackAPI.updateFeedback(feedbackId, data);
+
+            setEditingFeedback(null);
+            setEditLoading(false);
+            fetchFeedbacks(pagination.page);
+
+            if (onFeedbackChanged) onFeedbackChanged();
+        } catch (err) {
+            setEditError(err.response?.data?.detail || 'Failed to update feedback');
+            setEditLoading(false);
+        }
+    };
+
+    // Delete feedback
+    const handleDelete = async () => {
+        const feedbackId = deleteModal.feedbackId;
+        setDeleteLoading(true);
+
+        try {
+            await feedbackAPI.deleteFeedback(feedbackId);
+            setDeleteModal({ isOpen: false, feedbackId: null });
+            setDeleteLoading(false);
+            fetchFeedbacks(pagination.page);
+
+            if (onFeedbackChanged) onFeedbackChanged();
+        } catch (err) {
+            alert(err.response?.data?.detail || 'Failed to delete feedback');
+            setDeleteLoading(false);
+        }
+    };
 
     const handleReply = async (feedbackId) => {
         const text = replyText[feedbackId]?.trim();
@@ -138,7 +228,7 @@ export default function FeedbackList({
 
     return (
         <div className="space-y-6">
-            {/* Filters - same style as platform feedback */}
+            {/* Filters */}
             {showFilters && (
                 <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -296,20 +386,118 @@ export default function FeedbackList({
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    <RatingStars value={feedback.rating} size="sm" readOnly />
-                                    <span className="text-sm font-bold" style={{ color: colors.gold }}>
-                                        {feedback.rating}.0
-                                    </span>
+                                    {editingFeedback !== feedback.id ? (
+                                        <>
+                                            <RatingStars value={feedback.rating} size="sm" readOnly />
+                                            <span className="text-sm font-bold" style={{ color: colors.gold }}>
+                                                {feedback.rating}.0
+                                            </span>
+                                        </>
+                                    ) : null}
                                 </div>
                             </div>
 
-                            {/* Feedback text */}
-                            <p className="text-sm leading-relaxed mb-4" style={{ color: colors.body }}>
-                                {feedback.feedback_text}
-                            </p>
+                            {/* Edit mode or display mode */}
+                            {editingFeedback === feedback.id ? (
+                                <div className="space-y-4">
+                                    {/* Edit rating */}
+                                    <div>
+                                        <label className="block text-sm font-semibold mb-2" style={{ color: colors.label }}>
+                                            Update Rating
+                                        </label>
+                                        <RatingStars
+                                            value={editRating}
+                                            onChange={setEditRating}
+                                            size="md"
+                                            showValue
+                                        />
+                                    </div>
+
+                                    {/* Edit text */}
+                                    <div>
+                                        <label className="block text-sm font-semibold mb-2" style={{ color: colors.label }}>
+                                            Update Feedback
+                                        </label>
+                                        <textarea
+                                            value={editText}
+                                            onChange={(e) => setEditText(e.target.value)}
+                                            rows={4}
+                                            className="w-full px-4 py-3 border rounded-xl outline-none transition-all resize-none"
+                                            style={{
+                                                borderColor: colors.inputBorder,
+                                                color: colors.body,
+                                            }}
+                                            onFocus={(e) => (e.target.style.borderColor = colors.inputBorderFocus)}
+                                            onBlur={(e) => (e.target.style.borderColor = colors.inputBorder)}
+                                            maxLength={1000}
+                                        />
+                                        <div className="text-right text-xs mt-1" style={{ color: colors.muted }}>
+                                            {editText.length}/1000
+                                        </div>
+                                    </div>
+
+                                    {/* Edit public toggle */}
+                                    <div className="flex items-center gap-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => setEditIsPublic(!editIsPublic)}
+                                            className={`relative w-12 h-6 rounded-full transition-colors duration-300 flex-shrink-0 ${editIsPublic ? 'bg-green-500' : 'bg-gray-300'}`}
+                                        >
+                                            <motion.div
+                                                animate={{ x: editIsPublic ? 24 : 0 }}
+                                                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                                className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow"
+                                            />
+                                        </button>
+                                        <span className="text-sm" style={{ color: colors.body }}>
+                                            {editIsPublic ? 'Public' : 'Private'}
+                                        </span>
+                                    </div>
+
+                                    {/* Edit error */}
+                                    {editError && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="p-3 rounded-xl text-sm"
+                                            style={{ backgroundColor: colors.errorBg, color: colors.error }}
+                                        >
+                                            {editError}
+                                        </motion.div>
+                                    )}
+
+                                    {/* Edit actions */}
+                                    <div className="flex gap-2 justify-end">
+                                        <button
+                                            onClick={handleCancelEdit}
+                                            className="px-4 py-2 text-sm font-medium rounded-xl transition-colors"
+                                            style={{ backgroundColor: colors.pageBg, color: colors.body }}
+                                        >
+                                            Cancel
+                                        </button>
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => handleSaveEdit(feedback.id)}
+                                            disabled={editLoading}
+                                            className="px-4 py-2 text-sm font-semibold text-white rounded-xl transition-all"
+                                            style={{ backgroundColor: colors.gold, opacity: editLoading ? 0.7 : 1 }}
+                                        >
+                                            {editLoading ? 'Saving...' : 'Save Changes'}
+                                        </motion.button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    {/* Feedback text */}
+                                    <p className="text-sm leading-relaxed mb-4" style={{ color: colors.body }}>
+                                        {feedback.feedback_text}
+                                    </p>
+                                </>
+                            )}
 
                             {/* Replies */}
-                            {feedback.replies?.length > 0 && (
+                            {feedback.replies?.length > 0 && editingFeedback !== feedback.id && (
                                 <div className="space-y-3 mb-4">
                                     {feedback.replies.map((reply) => (
                                         <motion.div
@@ -341,25 +529,68 @@ export default function FeedbackList({
                                 </div>
                             )}
 
-                            {/* Reply button */}
-                            {canReply(feedback) && (
-                                <div className="flex justify-end">
-                                    <button
-                                        onClick={() => setShowReplyInput({ ...showReplyInput, [feedback.id]: !showReplyInput[feedback.id] })}
-                                        className="text-xs font-medium flex items-center gap-1.5 hover:underline transition-all"
-                                        style={{ color: colors.gold }}
-                                    >
-                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
-                                        </svg>
-                                        {showReplyInput[feedback.id] ? 'Cancel Reply' : 'Reply'}
-                                    </button>
+                            {/* Action buttons */}
+                            {editingFeedback !== feedback.id && (
+                                <div className="flex items-center justify-between">
+                                    {/* Left side - reply button */}
+                                    <div>
+                                        {canReply(feedback) && (
+                                            <button
+                                                onClick={() => setShowReplyInput({ ...showReplyInput, [feedback.id]: !showReplyInput[feedback.id] })}
+                                                className="text-xs font-medium flex items-center gap-1.5 hover:underline transition-all"
+                                                style={{ color: colors.gold }}
+                                            >
+                                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                                                </svg>
+                                                {showReplyInput[feedback.id] ? 'Cancel Reply' : 'Reply'}
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Right side - edit/delete buttons for owner */}
+                                    {canModifyFeedback(feedback) && (
+                                        <div className="flex items-center gap-2">
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={() => handleStartEdit(feedback)}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
+                                                style={{
+                                                    backgroundColor: colors.primaryLight,
+                                                    color: colors.primary,
+                                                }}
+                                                title="Edit feedback"
+                                            >
+                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                                </svg>
+                                                Edit
+                                            </motion.button>
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                onClick={() => setDeleteModal({ isOpen: true, feedbackId: feedback.id })}
+                                                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-all"
+                                                style={{
+                                                    backgroundColor: colors.errorBg,
+                                                    color: colors.error,
+                                                }}
+                                                title="Delete feedback"
+                                            >
+                                                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                                Delete
+                                            </motion.button>
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
                             {/* Reply input */}
                             <AnimatePresence>
-                                {showReplyInput[feedback.id] && (
+                                {showReplyInput[feedback.id] && editingFeedback !== feedback.id && (
                                     <motion.div
                                         initial={{ opacity: 0, height: 0 }}
                                         animate={{ opacity: 1, height: 'auto' }}
@@ -425,6 +656,71 @@ export default function FeedbackList({
                     </button>
                 </div>
             )}
+
+            {/* Delete confirmation modal */}
+            <AnimatePresence>
+                {deleteModal.isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+                        onClick={() => setDeleteModal({ isOpen: false, feedbackId: null })}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="relative max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden"
+                        >
+                            <div className="h-1" style={{ backgroundColor: colors.error }} />
+                            <div className="p-6">
+                                <div className="flex justify-center mb-4">
+                                    <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+                                        className="w-16 h-16 rounded-full flex items-center justify-center"
+                                        style={{ backgroundColor: colors.errorBg }}
+                                    >
+                                        <svg className="w-8 h-8" style={{ color: colors.error }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </motion.div>
+                                </div>
+
+                                <h3 className="text-xl font-bold text-center mb-2" style={{ color: colors.headingDark }}>
+                                    Delete Feedback
+                                </h3>
+                                <p className="text-center mb-6" style={{ color: colors.body }}>
+                                    Are you sure you want to delete this feedback? This action cannot be undone.
+                                </p>
+
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setDeleteModal({ isOpen: false, feedbackId: null })}
+                                        className="flex-1 px-4 py-2.5 font-medium rounded-xl transition-colors"
+                                        style={{ backgroundColor: colors.pageBg, color: colors.body }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        onClick={handleDelete}
+                                        disabled={deleteLoading}
+                                        className="flex-1 px-4 py-2.5 text-white font-medium rounded-xl transition-all"
+                                        style={{ backgroundColor: colors.error, opacity: deleteLoading ? 0.7 : 1 }}
+                                    >
+                                        {deleteLoading ? 'Deleting...' : 'Delete'}
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
