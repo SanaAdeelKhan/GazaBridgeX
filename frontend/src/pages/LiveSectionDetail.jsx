@@ -4,6 +4,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { liveSectionsAPI } from '../api/liveSections';
+import { feedbackAPI } from '../api/feedback';
 import EditLiveSectionModal from '../components/EditLiveSectionModal';
 import AddLiveSectionContentModal from '../components/AddLiveSectionContentModal';
 import colors from '../theme/colors';
@@ -93,13 +94,25 @@ export default function LiveSectionDetail() {
   const [showAddContentModal, setShowAddContentModal] = useState(false);
   const [deleteLiveSectionModal, setDeleteLiveSectionModal] = useState({ isOpen: false });
   const [deleteContentModal, setDeleteContentModal] = useState({ isOpen: false, contentId: null, contentTitle: '' });
+  const [ratingSummary, setRatingSummary] = useState(null);
 
   const fetchLiveSection = async () => {
     try {
       const response = await liveSectionsAPI.getLiveSection(id);
       setLiveSection(response.data);
+      fetchRatingSummary();
     } catch (err) { setError('Failed to load live section'); }
     finally { setLoading(false); }
+  };
+
+  const fetchRatingSummary = async () => {
+    try {
+      const params = { feedback_type: 'live_section', object_id: id };
+      const response = await feedbackAPI.getRatingSummary(params);
+      setRatingSummary(response.data.rating_summary);
+    } catch (err) {
+      console.error('Error fetching rating summary:', err);
+    }
   };
 
   useEffect(() => { fetchLiveSection(); }, [id]);
@@ -196,35 +209,119 @@ export default function LiveSectionDetail() {
               <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style={{ backgroundColor: colors.primary }}>{liveSection.user_full_name?.split(' ').map(n => n[0]).join('')}</div>
               <div><div className="font-medium" style={{ color: colors.headingDark }}>{liveSection.user_full_name}</div></div>
             </div>
+          </div>
 
-            {/* Feedback Button - ADDED */}
-            <div className="mt-6 pt-6 border-t" style={{ borderColor: colors.divider }}>
-              <Link
-                to={`/live-sections/${liveSection.id}/feedback`}
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all hover:shadow-lg"
-                style={{
-                  backgroundColor: colors.goldLight,
-                  color: colors.headingDark,
-                  border: `1px solid ${colors.gold}`,
-                }}
-              >
-                <motion.span
-                  animate={{ rotate: [0, 10, -10, 0] }}
-                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
-                  className="text-xl"
+          {/* Professional Feedback Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white rounded-3xl shadow-xl p-8 mb-8"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+              {/* Left side - Rating summary */}
+              <div className="flex items-center gap-6">
+                {/* Average rating */}
+                <div className="text-center">
+                  <div className="text-5xl font-bold mb-2" style={{ color: colors.headingDark }}>
+                    {ratingSummary?.average_rating ? ratingSummary.average_rating.toFixed(1) : 'N/A'}
+                  </div>
+                  <div className="flex items-center justify-center gap-1 mb-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <motion.span
+                        key={star}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 + star * 0.1 }}
+                        className="text-xl"
+                        style={{
+                          color: star <= Math.round(ratingSummary?.average_rating || 0) ? colors.gold : colors.badgeNeutral
+                        }}
+                      >
+                        ★
+                      </motion.span>
+                    ))}
+                  </div>
+                  <p className="text-xs" style={{ color: colors.muted }}>
+                    {ratingSummary?.total_feedbacks || 0} {ratingSummary?.total_feedbacks === 1 ? 'review' : 'reviews'}
+                  </p>
+                </div>
+
+                {/* Divider */}
+                <div className="hidden sm:block w-px h-16" style={{ backgroundColor: colors.divider }} />
+
+                {/* Rating distribution */}
+                <div className="hidden md:block flex-1 min-w-[200px]">
+                  <div className="space-y-1.5">
+                    {[5, 4, 3, 2, 1].map((star) => {
+                      const count = ratingSummary?.distribution?.[star] || 0;
+                      const total = ratingSummary?.total_feedbacks || 0;
+                      const percentage = total > 0 ? (count / total) * 100 : 0;
+
+                      return (
+                        <div key={star} className="flex items-center gap-2">
+                          <span className="text-xs w-8" style={{ color: colors.muted }}>{star}★</span>
+                          <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${percentage}%` }}
+                              transition={{ delay: 0.4 + (5 - star) * 0.1, duration: 0.8, ease: 'easeOut' }}
+                              className="h-full rounded-full"
+                              style={{ background: `linear-gradient(90deg, ${colors.gold}, ${colors.goldHover})` }}
+                            />
+                          </div>
+                          <span className="text-xs w-6 text-right" style={{ color: colors.muted }}>{count}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Right side - CTA Button */}
+              <Link to={`/live-sections/${liveSection.id}/feedback`} className="flex-shrink-0">
+                <motion.button
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="group relative px-8 py-4 rounded-2xl font-bold text-white overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+                  style={{
+                    background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})`,
+                  }}
                 >
-                  ⭐
-                </motion.span>
-                See Live Section Feedback
-                <motion.span
-                  animate={{ x: [0, 4, 0] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
-                  →
-                </motion.span>
+                  {/* Shine effect */}
+                  <motion.div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background: 'linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%)',
+                    }}
+                  />
+
+                  <span className="relative z-10 flex items-center gap-3">
+                    <motion.span
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
+                      className="text-2xl"
+                    >
+                      ⭐
+                    </motion.span>
+                    <span>
+                      <span className="block text-sm">View Live Section Feedback</span>
+                      <span className="block text-xs opacity-80 mt-0.5">
+                        See what students are saying
+                      </span>
+                    </span>
+                    <motion.span
+                      animate={{ x: [0, 4, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="text-xl"
+                    >
+                      →
+                    </motion.span>
+                  </span>
+                </motion.button>
               </Link>
             </div>
-          </div>
+          </motion.div>
 
           <div className="bg-white rounded-3xl shadow-xl p-8">
             <div className="flex justify-between items-center mb-6">
