@@ -1,34 +1,49 @@
 // frontend/src/components/LiveSectionCard.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { feedbackAPI } from '../api/feedback';
 import colors from '../theme/colors';
 
 const CATEGORY_ICONS = { teaching_language: '🗣️', tech_coding_ai: '🤖', career_mentorship: '💼', mental_health: '🧠', creative_design: '🎨', academic: '📖', others: '📌' };
 const LANGUAGE_LABELS = { en: 'English', ur: 'Urdu', ar: 'Arabic', fr: 'French', es: 'Spanish', de: 'German', zh: 'Chinese', hi: 'Hindi', pt: 'Portuguese', ru: 'Russian', ja: 'Japanese', tr: 'Turkish' };
 
-// skill level: beginner = olive, intermediate = gold, advanced = error
 const SKILL_LEVEL_STYLE = {
-  beginner:     { backgroundColor: colors.oliveLight, color: colors.olive },
-  intermediate: { backgroundColor: colors.goldLight,  color: colors.goldHover },
-  advanced:     { backgroundColor: colors.errorBg,     color: colors.error },
+  beginner: { backgroundColor: colors.oliveLight, color: colors.olive },
+  intermediate: { backgroundColor: colors.goldLight, color: colors.goldHover },
+  advanced: { backgroundColor: colors.errorBg, color: colors.error },
 };
 
-// status: active = olive/open, inactive = neutral grey, closed/ended = error
 const STATUS_STYLE = {
-  active:   { backgroundColor: colors.badgeOpen,    color: colors.badgeOpenText,    borderColor: colors.oliveLight },
+  active: { backgroundColor: colors.badgeOpen, color: colors.badgeOpenText, borderColor: colors.oliveLight },
   inactive: { backgroundColor: colors.badgeNeutral, color: colors.badgeNeutralText, borderColor: colors.divider },
-  closed:   { backgroundColor: colors.badgeClosed,  color: colors.badgeClosedText,  borderColor: colors.errorBg },
+  closed: { backgroundColor: colors.badgeClosed, color: colors.badgeClosedText, borderColor: colors.errorBg },
 };
 
 export default function LiveSectionCard({ liveSection, index, canDelete, onDelete }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [ratingSummary, setRatingSummary] = useState(null);
+
   const truncated = liveSection.description?.length > 120 ? liveSection.description.substring(0, 120) + '...' : liveSection.description;
 
   const effectiveStatus = liveSection.effective_status || liveSection.status;
   const isEnded = effectiveStatus === 'closed' && liveSection.status === 'active';
   const statusStyle = STATUS_STYLE[effectiveStatus] || STATUS_STYLE.active;
   const skillStyle = SKILL_LEVEL_STYLE[liveSection.skill_level] || { backgroundColor: colors.badgeNeutral, color: colors.badgeNeutralText };
+
+  useEffect(() => {
+    fetchRatingSummary();
+  }, [liveSection.id]);
+
+  const fetchRatingSummary = async () => {
+    try {
+      const params = { feedback_type: 'live_section', object_id: liveSection.id };
+      const response = await feedbackAPI.getRatingSummary(params);
+      setRatingSummary(response.data.rating_summary);
+    } catch (err) {
+      console.error('Error fetching rating summary:', err);
+    }
+  };
 
   return (
     <motion.div
@@ -42,7 +57,41 @@ export default function LiveSectionCard({ liveSection, index, canDelete, onDelet
       </div>
 
       <div className="p-6">
-        <div className="text-4xl mb-4">{CATEGORY_ICONS[liveSection.category] || '📌'}</div>
+        <div className="flex items-start justify-between mb-4">
+          <div className="text-4xl">{CATEGORY_ICONS[liveSection.category] || '📌'}</div>
+
+          {/* Rating Display */}
+          {ratingSummary && ratingSummary.total_feedbacks > 0 && (
+            <Link to={`/live-sections/${liveSection.id}/feedback`}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all"
+                style={{
+                  backgroundColor: colors.goldLight,
+                  border: `1px solid ${colors.gold}`,
+                  cursor: 'pointer'
+                }}
+                title="View feedback"
+              >
+                <motion.span
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
+                  className="text-sm"
+                >
+                  ⭐
+                </motion.span>
+                <span className="text-xs font-bold" style={{ color: colors.headingDark }}>
+                  {ratingSummary.average_rating.toFixed(1)}
+                </span>
+                <span className="text-xs" style={{ color: colors.muted }}>
+                  ({ratingSummary.total_feedbacks})
+                </span>
+              </motion.div>
+            </Link>
+          )}
+        </div>
+
         <Link to={`/live-sections/${liveSection.id}`}>
           <h3
             className="text-xl font-bold mb-2 transition-colors"

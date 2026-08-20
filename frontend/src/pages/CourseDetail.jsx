@@ -221,8 +221,35 @@ export default function CourseDetail() {
               </div>
               <div>
                 <div className="font-medium" style={{ color: colors.headingDark }}>{course.user_full_name}</div>
-                
               </div>
+            </div>
+
+            {/* Feedback Button - ADDED */}
+            <div className="mt-6 pt-6 border-t" style={{ borderColor: colors.divider }}>
+              <Link
+                to={`/courses/${course.id}/feedback`}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all hover:shadow-lg"
+                style={{
+                  backgroundColor: colors.goldLight,
+                  color: colors.headingDark,
+                  border: `1px solid ${colors.gold}`,
+                }}
+              >
+                <motion.span
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
+                  className="text-xl"
+                >
+                  ⭐
+                </motion.span>
+                See Course Feedback
+                <motion.span
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  →
+                </motion.span>
+              </Link>
             </div>
           </div>
 

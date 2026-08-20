@@ -10,12 +10,13 @@ import NotificationBell from './NotificationBell';
 import { colors } from '../theme/colors';
 
 const navLinks = [
-  { name: 'Home',         href: '/' },
+  { name: 'Home', href: '/' },
   { name: 'How It Works', href: '/how-it-works' },
-  { name: 'Services',     href: '/services' },
-  { name: 'About',        href: '/about' },
+  { name: 'Services', href: '/services' },
+  { name: 'About', href: '/about' },
   // { name: 'Blog',         href: '/blog' },
-  { name: 'FAQ',          href: '/faq' },
+  { name: 'FAQ', href: '/faq' },
+  { name: 'Feedback', href: '/feedback' },
 ];
 
 // ─── Magnetic wrapper ─────────────────────────────────────────────────────────
@@ -37,7 +38,7 @@ function NavIndicator({ links, location }) {
       const containerRect = container.getBoundingClientRect();
       const elRect = activeEl.getBoundingClientRect();
       setIndicatorStyle({
-        left:  elRect.left - containerRect.left,
+        left: elRect.left - containerRect.left,
         width: elRect.width,
       });
     }
@@ -47,13 +48,13 @@ function NavIndicator({ links, location }) {
 }
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled]         = useState(false);
-  const [isMobileMenuOpen, setMobileMenu]   = useState(false);
-  const [hoveredLink, setHoveredLink]       = useState(null);
-  const location                            = useLocation();
-  const { isAuthenticated, user, logout }   = useAuth();
-  const containerRef                        = useRef(null);
-  const [hoveredIdx, setHoveredIdx]         = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setMobileMenu] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState(null);
+  const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
+  const containerRef = useRef(null);
+  const [hoveredIdx, setHoveredIdx] = useState(null);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20);

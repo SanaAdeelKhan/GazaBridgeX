@@ -55,6 +55,11 @@ import LiveSections from './pages/LiveSections';
 import LiveSectionDetail from './pages/LiveSectionDetail';
 import Chat from './pages/Chat';
 
+// Feedback Pages
+import PlatformFeedback from './pages/PlatformFeedback';
+import CourseFeedbackDetail from './pages/CourseFeedbackDetail';
+import LiveSectionFeedbackDetail from './pages/LiveSectionFeedbackDetail';
+
 // Admin Pages
 import AdminNotifications from './pages/AdminNotifications';
 import AdminResources from './pages/admin/AdminResources';
@@ -67,9 +72,9 @@ import Unauthorized from './pages/Unauthorized';
 // Helper function to check if user is admin
 function checkIsAdmin(user) {
   const adminRoles = ['manager', 'admin', 'superuser'];
-  return user?.roles?.some(r => adminRoles.includes(r)) || 
-         user?.is_staff || 
-         user?.is_superuser;
+  return user?.roles?.some(r => adminRoles.includes(r)) ||
+    user?.is_staff ||
+    user?.is_superuser;
 }
 
 // Handle root path based on auth status
@@ -105,9 +110,9 @@ function PublicOnlyRoute({ children }) {
 // DashboardRedirect - inside AuthProvider context
 function DashboardRedirect() {
   const { user, isAuthenticated } = useAuth();
-  
+
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  
+
   const isAdmin = checkIsAdmin(user);
 
   console.log('DashboardRedirect - User:', user?.email);
@@ -135,7 +140,7 @@ function AppRoutes() {
   // Landing page and informational pages - always show Navbar
   const infoPaths = [
     '/', '/how-it-works', '/services', '/faq', '/about', '/mission',
-    '/blog',  // Added /blog here explicitly
+    '/blog', '/feedback',  // Added /feedback here
   ];
 
   // Check if current path starts with certain patterns
@@ -154,10 +159,10 @@ function AppRoutes() {
 
   // FIXED: Show Navbar + Footer for:
   // 1. Always-public pages (legal docs, verification)
-  // 2. Info pages (how-it-works, services, faq, about, mission, blog)
+  // 2. Info pages (how-it-works, services, faq, about, mission, blog, feedback)
   // 3. Landing page (when not authenticated, or always show it)
   // 4. Auth pages (when not authenticated)
-  const showPublicLayout = 
+  const showPublicLayout =
     isAlwaysPublic ||
     isInfoPath ||
     isLandingPage ||
@@ -171,7 +176,7 @@ function AppRoutes() {
           <div className="h-full transition-all duration-300" style={{ backgroundColor: colors.gold }} />
         </div>
       )}
-      
+
       {showPublicLayout && <Navbar />}
 
       <AnimatePresence mode="wait">
@@ -207,8 +212,10 @@ function AppRoutes() {
             <Route path="/offers/:id" element={<PageTransition><OfferDetail /></PageTransition>} />
             <Route path="/courses" element={<PageTransition><Courses /></PageTransition>} />
             <Route path="/courses/:id" element={<PageTransition><CourseDetail /></PageTransition>} />
+            <Route path="/courses/:id/feedback" element={<PageTransition><CourseFeedbackDetail /></PageTransition>} />
             <Route path="/live-sections" element={<PageTransition><LiveSections /></PageTransition>} />
             <Route path="/live-sections/:id" element={<PageTransition><LiveSectionDetail /></PageTransition>} />
+            <Route path="/live-sections/:id/feedback" element={<PageTransition><LiveSectionFeedbackDetail /></PageTransition>} />
             <Route path="/chat" element={<Chat />} />
             <Route path="/unauthorized" element={<PageTransition><Unauthorized /></PageTransition>} />
 
@@ -233,12 +240,15 @@ function AppRoutes() {
           <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
           <Route path="/blog/:slug" element={<PageTransition><BlogPost /></PageTransition>} />
           <Route path="/mission" element={<PageTransition><Mission /></PageTransition>} />
-          
+
+          {/* Platform Feedback - Public Route */}
+          <Route path="/feedback" element={<PageTransition><PlatformFeedback /></PageTransition>} />
+
           {/* Always public legal pages */}
           <Route path="/privacy-policy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
           <Route path="/terms-of-service" element={<PageTransition><TermsOfService /></PageTransition>} />
           <Route path="/cookie-policy" element={<PageTransition><CookiePolicy /></PageTransition>} />
-          
+
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

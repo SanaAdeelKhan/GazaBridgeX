@@ -1,7 +1,8 @@
 // frontend/src/components/CourseCard.jsx
 import { motion } from 'framer-motion';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
+import { feedbackAPI } from '../api/feedback';
 import colors from '../theme/colors';
 
 const CATEGORY_ICONS = {
@@ -30,22 +31,35 @@ const LANGUAGE_LABELS = {
   pt: 'Portuguese', ru: 'Russian', ja: 'Japanese', tr: 'Turkish',
 };
 
-// skill level: beginner = olive, intermediate = gold, advanced = error
 const SKILL_LEVEL_STYLE = {
-  beginner:     { backgroundColor: colors.oliveLight, color: colors.olive },
-  intermediate: { backgroundColor: colors.goldLight,  color: colors.goldHover },
-  advanced:     { backgroundColor: colors.errorBg,     color: colors.error },
+  beginner: { backgroundColor: colors.oliveLight, color: colors.olive },
+  intermediate: { backgroundColor: colors.goldLight, color: colors.goldHover },
+  advanced: { backgroundColor: colors.errorBg, color: colors.error },
 };
 
-// status: active = olive/open, inactive = neutral grey, closed = error
 const STATUS_STYLE = {
-  active:   { backgroundColor: colors.badgeOpen,    color: colors.badgeOpenText,    borderColor: colors.oliveLight },
+  active: { backgroundColor: colors.badgeOpen, color: colors.badgeOpenText, borderColor: colors.oliveLight },
   inactive: { backgroundColor: colors.badgeNeutral, color: colors.badgeNeutralText, borderColor: colors.divider },
-  closed:   { backgroundColor: colors.badgeClosed,  color: colors.badgeClosedText,  borderColor: colors.errorBg },
+  closed: { backgroundColor: colors.badgeClosed, color: colors.badgeClosedText, borderColor: colors.errorBg },
 };
 
 export default function CourseCard({ course, index, canDelete, onDelete }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [ratingSummary, setRatingSummary] = useState(null);
+
+  useEffect(() => {
+    fetchRatingSummary();
+  }, [course.id]);
+
+  const fetchRatingSummary = async () => {
+    try {
+      const params = { feedback_type: 'course', object_id: course.id };
+      const response = await feedbackAPI.getRatingSummary(params);
+      setRatingSummary(response.data.rating_summary);
+    } catch (err) {
+      console.error('Error fetching rating summary:', err);
+    }
+  };
 
   const truncatedDescription = course.description?.length > 120
     ? course.description.substring(0, 120) + '...'
@@ -72,9 +86,42 @@ export default function CourseCard({ course, index, canDelete, onDelete }) {
       </div>
 
       <div className="p-6">
-        {/* Category Icon */}
-        <div className="text-4xl mb-4">
-          {CATEGORY_ICONS[course.category] || '📌'}
+        {/* Category Icon and Rating */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="text-4xl">
+            {CATEGORY_ICONS[course.category] || '📌'}
+          </div>
+
+          {/* Rating Display */}
+          {ratingSummary && ratingSummary.total_feedbacks > 0 && (
+            <Link to={`/courses/${course.id}/feedback`}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all"
+                style={{
+                  backgroundColor: colors.goldLight,
+                  border: `1px solid ${colors.gold}`,
+                  cursor: 'pointer'
+                }}
+                title="View feedback"
+              >
+                <motion.span
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 0.5, repeat: Infinity, repeatDelay: 3 }}
+                  className="text-sm"
+                >
+                  ⭐
+                </motion.span>
+                <span className="text-xs font-bold" style={{ color: colors.headingDark }}>
+                  {ratingSummary.average_rating.toFixed(1)}
+                </span>
+                <span className="text-xs" style={{ color: colors.muted }}>
+                  ({ratingSummary.total_feedbacks})
+                </span>
+              </motion.div>
+            </Link>
+          )}
         </div>
 
         {/* Title */}
