@@ -35,21 +35,11 @@ class IsOwnerOrReadOnly(BasePermission):
 class CanCreateReply(BasePermission):
     """
     Permission for creating replies:
-    - Platform feedback: Only superuser
-    - Course/LiveSection feedback: Only owner of the course/live_section
+    - Any authenticated user can reply to any feedback
     """
     
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated)
-    
-    def has_object_permission(self, request, view, obj):
-        # obj is the Feedback instance
-        if obj.feedback_type == "platform":
-            return request.user.is_superuser
-        
-        # For course/live_section, check if user is the owner
-        owner = obj.get_owner()
-        return owner and owner.pk == request.user.pk
 
 
 class CanModifyReply(BasePermission):

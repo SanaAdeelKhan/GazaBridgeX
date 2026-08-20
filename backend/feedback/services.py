@@ -399,23 +399,12 @@ def create_reply(
     reply_text: str,
     is_public: bool = True,
 ) -> FeedbackReply:
-    """Create a reply to feedback."""
+    """Create a reply to feedback. Any authenticated user can reply."""
     
     feedback = get_feedback_by_id(feedback_id)
     
     if not feedback:
         raise ValueError("Feedback not found.")
-    
-    # Check permission
-    if feedback.feedback_type == FeedbackTypeChoices.PLATFORM:
-        # Only superuser can reply to platform feedback
-        if not replied_by.is_superuser:
-            raise PermissionError("Only superuser can reply to platform feedback.")
-    else:
-        # Owner of the course/live_section can reply
-        owner = feedback.get_owner()
-        if not owner or owner.pk != replied_by.pk:
-            raise PermissionError("Only the owner can reply to this feedback.")
     
     with transaction.atomic():
         reply = FeedbackReply.objects.create(

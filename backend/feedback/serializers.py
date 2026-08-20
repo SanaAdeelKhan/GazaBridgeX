@@ -63,19 +63,29 @@ class ReplyOutputSerializer(serializers.ModelSerializer):
         return "Anonymous"
     
     def get_replied_by_role(self, obj) -> str:
-        """Return user's role names for display."""
+        """Return user's role for display."""
         if not obj.replied_by:
             return ""
         
-        roles = obj.replied_by.roles.all()
-        if not roles:
-            if obj.replied_by.is_superuser:
-                return "Superuser"
-            if obj.replied_by.is_staff:
-                return "Admin"
-            return ""
+        user = obj.replied_by
         
-        return ", ".join(role.name.title() for role in roles)
+        # Check Django flags first
+        if user.is_superuser:
+            return "Superuser"
+        if user.is_staff:
+            return "Admin"
+        
+        # Check custom roles
+        if user.is_manager:
+            return "Manager"
+        if user.is_volunteer and user.is_seeker:
+            return "Volunteer, Seeker"
+        if user.is_volunteer:
+            return "Volunteer"
+        if user.is_seeker:
+            return "Seeker"
+        
+        return "User"
 
 
 # ---------------------------------------------------------------------------
@@ -169,15 +179,29 @@ class FeedbackOutputSerializer(serializers.ModelSerializer):
         return "Anonymous"
     
     def get_user_role(self, obj) -> str:
-        """Return user's role names for public display."""
+        """Return user's role for display."""
         if not obj.user:
             return ""
         
-        roles = obj.user.roles.all()
-        if not roles:
-            return ""
+        user = obj.user
         
-        return ", ".join(role.name.title() for role in roles)
+        # Check Django flags first
+        if user.is_superuser:
+            return "Superuser"
+        if user.is_staff:
+            return "Admin"
+        
+        # Check custom roles
+        if user.is_manager:
+            return "Manager"
+        if user.is_volunteer and user.is_seeker:
+            return "Volunteer, Seeker"
+        if user.is_volunteer:
+            return "Volunteer"
+        if user.is_seeker:
+            return "Seeker"
+        
+        return "User"
     
     def get_replies(self, obj) -> list:
         """Return public replies for this feedback."""
