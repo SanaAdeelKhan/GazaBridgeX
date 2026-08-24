@@ -276,10 +276,12 @@ export default function AboutUs() {
                       <motion.div
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ type: 'spring', stiffness: 300 }}
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg"
+                        className="w-16 h-16 rounded-2xl overflow-hidden flex items-center justify-center text-white text-xl font-bold shadow-lg"
                         style={{ background: `linear-gradient(135deg, ${g.from}, ${g.to})` }}
                       >
-                        {member.avatar}
+                        {member.image ? (
+                          <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                        ) : member.avatar}
                       </motion.div>
 
                       <div className="flex items-center gap-1.5 rounded-full px-3 py-1.5 border" style={{ backgroundColor: colors.goldLight, borderColor: colors.gold }}>
@@ -298,12 +300,38 @@ export default function AboutUs() {
 
                     <div className="mt-5 pt-4 border-t border-gray-50 flex items-center justify-between">
                       <span className="text-[10px] text-gray-400 font-medium">GazaBridge Team</span>
-                      <motion.div
-                        whileHover={{ x: 3 }}
-                        className="text-xs font-semibold text-gray-300 transition-colors cursor-pointer hover:text-[#D4A017]"
-                      >
-                        Connect →
-                      </motion.div>
+                      {member.socialLinks ? (
+                        <div className="flex items-center gap-3 text-xs font-semibold">
+                          <a
+                            href={member.socialLinks.linkedin}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-gray-400 transition-colors hover:text-[#D4A017]"
+                            aria-label={`${member.name} on LinkedIn`}
+                          >LinkedIn</a>
+                          <a
+                            href={member.socialLinks.github}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-gray-400 transition-colors hover:text-[#D4A017]"
+                            aria-label={`${member.name} on GitHub`}
+                          >GitHub</a>
+                          <a
+                            href={member.socialLinks.portfolio}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-gray-400 transition-colors hover:text-[#D4A017]"
+                            aria-label={`${member.name}'s portfolio`}
+                          >Portfolio</a>
+                        </div>
+                      ) : (
+                        <motion.div
+                          whileHover={{ x: 3 }}
+                          className="text-xs font-semibold text-gray-300 transition-colors cursor-pointer hover:text-[#D4A017]"
+                        >
+                          Connect →
+                        </motion.div>
+                      )}
                     </div>
                   </div>
                 </motion.div>

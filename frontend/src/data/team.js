@@ -22,6 +22,12 @@ export const teamMembers = [
     role: 'Backend Developer',
     bio: 'Building robust and scalable systems that power the GazaBridge platform.',
     avatar: 'UW',
+    image: '/uzair.webp',
+    socialLinks: {
+      linkedin: 'https://www.linkedin.com/in/uzair-waseem-digital/',
+      github: 'https://github.com/Uzair-Waseem-390',
+      portfolio: 'https://uzair-waseem.vercel.app/',
+    },
     gradient: 'from-purple-400 to-pink-500',
   },
   {
