@@ -6,12 +6,14 @@ import { useAuth } from '../../context/AuthContext';
 import { useNotifications } from '../../context/NotificationContext';
 import { useChatNav } from '../../context/ChatNavContext';
 import colors from '../../theme/colors';
+import { useAppTranslation } from '../../hooks/useAppTranslation';
 
 export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
   const chatNav = useChatNav();
+  const { t } = useAppTranslation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileRef = useRef(null);
 
@@ -37,7 +39,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
   };
 
   const getDisplayName = () => {
-    return `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || user?.email || 'User';
+    return `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || user?.email || t('shared.user');
   };
 
   const adminRoles = ['manager', 'admin', 'superuser'];
@@ -73,7 +75,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
               onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
             >
-              Back
+              {t('shared.back')}
             </button>
           ) : (
             <Link
@@ -83,7 +85,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
               onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
             >
-              Back
+              {t('shared.back')}
             </Link>
           )}
         </div>
@@ -185,7 +187,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
-                    Profile
+                    {t('shared.profile')}
                   </Link>
 
                   <button
@@ -198,7 +200,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
-                    Logout
+                    {t('navigation.logout')}
                   </button>
                 </motion.div>
               )}

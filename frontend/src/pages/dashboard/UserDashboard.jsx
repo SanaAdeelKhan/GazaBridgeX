@@ -7,10 +7,12 @@ import { useUser } from '../../context/UserContext';
 import { postsAPI } from '../../api/posts';
 import { coursesAPI } from '../../api/courses';
 import colors from '../../theme/colors';
+import { useAppTranslation } from '../../hooks/useAppTranslation';
 
 export default function UserDashboard() {
   const { user } = useAuth();
   const { profile } = useUser();
+  const { t } = useAppTranslation();
   const [stats, setStats] = useState({
     offers: 0,
     requests: 0,
@@ -67,10 +69,10 @@ export default function UserDashboard() {
 
   // Stat card config — each stat gets its own token-driven color instead of random gradients
   const statCards = [
-    { label: 'Offers', value: stats.offers, icon: '🙌', bg: colors.goldLight, iconColor: colors.gold, path: '/posts' },
-    { label: 'Requests', value: stats.requests, icon: '🌟', bg: colors.primaryLight, iconColor: colors.primary, path: '/posts' },
-    { label: 'Courses', value: stats.courses, icon: '📚', bg: colors.oliveLight, iconColor: colors.olive, path: '/courses' },
-    { label: 'Live Sections', value: stats.liveSections, icon: '📡', bg: colors.cardAlt, iconColor: colors.secondary, path: '/live-sections' },
+    { key: 'offers', value: stats.offers, icon: '🙌', bg: colors.goldLight, iconColor: colors.gold, path: '/posts' },
+    { key: 'requests', value: stats.requests, icon: '🌟', bg: colors.primaryLight, iconColor: colors.primary, path: '/posts' },
+    { key: 'courses', value: stats.courses, icon: '📚', bg: colors.oliveLight, iconColor: colors.olive, path: '/courses' },
+    { key: 'liveSections', value: stats.liveSections, icon: '📡', bg: colors.cardAlt, iconColor: colors.secondary, path: '/live-sections' },
   ];
 
   return (
@@ -90,7 +92,7 @@ export default function UserDashboard() {
             </div>
             <div>
               <h1 className="text-3xl font-bold" style={{ color: colors.title }}>
-                Welcome back, {profile?.first_name || user?.first_name || 'User'}!
+                {t('dashboard.welcomeBack', { name: profile?.first_name || user?.first_name || t('shared.user') })}
               </h1>
               <p className="mt-1" style={{ color: colors.muted }}>{user?.email}</p>
               <div className="flex gap-2 mt-3">
@@ -111,7 +113,7 @@ export default function UserDashboard() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {statCards.map(stat => (
-            <Link key={stat.label} to={stat.path}>
+            <Link key={stat.key} to={stat.path}>
               <motion.div
                 whileHover={{ y: -5 }}
                 className="rounded-2xl shadow-lg p-6 border hover:shadow-xl transition-all"
@@ -124,7 +126,7 @@ export default function UserDashboard() {
                   {stat.icon}
                 </div>
                 <div className="text-3xl font-bold" style={{ color: colors.title }}>{stat.value}</div>
-                <div className="text-sm mt-1" style={{ color: colors.muted }}>{stat.label}</div>
+                <div className="text-sm mt-1" style={{ color: colors.muted }}>{t(`dashboard.${stat.key}`)}</div>
               </motion.div>
             </Link>
           ))}
@@ -136,7 +138,7 @@ export default function UserDashboard() {
           style={{ backgroundColor: colors.white, borderColor: colors.divider }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold" style={{ color: colors.title }}>Recent Posts</h2>
+            <h2 className="text-xl font-bold" style={{ color: colors.title }}>{t('dashboard.recentPosts')}</h2>
             <Link
               to="/posts"
               className="font-semibold text-sm transition-colors"
@@ -144,7 +146,7 @@ export default function UserDashboard() {
               onMouseEnter={e => e.currentTarget.style.color = colors.goldHover}
               onMouseLeave={e => e.currentTarget.style.color = colors.gold}
             >
-              View All →
+              {t('dashboard.viewAll')}
             </Link>
           </div>
 
@@ -164,9 +166,9 @@ export default function UserDashboard() {
           ) : recentPosts.length === 0 ? (
             <div className="text-center py-8" style={{ color: colors.muted }}>
               <div className="text-4xl mb-4">📝</div>
-              <p>No posts yet. Create your first offer or request!</p>
+              <p>{t('dashboard.noPosts')}</p>
               <Link to="/posts" className="font-semibold mt-2 inline-block" style={{ color: colors.gold }}>
-                Create Post →
+                {t('dashboard.createPost')}
               </Link>
             </div>
           ) : (
@@ -190,7 +192,7 @@ export default function UserDashboard() {
                           : { backgroundColor: colors.primaryLight, color: colors.primary }
                       }
                     >
-                      {isOffer ? 'Offer' : 'Request'}
+                      {isOffer ? t('dashboard.offer') : t('dashboard.request')}
                     </span>
                     <div className="flex-1">
                       <h3 className="font-semibold" style={{ color: colors.body }}>

@@ -3,10 +3,12 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 export default function Unauthorized() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useAppTranslation();
 
   const isAdmin = user?.roles?.some(r =>
     ['manager', 'admin', 'superuser'].includes(r.name)
@@ -24,9 +26,9 @@ export default function Unauthorized() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m0 0v2m0-2h2m-2 0H10m9.364-7.364A9 9 0 1112 3a9 9 0 017.364 4.636M12 9v4" />
           </svg>
         </div>
-        <h1 className="text-3xl font-bold mb-2" style={{ color: colors.headingDark }}>Access Denied</h1>
+        <h1 className="text-3xl font-bold mb-2" style={{ color: colors.headingDark }}>{t('shared.accessDenied')}</h1>
         <p className="mb-6" style={{ color: colors.body }}>
-          You don't have permission to access this page. This area is restricted to administrators only.
+          {t('shared.restrictedArea')}
         </p>
         <div className="flex gap-3">
           <button
@@ -34,14 +36,14 @@ export default function Unauthorized() {
             className="flex-1 py-3 border-2 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
             style={{ borderColor: '#D1D5DB', color: colors.body }}
           >
-            Go Back
+            {t('shared.goBack')}
           </button>
           <Link
             to={isAdmin ? '/admin' : '/dashboard'}
             className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg flex items-center justify-center"
             style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
           >
-            Dashboard
+            {t('shared.dashboard')}
           </Link>
         </div>
       </motion.div>

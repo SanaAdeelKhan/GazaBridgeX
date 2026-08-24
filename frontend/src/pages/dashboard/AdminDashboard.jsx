@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 import { adminAPI } from '../../api/admin';
 import { useAuth } from '../../context/AuthContext';
 import colors from '../../theme/colors';
+import { useAppTranslation } from '../../hooks/useAppTranslation';
 
 export default function AdminDashboard() {
   const { user } = useAuth();
+  const { t } = useAppTranslation();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -28,13 +30,13 @@ export default function AdminDashboard() {
   // Each stat gets a meaningful token instead of a random gradient.
   // Volunteers=gold / Seekers=sky-blue mirrors the Offer/Request (gold/navy) logic used elsewhere.
   const statCards = [
-    { label: 'Total Users', value: stats?.total_users || 0, icon: '👥', bg: colors.primaryLight, iconColor: colors.primary, path: '/admin/users/volunteers' },
-    { label: 'Volunteers', value: stats?.volunteers || 0, icon: '🙌', bg: colors.goldLight, iconColor: colors.gold, path: '/admin/users/volunteers' },
-    { label: 'Seekers', value: stats?.seekers || 0, icon: '🌟', bg: colors.cardAlt, iconColor: colors.secondary, path: '/admin/users/seekers' },
-    { label: 'Both Roles', value: stats?.both || 0, icon: '🔄', bg: colors.oliveLight, iconColor: colors.olive, path: '/admin/users/both' },
-    { label: 'Managers', value: stats?.managers || 0, icon: '👔', bg: colors.warningBg, iconColor: colors.warning, path: '/admin/users/managers' },
-    { label: 'Admins', value: stats?.admins || 0, icon: '🛡️', bg: colors.primaryLight, iconColor: colors.header, path: '/admin/users/admins' },
-    { label: 'Inactive', value: stats?.inactive || 0, icon: '⏸️', bg: colors.badgeNeutral, iconColor: colors.muted, path: '/admin/users/inactive' },
+    { key: 'totalUsers', value: stats?.total_users || 0, icon: '👥', bg: colors.primaryLight, iconColor: colors.primary, path: '/admin/users/volunteers' },
+    { key: 'volunteers', value: stats?.volunteers || 0, icon: '🙌', bg: colors.goldLight, iconColor: colors.gold, path: '/admin/users/volunteers' },
+    { key: 'seekers', value: stats?.seekers || 0, icon: '🌟', bg: colors.cardAlt, iconColor: colors.secondary, path: '/admin/users/seekers' },
+    { key: 'bothRoles', value: stats?.both || 0, icon: '🔄', bg: colors.oliveLight, iconColor: colors.olive, path: '/admin/users/both' },
+    { key: 'managers', value: stats?.managers || 0, icon: '👔', bg: colors.warningBg, iconColor: colors.warning, path: '/admin/users/managers' },
+    { key: 'admins', value: stats?.admins || 0, icon: '🛡️', bg: colors.primaryLight, iconColor: colors.header, path: '/admin/users/admins' },
+    { key: 'inactive', value: stats?.inactive || 0, icon: '⏸️', bg: colors.badgeNeutral, iconColor: colors.muted, path: '/admin/users/inactive' },
   ];
 
   return (
@@ -45,16 +47,16 @@ export default function AdminDashboard() {
           className="rounded-3xl shadow-lg p-8 mb-8 border"
           style={{ backgroundColor: colors.white, borderColor: colors.divider }}
         >
-          <h1 className="text-3xl font-bold" style={{ color: colors.title }}>Admin Dashboard</h1>
+            <h1 className="text-3xl font-bold" style={{ color: colors.title }}>{t('dashboard.adminDashboard')}</h1>
           <p className="mt-2" style={{ color: colors.muted }}>
-            Welcome back, {user?.first_name || 'Admin'}! Here's an overview of the platform.
+            {t('dashboard.adminOverview', { name: user?.first_name || t('shared.admin') })}
           </p>
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
           {statCards.map(stat => (
-            <Link key={stat.label} to={stat.path}>
+            <Link key={stat.key} to={stat.path}>
               <motion.div
                 whileHover={{ y: -5 }}
                 className="rounded-2xl shadow-lg p-6 border hover:shadow-xl transition-all"
@@ -71,7 +73,7 @@ export default function AdminDashboard() {
                 ) : (
                   <div className="text-3xl font-bold" style={{ color: colors.title }}>{stat.value}</div>
                 )}
-                <div className="text-sm mt-1" style={{ color: colors.muted }}>{stat.label}</div>
+                <div className="text-sm mt-1" style={{ color: colors.muted }}>{t(`dashboard.${stat.key}`)}</div>
               </motion.div>
             </Link>
           ))}
@@ -86,8 +88,8 @@ export default function AdminDashboard() {
               style={{ backgroundColor: colors.white, borderColor: colors.divider }}
             >
               <div className="text-3xl mb-3">📢</div>
-              <h3 className="font-bold mb-2" style={{ color: colors.title }}>Send Notifications</h3>
-              <p className="text-sm" style={{ color: colors.muted }}>Send bulk notifications to user groups</p>
+              <h3 className="font-bold mb-2" style={{ color: colors.title }}>{t('dashboard.sendNotifications')}</h3>
+              <p className="text-sm" style={{ color: colors.muted }}>{t('dashboard.sendBulkNotifications')}</p>
             </motion.div>
           </Link>
           <Link to="/admin/resources">
@@ -97,8 +99,8 @@ export default function AdminDashboard() {
               style={{ backgroundColor: colors.white, borderColor: colors.divider }}
             >
               <div className="text-3xl mb-3">📚</div>
-              <h3 className="font-bold mb-2" style={{ color: colors.title }}>Manage Resources</h3>
-              <p className="text-sm" style={{ color: colors.muted }}>Create and manage learning resources</p>
+              <h3 className="font-bold mb-2" style={{ color: colors.title }}>{t('dashboard.manageResources')}</h3>
+              <p className="text-sm" style={{ color: colors.muted }}>{t('dashboard.manageResourcesDescription')}</p>
             </motion.div>
           </Link>
           <Link to="/admin/posts">
@@ -108,8 +110,8 @@ export default function AdminDashboard() {
               style={{ backgroundColor: colors.white, borderColor: colors.divider }}
             >
               <div className="text-3xl mb-3">📝</div>
-              <h3 className="font-bold mb-2" style={{ color: colors.title }}>Manage Posts</h3>
-              <p className="text-sm" style={{ color: colors.muted }}>Review and manage community posts</p>
+              <h3 className="font-bold mb-2" style={{ color: colors.title }}>{t('dashboard.managePosts')}</h3>
+              <p className="text-sm" style={{ color: colors.muted }}>{t('dashboard.managePostsDescription')}</p>
             </motion.div>
           </Link>
         </div>

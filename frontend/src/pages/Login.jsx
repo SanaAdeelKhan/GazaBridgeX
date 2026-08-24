@@ -5,10 +5,12 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const { t } = useAppTranslation();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -64,8 +66,8 @@ export default function Login() {
               <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-[126px] object-contain" />
             </div>
           </Link>
-          <h2 className="text-3xl font-bold" style={{ color: colors.headingDark }}>Welcome back</h2>
-          <p className="mt-2" style={{ color: colors.muted }}>Sign in to your account to continue</p>
+          <h2 className="text-3xl font-bold" style={{ color: colors.headingDark }}>{t('auth.welcomeBack')}</h2>
+          <p className="mt-2" style={{ color: colors.muted }}>{t('auth.signInContinue')}</p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
@@ -76,7 +78,7 @@ export default function Login() {
               <div className="w-full border-t border-gray-200" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white" style={{ color: colors.muted }}>or continue with email</span>
+              <span className="px-4 bg-white" style={{ color: colors.muted }}>{t('auth.orEmail')}</span>
             </div>
           </div>
 
@@ -99,7 +101,7 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
-                Email address
+                {t('auth.emailAddress')}
               </label>
               <input
                 id="email"
@@ -117,7 +119,7 @@ export default function Login() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
-                Password
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <input
@@ -130,13 +132,13 @@ export default function Login() {
                   onChange={handleChange}
                   className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-xl focus:ring-2 transition-all outline-none placeholder-gray-400 focus:border-[#D4A017]"
                   style={{ color: colors.body, '--tw-ring-color': 'rgba(212,160,23,0.25)' }}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.enterPassword')}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(prev => !prev)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                 >
                   {showPassword ? (
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -156,7 +158,7 @@ export default function Login() {
                   className="text-sm font-medium transition-colors hover:text-[#154360]"
                   style={{ color: colors.gold }}
                 >
-                  Forgot your password?
+                  {t('auth.forgotPassword')}
                 </Link>
               </div>
             </div>
@@ -175,19 +177,19 @@ export default function Login() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Signing in...
+                  {t('shared.signingIn')}
                 </div>
               ) : (
-                'Sign in'
+                t('auth.signIn')
               )}
             </motion.button>
           </form>
         </div>
 
         <p className="text-center mt-6" style={{ color: colors.muted }}>
-          Don't have an account?{' '}
+          {t('auth.noAccount')}{' '}
           <Link to="/register" className="font-semibold hover:text-[#154360]" style={{ color: colors.gold }}>
-            Create one free
+            {t('auth.createFree')}
           </Link>
         </p>
       </motion.div>

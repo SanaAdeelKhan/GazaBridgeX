@@ -1,13 +1,14 @@
 // frontend/src/components/layout/AdminSidebar.jsx
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAppTranslation } from '../../hooks/useAppTranslation';
 
 const adminNavItems = [
   {
-    section: 'Admin',
+    sectionKey: 'admin',
     items: [
       {
-        label: 'Dashboard',
+        key: 'dashboard',
         path: '/admin',
         icon: (
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -16,7 +17,7 @@ const adminNavItems = [
         ),
       },
       {
-        label: 'Send Notifications',
+        key: 'sendNotifications',
         path: '/admin/notifications',
         icon: (
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,43 +28,44 @@ const adminNavItems = [
     ],
   },
   {
-    section: 'User Management',
+    sectionKey: 'userManagement',
     items: [
-      { label: 'Volunteers', path: '/admin/users/volunteers', icon: '🙌' },
-      { label: 'Seekers', path: '/admin/users/seekers', icon: '🌟' },
-      { label: 'Both Roles', path: '/admin/users/both', icon: '🔄' },
-      { label: 'Managers', path: '/admin/users/managers', icon: '👔' },
-      { label: 'Admins', path: '/admin/users/admins', icon: '🛡️' },
-      { label: 'Inactive Users', path: '/admin/users/inactive', icon: '⏸️' },
+      { key: 'volunteers', path: '/admin/users/volunteers', icon: '🙌' },
+      { key: 'seekers', path: '/admin/users/seekers', icon: '🌟' },
+      { key: 'bothRoles', path: '/admin/users/both', icon: '🔄' },
+      { key: 'managers', path: '/admin/users/managers', icon: '👔' },
+      { key: 'admins', path: '/admin/users/admins', icon: '🛡️' },
+      { key: 'inactiveUsers', path: '/admin/users/inactive', icon: '⏸️' },
     ],
   },
   {
-    section: 'Content Management',
+    sectionKey: 'contentManagement',
     items: [
-      { label: 'Resources', path: '/admin/resources', icon: '📚' },
-      { label: 'Posts', path: '/admin/posts', icon: '📝' },
-      { label: 'Courses', path: '/admin/courses', icon: '📖' },
-      { label: 'Live Sections', path: '/admin/live-sections', icon: '📡' },
+      { key: 'resources', path: '/admin/resources', icon: '📚' },
+      { key: 'posts', path: '/admin/posts', icon: '📝' },
+      { key: 'courses', path: '/admin/courses', icon: '📖' },
+      { key: 'liveSections', path: '/admin/live-sections', icon: '📡' },
     ],
   },
   {
-    section: 'Main App',
+    sectionKey: 'mainApp',
     items: [
-      { label: 'Posts', path: '/posts', icon: '📝' },
-      { label: 'Matches', path: '/matches', icon: '⚡' },
-      { label: 'Courses', path: '/courses', icon: '📖' },
-      { label: 'Live Sections', path: '/live-sections', icon: '📡' },
-      { label: 'Resources', path: '/resources', icon: '📚' },
-      { label: 'Chat', path: '/chat', icon: '💬' },
-      { label: 'Notifications', path: '/notifications', icon: '🔔' },
-      { label: 'Profile', path: '/profile', icon: '👤' },
-      { label: 'Feedback', path: '/dashboard/feedback', icon: '⭐' },
+      { key: 'posts', path: '/posts', icon: '📝' },
+      { key: 'matches', path: '/matches', icon: '⚡' },
+      { key: 'courses', path: '/courses', icon: '📖' },
+      { key: 'liveSections', path: '/live-sections', icon: '📡' },
+      { key: 'resources', path: '/resources', icon: '📚' },
+      { key: 'chat', path: '/chat', icon: '💬' },
+      { key: 'notifications', path: '/notifications', icon: '🔔' },
+      { key: 'profile', path: '/profile', icon: '👤' },
+      { key: 'feedback', path: '/dashboard/feedback', icon: '⭐' },
     ],
   },
 ];
 
 export default function AdminSidebar() {
   const location = useLocation();
+  const { t } = useAppTranslation();
 
   return (
     <div className="py-6">
@@ -75,10 +77,10 @@ export default function AdminSidebar() {
 
       <nav className="space-y-6">
         {adminNavItems.map((section) => (
-          <div key={section.section}>
+          <div key={section.sectionKey}>
             <div className="px-6 mb-2">
               <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#9CA3AF' }}>
-                {section.section}
+                {t(`shared.${section.sectionKey}`)}
               </h2>
             </div>
             <div className="space-y-1 px-3">
@@ -101,7 +103,7 @@ export default function AdminSidebar() {
                     <span className="w-5 h-5 flex items-center justify-center text-base">
                       {typeof item.icon === 'string' ? item.icon : item.icon}
                     </span>
-                    <span>{item.label}</span>
+                    <span>{t(`shared.${item.key}`)}</span>
                     {isActive && (
                       <motion.div
                         layoutId="activeAdminSidebar"

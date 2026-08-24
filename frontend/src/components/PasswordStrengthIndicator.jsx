@@ -1,8 +1,10 @@
 // frontend/src/components/PasswordStrengthIndicator.jsx
 import { motion } from 'framer-motion';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 export default function PasswordStrengthIndicator({ password }) {
+  const { t } = useAppTranslation();
   const calculateStrength = (pwd) => {
     let score = 0;
 
@@ -22,15 +24,15 @@ export default function PasswordStrengthIndicator({ password }) {
     switch (strength) {
       case 0:
       case 1:
-        return { label: 'Very Weak', color: colors.error, width: '20%' };
+        return { label: t('shared.veryWeak'), color: colors.error, width: '20%' };
       case 2:
-        return { label: 'Weak', color: '#F97316', width: '40%' };
+        return { label: t('shared.weak'), color: '#F97316', width: '40%' };
       case 3:
-        return { label: 'Fair', color: colors.gold, width: '60%' };
+        return { label: t('shared.fair'), color: colors.gold, width: '60%' };
       case 4:
-        return { label: 'Strong', color: colors.goldHover, width: '80%' };
+        return { label: t('shared.strong'), color: colors.goldHover, width: '80%' };
       case 5:
-        return { label: 'Very Strong', color: colors.olive, width: '100%' };
+        return { label: t('shared.veryStrong'), color: colors.olive, width: '100%' };
       default:
         return { label: '', color: '#E5E7EB', width: '0%' };
     }
@@ -55,7 +57,7 @@ export default function PasswordStrengthIndicator({ password }) {
       </div>
       {password && (
         <p className="text-xs mt-1" style={{ color: info.color }}>
-          Password strength: {info.label}
+          {t('shared.passwordStrength', { label: info.label })}
         </p>
       )}
     </motion.div>

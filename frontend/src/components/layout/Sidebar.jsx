@@ -1,10 +1,11 @@
 // frontend/src/components/layout/Sidebar.jsx
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAppTranslation } from '../../hooks/useAppTranslation';
 
 const navItems = [
   {
-    label: 'Dashboard',
+    key: 'dashboard',
     path: '/dashboard',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,7 +14,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Posts',
+    key: 'posts',
     path: '/posts',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -22,7 +23,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Courses',
+    key: 'courses',
     path: '/courses',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -31,7 +32,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Live Sections',
+    key: 'liveSections',
     path: '/live-sections',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -40,7 +41,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Resources',
+    key: 'resources',
     path: '/resources',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -49,7 +50,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Matches',
+    key: 'matches',
     path: '/matches',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -58,7 +59,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Chat',
+    key: 'chat',
     path: '/chat',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -67,7 +68,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Notifications',
+    key: 'notifications',
     path: '/notifications',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -76,7 +77,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Profile',
+    key: 'profile',
     path: '/profile',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -85,7 +86,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Feedback',
+    key: 'feedback',
     path: '/dashboard/feedback',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,6 +98,7 @@ const navItems = [
 
 export default function Sidebar() {
   const location = useLocation();
+  const { t } = useAppTranslation();
 
   return (
     <div className="py-6">
@@ -108,7 +110,7 @@ export default function Sidebar() {
 
       <div className="px-6 mb-3">
         <h2 className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#9CA3AF' }}>
-          Main Menu
+          {t('shared.mainMenu')}
         </h2>
       </div>
 
@@ -130,7 +132,7 @@ export default function Sidebar() {
               onMouseLeave={e => { if (!isActive) e.currentTarget.style.backgroundColor = 'transparent'; }}
             >
               {item.icon}
-              <span>{item.label}</span>
+              <span>{t(`shared.${item.key}`)}</span>
               {isActive && (
                 <motion.div
                   layoutId="activeSidebar"

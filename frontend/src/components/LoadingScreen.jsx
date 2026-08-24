@@ -1,8 +1,10 @@
 // frontend/src/components/LoadingScreen.jsx
 import { motion } from 'framer-motion';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 export default function LoadingScreen() {
+  const { t } = useAppTranslation();
   return (
     <motion.div
       initial={{ opacity: 1 }}
@@ -28,7 +30,7 @@ export default function LoadingScreen() {
           className="text-lg font-semibold"
           style={{ color: colors.title }}
         >
-          Building bridges through education...
+          {t('shared.buildingBridges')}
         </motion.p>
       </div>
     </motion.div>

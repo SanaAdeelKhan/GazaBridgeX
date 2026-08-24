@@ -6,6 +6,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 // ─── Noise overlay ─────────────────────────────────────────────────────────
 function NoiseOverlay() {
@@ -55,28 +56,28 @@ function FooterMarquee() {
 
 // ─── Link data ────────────────────────────────────────────────────────────
 const footerLinks = {
-  Platform: [
-    { name: 'How It Works', href: '/how-it-works' },
-    { name: 'Services',     href: '/services' },
-    { name: 'Resources',    href: '/resources' },
-    { name: 'Community',    href: '/posts' },
-    { name: 'FAQ',          href: '/faq' },
+  platform: [
+    { key: 'howItWorks', href: '/how-it-works' },
+    { key: 'services', href: '/services' },
+    { key: 'resources', href: '/resources' },
+    { key: 'community', href: '/posts' },
+    { key: 'faq', href: '/faq' },
   ],
-  Company: [
-    { name: 'About Us', href: '/about' },
-    { name: 'Mission',  href: '/mission' },
-    { name: 'Blog',     href: '/blog' },
+  company: [
+    { key: 'aboutUs', href: '/about' },
+    { key: 'mission', href: '/mission' },
+    { key: 'blog', href: '/blog' },
   ],
-  Community: [
-    { name: 'Volunteers',      href: '/#' },
-    { name: 'Success Stories', href: '/#' },
-    { name: 'Forum',           href: '/#' },
-    { name: 'Events',          href: '/#' },
+  community: [
+    { key: 'volunteers', href: '/#' },
+    { key: 'successStories', href: '/#' },
+    { key: 'forum', href: '/#' },
+    { key: 'events', href: '/#' },
   ],
-  Legal: [
-    { name: 'Privacy Policy',  href: '/privacy-policy' },
-    { name: 'Terms of Service',href: '/terms-of-service' },
-    { name: 'Cookie Policy',   href: '/cookie-policy' },
+  legal: [
+    { key: 'privacyPolicy', href: '/privacy-policy' },
+    { key: 'termsOfService', href: '/terms-of-service' },
+    { key: 'cookiePolicy', href: '/cookie-policy' },
   ],
 };
 
@@ -117,6 +118,7 @@ const socials = [
 export default function Footer() {
   const location  = useLocation();
   const footerRef = useRef(null);
+  const { t } = useAppTranslation();
 
   // Parallax big text
   const { scrollYProgress } = useScroll({
@@ -223,14 +225,14 @@ export default function Footer() {
               <div className="flex items-center gap-2 mb-5">
                 <div className="h-px w-4" style={{ backgroundColor: colors.onDarkBorder }} />
                 <h4 className="text-[11px] font-bold tracking-[0.18em] uppercase" style={{ color: colors.onDarkMuted }}>
-                  {category}
+                  {t(`footer.categories.${category}`)}
                 </h4>
               </div>
 
               <ul className="space-y-2.5">
                 {links.map((link, li) => (
                   <motion.li
-                    key={link.name}
+                    key={link.key}
                     initial={{ opacity: 0, x: -8 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
@@ -245,7 +247,7 @@ export default function Footer() {
                         className="w-0 h-px group-hover:w-3 transition-all duration-300"
                         style={{ backgroundColor: colors.gold }}
                       />
-                      {link.name}
+                      {t(`footer.links.${link.key}`)}
                     </Link>
                   </motion.li>
                 ))}
@@ -270,13 +272,13 @@ export default function Footer() {
             </span>
             <span className="w-1 h-1 rounded-full" style={{ backgroundColor: colors.onDarkMuted }} />
             <span className="text-xs" style={{ color: colors.onDarkMuted }}>
-              Made with{' '}
+              {t('footer.madeWith')}{' '}
               <motion.span
                 animate={{ scale: [1, 1.3, 1] }}
                 transition={{ duration: 1.8, repeat: Infinity }}
                 className="inline-block"
               >❤️</motion.span>
-              {' '}for Gaza.
+              {' '}{t('footer.forGaza')}
             </span>
           </div>
 
@@ -288,23 +290,23 @@ export default function Footer() {
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: colors.gold }} />
             <span className="text-[11px] font-semibold tracking-wide uppercase" style={{ color: colors.gold }}>
-              100% Free Forever
+              {t('footer.freeForever')}
             </span>
           </motion.div>
 
           {/* Right */}
           <div className="flex items-center gap-5">
             {[
-              { name: 'Privacy Policy',   href: '/privacy-policy' },
-              { name: 'Terms of Service', href: '/terms-of-service' },
+              { key: 'privacyPolicy', href: '/privacy-policy' },
+              { key: 'termsOfService', href: '/terms-of-service' },
             ].map((l) => (
               <Link
-                key={l.name}
+                key={l.key}
                 to={l.href}
                 className="text-xs transition-colors duration-200 hover:text-[var(--gb-gold)]"
                 style={{ color: colors.onDarkMuted }}
               >
-                {l.name}
+                {t(`footer.links.${l.key}`)}
               </Link>
             ))}
           </div>

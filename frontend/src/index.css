@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+html[dir="rtl"] body {
+  font-family: "Noto Sans Arabic", "DM Sans", sans-serif;
+}
+
+html[dir="rtl"] {
+  text-align: start;
+}
+
 @layer base {
   :root {
     --gb-page:             #F2DDD8;

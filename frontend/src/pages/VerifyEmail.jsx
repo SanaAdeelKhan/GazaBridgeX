@@ -4,21 +4,23 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { usersAPI } from '../api/users';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 export default function VerifyEmail() {
   const { token } = useParams();
   const [status, setStatus] = useState('verifying'); // verifying, success, error
   const [message, setMessage] = useState('');
+  const { t } = useAppTranslation();
 
   useEffect(() => {
     const verifyEmail = async () => {
       try {
         const response = await usersAPI.verifyEmail(token);
         setStatus('success');
-        setMessage(response.data.detail || 'Email verified successfully!');
+        setMessage(response.data.detail || t('shared.emailVerified'));
       } catch (err) {
         setStatus('error');
-        setMessage(err.response?.data?.detail || 'Verification failed. The link may be invalid or expired.');
+        setMessage(err.response?.data?.detail || t('shared.verificationFailed'));
       }
     };
 
@@ -46,8 +48,8 @@ export default function VerifyEmail() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </motion.div>
-            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>Verifying your email</h2>
-            <p style={{ color: colors.body }}>Please wait a moment...</p>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>{t('shared.verifyingEmail')}</h2>
+            <p style={{ color: colors.body }}>{t('shared.pleaseWait')}</p>
           </>
         )}
 
@@ -63,14 +65,14 @@ export default function VerifyEmail() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
               </svg>
             </motion.div>
-            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>Email Verified!</h2>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>{t('shared.emailVerified')}</h2>
             <p className="mb-8" style={{ color: colors.body }}>{message}</p>
             <Link
               to="/login"
               className="inline-block px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
               style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
             >
-              Sign In Now
+              {t('shared.signInNow')}
             </Link>
           </>
         )}
@@ -82,14 +84,14 @@ export default function VerifyEmail() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>Verification Failed</h2>
+            <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>{t('shared.verificationFailed')}</h2>
             <p className="mb-8" style={{ color: colors.body }}>{message}</p>
             <Link
               to="/login"
               className="inline-block px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
               style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
             >
-              Go to Login
+              {t('shared.goToLogin')}
             </Link>
           </>
         )}

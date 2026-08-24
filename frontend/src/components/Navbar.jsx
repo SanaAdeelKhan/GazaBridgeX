@@ -8,15 +8,16 @@ import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motio
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
 import { colors } from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 const navLinks = [
-  { name: 'Home', href: '/' },
-  { name: 'How It Works', href: '/how-it-works' },
-  { name: 'Services', href: '/services' },
-  { name: 'About', href: '/about' },
+  { key: 'home', href: '/' },
+  { key: 'howItWorks', href: '/how-it-works' },
+  { key: 'services', href: '/services' },
+  { key: 'about', href: '/about' },
   // { name: 'Blog',         href: '/blog' },
-  { name: 'FAQ', href: '/faq' },
-  { name: 'Feedback', href: '/feedback' },
+  { key: 'faq', href: '/faq' },
+  { key: 'feedback', href: '/feedback' },
 ];
 
 // ─── Magnetic wrapper ─────────────────────────────────────────────────────────
@@ -53,6 +54,7 @@ export default function Navbar() {
   const [hoveredLink, setHoveredLink] = useState(null);
   const location = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
+  const { t, language, changeLanguage } = useAppTranslation();
   const containerRef = useRef(null);
   const [hoveredIdx, setHoveredIdx] = useState(null);
 
@@ -114,7 +116,7 @@ export default function Navbar() {
                 const hovered = hoveredIdx === i;
                 return (
                   <Link
-                    key={link.name}
+                    key={link.key}
                     to={link.href}
                     data-active={active}
                     onMouseEnter={() => setHoveredIdx(i)}
@@ -138,7 +140,7 @@ export default function Navbar() {
                           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                         />
                       )}
-                      {link.name}
+                      {t(`navigation.${link.key}`)}
                     </motion.span>
                   </Link>
                 );
@@ -148,6 +150,15 @@ export default function Navbar() {
 
           {/* ── Desktop auth CTA ── */}
           <div className="hidden lg:flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => changeLanguage(language === 'ar' ? 'en' : 'ar')}
+              aria-label={t('language.switchTo')}
+              className="px-3 py-2 text-sm font-semibold rounded-full hover:bg-gray-100 transition-colors"
+              style={{ color: colors.muted }}
+            >
+              {language === 'ar' ? t('language.english') : t('language.arabic')}
+            </button>
             {isAuthenticated ? (
               <>
                 <NotificationBell />
@@ -168,7 +179,7 @@ export default function Navbar() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                         d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                     </svg>
-                    Chat
+                    {t('navigation.chat')}
                   </motion.div>
                 </Link>
 
@@ -180,7 +191,7 @@ export default function Navbar() {
                       className="px-3 py-2 text-sm font-medium rounded-full transition-colors"
                       style={{ color: colors.muted }}
                     >
-                      Admin
+                      {t('navigation.admin')}
                     </motion.div>
                   </Link>
                 )}
@@ -199,7 +210,7 @@ export default function Navbar() {
                       {user?.first_name?.[0] || user?.email?.[0] || 'U'}
                     </div>
                     <span className="text-sm font-medium" style={{ color: colors.body }}>
-                      {user?.first_name || 'User'}
+                      {user?.first_name || t('navigation.user')}
                     </span>
                   </motion.div>
                 </Magnetic>
@@ -212,7 +223,7 @@ export default function Navbar() {
                   className="px-3 py-2 text-sm font-medium rounded-full hover:bg-red-50 transition-colors"
                   style={{ color: colors.muted }}
                 >
-                  Logout
+                  {t('navigation.logout')}
                 </motion.button>
               </>
             ) : (
@@ -228,7 +239,7 @@ export default function Navbar() {
                       onMouseEnter={(e) => { e.currentTarget.style.color = colors.gold; }}
                       onMouseLeave={(e) => { e.currentTarget.style.color = colors.muted; }}
                     >
-                      Log In
+                      {t('navigation.login')}
                     </motion.button>
                   </Link>
                 </Magnetic>
@@ -242,7 +253,7 @@ export default function Navbar() {
                       style={{ backgroundColor: colors.gold }}
                     >
                       <span className="relative z-10 flex items-center gap-1.5">
-                        Get Started
+                        {t('navigation.getStarted')}
                         <motion.span
                           animate={{ x: [0, 3, 0] }}
                           transition={{ duration: 1.6, repeat: Infinity }}
@@ -321,7 +332,7 @@ export default function Navbar() {
                             style={{ backgroundColor: colors.gold }}
                           />
                         )}
-                        {link.name}
+                        {t(`navigation.${link.key}`)}
                       </Link>
                     </motion.div>
                   );
@@ -330,6 +341,17 @@ export default function Navbar() {
 
               {/* Divider */}
               <div className="h-px bg-gray-100 mb-4" />
+
+              <button
+                type="button"
+                onClick={() => changeLanguage(language === 'ar' ? 'en' : 'ar')}
+                aria-label={t('language.switchTo')}
+                className="w-full flex items-center justify-between px-4 py-2.5 mb-3 rounded-xl text-sm font-semibold hover:bg-gray-100 transition-colors"
+                style={{ color: colors.muted }}
+              >
+                <span>{t('language.switchTo')}</span>
+                <span>{language === 'ar' ? t('language.english') : t('language.arabic')}</span>
+              </button>
 
               {/* Auth section */}
               {isAuthenticated ? (
@@ -349,14 +371,14 @@ export default function Navbar() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                           d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                       </svg>
-                      Chat
+                      {t('navigation.chat')}
                     </div>
                   </Link>
 
                   {user?.roles?.some(r => ['manager', 'admin', 'superuser'].includes(r.name)) && (
                     <Link to="/admin">
                       <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all" style={{ color: colors.muted }}>
-                        Admin Panel
+                        {t('navigation.adminPanel')}
                       </div>
                     </Link>
                   )}
@@ -370,7 +392,7 @@ export default function Navbar() {
                       {user?.first_name?.[0] || user?.email?.[0] || 'U'}
                     </div>
                     <div>
-                      <div className="text-sm font-semibold" style={{ color: colors.body }}>{user?.first_name || 'User'}</div>
+                      <div className="text-sm font-semibold" style={{ color: colors.body }}>{user?.first_name || t('navigation.user')}</div>
                       <div className="text-xs" style={{ color: colors.muted }}>{user?.email}</div>
                     </div>
                   </div>
@@ -383,7 +405,7 @@ export default function Navbar() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
                         d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
-                    Logout
+                    {t('navigation.logout')}
                   </button>
                 </div>
               ) : (
@@ -394,7 +416,7 @@ export default function Navbar() {
                       className="w-full py-3 text-sm font-semibold border rounded-xl hover:bg-[#FCF3CF] transition-colors"
                       style={{ color: colors.gold, borderColor: colors.gold }}
                     >
-                      Log In
+                      {t('navigation.login')}
                     </motion.button>
                   </Link>
                   <Link to="/register">
@@ -403,7 +425,7 @@ export default function Navbar() {
                       className="w-full py-3 text-sm font-bold text-white rounded-xl flex items-center justify-center gap-2 hover:brightness-95 transition-all"
                       style={{ backgroundColor: colors.gold }}
                     >
-                      Get Started Free
+                      {t('navigation.getStartedFree')}
                       <motion.span animate={{ x: [0, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>→</motion.span>
                     </motion.button>
                   </Link>

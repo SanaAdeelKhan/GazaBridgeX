@@ -1,5 +1,6 @@
 // frontend/src/components/Pagination.jsx
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 /**
  * Reusable numbered pagination bar.
@@ -10,6 +11,7 @@ import colors from '../theme/colors';
  *   disabled:    optional, disables all buttons (e.g. while loading)
  */
 export default function Pagination({ page, totalPages, onPageChange, disabled = false }) {
+  const { t } = useAppTranslation();
   if (totalPages <= 1) return null;
 
   const getPageNumbers = () => {
@@ -65,7 +67,7 @@ export default function Pagination({ page, totalPages, onPageChange, disabled = 
         style={arrowBtnStyle}
         onMouseEnter={e => { if (!disabled && page > 1) { e.currentTarget.style.borderColor = colors.primary; e.currentTarget.style.color = colors.primary; } }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = colors.inputBorder; e.currentTarget.style.color = colors.body; }}
-        aria-label="Previous page"
+        aria-label={t('shared.previousPage')}
       >
         ‹
       </button>
@@ -96,7 +98,7 @@ export default function Pagination({ page, totalPages, onPageChange, disabled = 
         style={arrowBtnStyle}
         onMouseEnter={e => { if (!disabled && page < totalPages) { e.currentTarget.style.borderColor = colors.primary; e.currentTarget.style.color = colors.primary; } }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = colors.inputBorder; e.currentTarget.style.color = colors.body; }}
-        aria-label="Next page"
+        aria-label={t('shared.nextPage')}
       >
         ›
       </button>
