@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNotifications } from '../context/NotificationContext';
 import { useAuth } from '../context/AuthContext';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 const NotificationIcon = ({ type }) => {
   const icons = {
@@ -16,15 +17,16 @@ const NotificationIcon = ({ type }) => {
 };
 
 const TimeAgo = ({ date }) => {
+  const { t } = useAppTranslation();
   const getTimeAgo = (dateString) => {
     const now = new Date();
     const date = new Date(dateString);
     const seconds = Math.floor((now - date) / 1000);
 
-    if (seconds < 60) return 'just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
+    if (seconds < 60) return t('notifications.justNow');
+    if (seconds < 3600) return t('notifications.minutesAgo', { count: Math.floor(seconds / 60) });
+    if (seconds < 86400) return t('notifications.hoursAgo', { count: Math.floor(seconds / 3600) });
+    if (seconds < 604800) return t('notifications.daysAgo', { count: Math.floor(seconds / 86400) });
     return date.toLocaleDateString();
   };
 
@@ -117,6 +119,7 @@ const TYPE_STYLE = {
 };
 
 function NotificationCard({ notification, onMarkRead, onDelete }) {
+  const { t } = useAppTranslation();
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -178,7 +181,7 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
 
             {notification.sender_name && (
               <p className="text-xs mt-2" style={{ color: colors.muted }}>
-                From: {notification.sender_name}
+                {t('notifications.from', { name: notification.sender_name })}
                 {notification.sender_role && ` (${notification.sender_role})`}
               </p>
             )}
@@ -208,8 +211,8 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={handleDelete}
-        title="Delete Notification"
-        message="Are you sure you want to delete this notification? This action cannot be undone."
+        title={t('notifications.deleteNotification')}
+        message={t('notifications.deleteNotificationMessage')}
         type="delete"
       />
     </>
@@ -217,6 +220,7 @@ function NotificationCard({ notification, onMarkRead, onDelete }) {
 }
 
 export default function Notifications() {
+  const { t } = useAppTranslation();
   const { user } = useAuth();
   const {
     notifications,
@@ -270,10 +274,10 @@ export default function Notifications() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold" style={{ color: colors.headingDark }}>
-                Notifications
+                {t('notifications.notifications')}
               </h1>
               <p className="mt-1" style={{ color: colors.muted }}>
-                Stay updated with your activity
+                {t('notifications.stayUpdated')}
               </p>
             </div>
 
@@ -286,7 +290,7 @@ export default function Notifications() {
                 className="px-4 py-2 text-sm font-medium rounded-xl border transition-colors disabled:opacity-50"
                 style={{ backgroundColor: colors.goldLight, color: colors.goldHover, borderColor: colors.gold }}
               >
-                Mark All Read
+                {t('notifications.markAll')}
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -296,7 +300,7 @@ export default function Notifications() {
                 className="px-4 py-2 text-sm font-medium rounded-xl border transition-colors disabled:opacity-50"
                 style={{ backgroundColor: colors.errorBg, color: colors.error, borderColor: colors.error }}
               >
-                Delete All
+                {t('notifications.deleteAll')}
               </motion.button>
             </div>
           </div>
@@ -304,9 +308,9 @@ export default function Notifications() {
           {/* Filters */}
           <div className="flex gap-2">
             {[
-              { value: 'all', label: 'All' },
-              { value: 'unread', label: 'Unread' },
-              { value: 'urgent', label: 'Urgent' },
+              { value: 'all', key: 'all' },
+              { value: 'unread', key: 'unread' },
+              { value: 'urgent', key: 'urgent' },
             ].map(f => {
               const isActive = filter === f.value;
               return (
@@ -319,7 +323,7 @@ export default function Notifications() {
                     : { backgroundColor: colors.card, color: colors.body, borderColor: colors.cardBorder }
                   }
                 >
-                  {f.label}
+                  {t(`notifications.${f.key}`)}
                 </button>
               );
             })}
@@ -359,11 +363,11 @@ export default function Notifications() {
             className="text-center py-20"
           >
             <div className="text-6xl mb-6">🔔</div>
-            <h3 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>No notifications</h3>
+            <h3 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>{t('notifications.noNotifications')}</h3>
             <p style={{ color: colors.muted }}>
               {filter !== 'all'
-                ? 'No notifications match your filter.'
-                : 'You\'re all caught up!'}
+                ? t('notifications.filterEmpty')
+                : t('notifications.caughtUp')}
             </p>
           </motion.div>
         )}
@@ -387,10 +391,10 @@ export default function Notifications() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
-                  Loading...
+                  {t('shared.loading')}
                 </span>
               ) : (
-                'Load More'
+                t('notifications.loadMore')
               )}
             </motion.button>
           </div>
@@ -402,8 +406,8 @@ export default function Notifications() {
         isOpen={showDeleteAllModal}
         onClose={() => setShowDeleteAllModal(false)}
         onConfirm={handleDeleteAll}
-        title="Delete All Notifications"
-        message="Are you sure you want to delete all notifications? This action cannot be undone."
+        title={t('notifications.deleteAllNotifications')}
+        message={t('notifications.deleteAllMessage')}
         type="delete"
       />
     </div>

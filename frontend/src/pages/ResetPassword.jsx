@@ -5,10 +5,12 @@ import { motion } from 'framer-motion';
 import { forgetPasswordAPI } from '../api/forgetPassword';
 import PasswordStrengthIndicator from '../components/PasswordStrengthIndicator';
 import colors, { tw } from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 export default function ResetPassword() {
   const { token } = useParams();
   const navigate = useNavigate();
+  const { t } = useAppTranslation();
 
   const [passwords, setPasswords] = useState({
     new_password: '',
@@ -31,12 +33,12 @@ export default function ResetPassword() {
 
     // Client-side validation
     if (passwords.new_password.length < 8) {
-      setError('Password must be at least 8 characters long.');
+      setError(t('shared.passwordMinLength'));
       return;
     }
 
     if (passwords.new_password !== passwords.confirm_password) {
-      setError('Passwords do not match.');
+      setError(t('reset.mismatch'));
       return;
     }
 
@@ -55,7 +57,7 @@ export default function ResetPassword() {
       const message = err.response?.data?.detail ||
         err.response?.data?.new_password?.[0] ||
         err.response?.data?.confirm_password?.[0] ||
-        'Password reset failed. The link may be invalid or expired.';
+        t('reset.failed');
       setError(message);
     } finally {
       setLoading(false);
@@ -80,9 +82,9 @@ export default function ResetPassword() {
               <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-[126px] object-contain" />
             </div>
           </Link>
-          <h2 className="text-3xl font-bold" style={{ color: colors.headingDark }}>Set new password</h2>
+          <h2 className="text-3xl font-bold" style={{ color: colors.headingDark }}>{t('reset.title')}</h2>
           <p className="mt-2" style={{ color: colors.body }}>
-            Your new password must be different from previously used passwords.
+            {t('reset.description')}
           </p>
         </div>
 
@@ -105,9 +107,9 @@ export default function ResetPassword() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                 </svg>
               </motion.div>
-              <h3 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>Password reset successful!</h3>
+              <h3 className="text-2xl font-bold mb-4" style={{ color: colors.headingDark }}>{t('reset.successTitle')}</h3>
               <p className="mb-4" style={{ color: colors.body }}>
-                Your password has been successfully reset. You'll be redirected to the login page shortly.
+                {t('reset.successDescription')}
               </p>
               <div className="w-full bg-gray-200 rounded-full h-1.5 mb-6 overflow-hidden">
                 <motion.div
@@ -123,7 +125,7 @@ export default function ResetPassword() {
                 className="inline-flex items-center gap-2 px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
                 style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
               >
-                Go to Login Now
+                {t('reset.goLoginNow')}
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
@@ -153,7 +155,7 @@ export default function ResetPassword() {
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label htmlFor="new_password" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
-                    New Password
+                    {t('reset.newPassword')}
                   </label>
                   <input
                     id="new_password"
@@ -166,7 +168,7 @@ export default function ResetPassword() {
                     autoFocus
                     className={`${tw.goldInput} placeholder-gray-400`}
                     style={{ color: colors.headingDark }}
-                    placeholder="At least 8 characters"
+                    placeholder={t('shared.passwordMinLength')}
                   />
                   {passwords.new_password && (
                     <PasswordStrengthIndicator password={passwords.new_password} />
@@ -175,7 +177,7 @@ export default function ResetPassword() {
 
                 <div>
                   <label htmlFor="confirm_password" className="block text-sm font-medium mb-2" style={{ color: colors.body }}>
-                    Confirm New Password
+                    {t('reset.confirmNewPassword')}
                   </label>
                   <input
                     id="confirm_password"
@@ -190,10 +192,10 @@ export default function ResetPassword() {
                         : 'border-gray-300'
                     }`}
                     style={{ color: colors.headingDark }}
-                    placeholder="Repeat your new password"
+                    placeholder={t('reset.repeatPassword')}
                   />
                   {passwords.confirm_password && passwords.new_password !== passwords.confirm_password && (
-                    <p className="mt-2 text-sm" style={{ color: colors.error }}>Passwords do not match</p>
+                    <p className="mt-2 text-sm" style={{ color: colors.error }}>{t('reset.mismatch')}</p>
                   )}
                   {passwords.confirm_password && passwords.new_password === passwords.confirm_password && (
                     <p className="mt-2 text-sm" style={{ color: colors.olive }}>✓ Passwords match</p>

@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { blogPosts } from '../data/blog';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 export default function Blog() {
+  const { t } = useAppTranslation();
   return (
     <div className="pt-24">
       <section className="relative py-20 overflow-hidden">
@@ -20,13 +22,13 @@ export default function Blog() {
               className="inline-block px-4 py-2 rounded-full text-sm font-semibold mb-4 border"
               style={{ backgroundColor: colors.goldLight, color: colors.headingDark, borderColor: colors.gold }}
             >
-              Our Blog
+              {t('landing.ourBlog')}
             </span>
             <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{ color: colors.headingDark }}>
-              Stories & <span style={{ color: colors.gold }}>Insights</span>
+              {t('landing.storiesInsights')}
             </h1>
             <p className="text-xl max-w-3xl mx-auto" style={{ color: colors.body }}>
-              Read about our mission, impact, and the people we serve.
+              {t('landing.blogIntro')}
             </p>
           </motion.div>
 
@@ -53,9 +55,9 @@ export default function Blog() {
                     </h2>
                     <p className="mb-4" style={{ color: colors.body }}>{post.excerpt}</p>
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                      <span className="text-sm font-medium" style={{ color: colors.muted }}>By {post.author}</span>
+                      <span className="text-sm font-medium" style={{ color: colors.muted }}>{t('landing.by', { author: post.author })}</span>
                       <span className="text-sm font-medium group-hover:translate-x-1 transition-transform inline-block" style={{ color: colors.gold }}>
-                        Read More →
+                        {t('landing.readMore')}
                       </span>
                     </div>
                   </div>

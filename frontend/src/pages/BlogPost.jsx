@@ -3,8 +3,10 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { blogPosts } from '../data/blog';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 export default function BlogPost() {
+  const { t } = useAppTranslation();
   const { slug } = useParams();
   const post = blogPosts.find(p => p.slug === slug);
 
@@ -12,9 +14,9 @@ export default function BlogPost() {
     return (
       <div className="pt-24 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4" style={{ color: colors.headingDark }}>Post Not Found</h1>
+          <h1 className="text-4xl font-bold mb-4" style={{ color: colors.headingDark }}>{t('landing.postNotFound')}</h1>
           <Link to="/blog" className="font-semibold" style={{ color: colors.gold }}>
-            ← Back to Blog
+            {t('landing.backToBlog')}
           </Link>
         </div>
       </div>
@@ -39,7 +41,7 @@ export default function BlogPost() {
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-              Back to Blog
+              {t('landing.backToBlog')}
             </Link>
 
             <div className="text-6xl mb-6">{post.image}</div>
@@ -49,7 +51,7 @@ export default function BlogPost() {
               <span>•</span>
               <span>{post.readTime}</span>
               <span>•</span>
-              <span>By {post.author}</span>
+              <span>{t('landing.by', { author: post.author })}</span>
             </div>
 
             <h1 className="text-4xl md:text-5xl font-bold mb-8" style={{ color: colors.headingDark }}>

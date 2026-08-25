@@ -6,6 +6,7 @@ import { usersAPI } from '../api/users';
 import GoogleLoginButton from '../components/GoogleLoginButton';
 import { tw } from '../theme/colors';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 const COUNTRIES = [
   'Palestine', 'Egypt', 'Jordan', 'Lebanon', 'Syria', 'Saudi Arabia',
@@ -50,14 +51,15 @@ const LANGUAGES = [
 ];
 
 const ROLES = [
-  { value: 'volunteer', label: '🧑‍🏫 I want to volunteer and teach', description: 'Share your skills with eager learners' },
-  { value: 'seeker', label: '🎓 I want to learn new skills', description: 'Get help from experienced volunteers' },
+  { value: 'volunteer', labelKey: 'volunteerTeach', descriptionKey: 'volunteerDescription' },
+  { value: 'seeker', labelKey: 'learnSkills', descriptionKey: 'learnerDescription' },
 ];
 
-const STEPS = ['Account', 'Profile', 'Verification'];
+const STEPS = ['account', 'profile', 'verification'];
 
 export default function Register() {
   const navigate = useNavigate();
+  const { t } = useAppTranslation();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -99,22 +101,22 @@ export default function Register() {
     switch (currentStep) {
       case 1:
         if (!formData.email || !formData.password) {
-          setError('Please fill in all required fields.');
+          setError(t('register.fillRequired'));
           return false;
         }
         if (formData.password !== formData.confirmPassword) {
-          setError('Passwords do not match.');
+          setError(t('register.passwordMismatch'));
           return false;
         }
         if (formData.password.length < 8) {
-          setError('Password must be at least 8 characters.');
+          setError(t('shared.passwordMinLength'));
           return false;
         }
         return true;
       case 2:
         if (!formData.first_name || !formData.last_name || !formData.country ||
             !formData.gender || !formData.linkedin || formData.roles.length === 0) {
-          setError('Please fill in all required fields.');
+          setError(t('register.fillRequired'));
           return false;
         }
         return true;
@@ -177,7 +179,7 @@ export default function Register() {
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-          Email address <span className="text-red-500">*</span>
+          {t('auth.emailAddress')} <span className="text-red-500">*</span>
         </label>
         <input id="email" name="email" type="email" required value={formData.email} onChange={handleChange}
           className={tw.goldInput}
@@ -185,12 +187,12 @@ export default function Register() {
       </div>
       <div>
         <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-          Password <span className="text-red-500">*</span>
+          {t('auth.password')} <span className="text-red-500">*</span>
         </label>
         <div className="relative">
           <input id="password" name="password" type={showPassword ? 'text' : 'password'} required value={formData.password} onChange={handleChange}
             className={`${tw.goldInput} pr-12`}
-            placeholder="At least 8 characters" />
+            placeholder={t('shared.passwordMinLength')} />
           <button type="button" onClick={() => setShowPassword(prev => !prev)}
             className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
             {showPassword ? (
@@ -203,12 +205,12 @@ export default function Register() {
       </div>
       <div>
         <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-          Confirm Password <span className="text-red-500">*</span>
+          {t('register.confirmPassword')} <span className="text-red-500">*</span>
         </label>
         <div className="relative">
           <input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} required value={formData.confirmPassword} onChange={handleChange}
             className={`${tw.goldInput} pr-12`}
-            placeholder="Repeat your password" />
+            placeholder={t('register.repeatPassword')} />
           <button type="button" onClick={() => setShowConfirmPassword(prev => !prev)}
             className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors">
             {showConfirmPassword ? (
@@ -226,12 +228,12 @@ export default function Register() {
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">First Name <span className="text-red-500">*</span></label>
+          <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-2">{t('register.firstName')} <span className="text-red-500">*</span></label>
           <input id="first_name" name="first_name" type="text" required value={formData.first_name} onChange={handleChange}
             className={tw.goldInput} />
         </div>
         <div>
-          <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">Last Name <span className="text-red-500">*</span></label>
+          <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-2">{t('register.lastName')} <span className="text-red-500">*</span></label>
           <input id="last_name" name="last_name" type="text" required value={formData.last_name} onChange={handleChange}
             className={tw.goldInput} />
         </div>
@@ -239,15 +241,15 @@ export default function Register() {
 
       {/* Role Selection */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">I want to... <span className="text-red-500">*</span></label>
+        <label className="block text-sm font-medium text-gray-700 mb-3">{t('register.iWantTo')} <span className="text-red-500">*</span></label>
         <div className="space-y-3">
           {ROLES.map((role) => (
             <label key={role.value} className={`flex items-start p-4 rounded-xl border-2 cursor-pointer transition-all ${formData.roles.includes(role.value) ? 'border-[#D4A017] bg-[#FCF3CF]' : 'border-gray-200 hover:border-gray-300'}`}>
               <input type="checkbox" name="roles" value={role.value} checked={formData.roles.includes(role.value)} onChange={handleChange}
                 className={`mt-0.5 h-4 w-4 ${tw.goldCheckbox}`} />
               <div className="ml-3">
-                <div className="text-sm font-medium text-gray-900">{role.label}</div>
-                <div className="text-sm text-gray-500">{role.description}</div>
+                <div className="text-sm font-medium text-gray-900">{t(`register.${role.labelKey}`)}</div>
+                <div className="text-sm text-gray-500">{t(`register.${role.descriptionKey}`)}</div>
               </div>
             </label>
           ))}
@@ -257,10 +259,10 @@ export default function Register() {
       {/* LinguaDuo Preferred Language */}
       <div className="p-4 rounded-xl border-2 border-blue-100 bg-blue-50">
         <label htmlFor="preferred_language" className="block text-sm font-medium text-gray-700 mb-1">
-          💬 Preferred language for receiving messages <span className="text-red-500">*</span>
+          💬 {t('register.preferredLanguage')} <span className="text-red-500">*</span>
         </label>
         <p className="text-xs text-gray-500 mb-3">
-          GazaBridge is connected to LinguaDuo — a translation chat app. Messages from other users will be delivered to you in this language. You can change this later in your profile.
+          {t('register.languageDescription')}
         </p>
         <select id="preferred_language" name="preferred_language" value={formData.preferred_language} onChange={handleChange}
           className={`${tw.goldInput} bg-white`}>
@@ -271,32 +273,32 @@ export default function Register() {
       </div>
 
       <div>
-        <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">Country <span className="text-red-500">*</span></label>
+        <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-2">{t('register.country')} <span className="text-red-500">*</span></label>
         <select id="country" name="country" required value={formData.country} onChange={handleChange}
           className={tw.goldInput}>
-          <option value="">Select your country</option>
+          <option value="">{t('register.selectCountry')}</option>
           {COUNTRIES.map(country => <option key={country} value={country}>{country}</option>)}
         </select>
       </div>
 
       <div>
-        <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">Gender <span className="text-red-500">*</span></label>
+        <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">{t('register.gender')} <span className="text-red-500">*</span></label>
         <select id="gender" name="gender" required value={formData.gender} onChange={handleChange}
           className={tw.goldInput}>
-          <option value="">Select gender</option>
+          <option value="">{t('register.selectGender')}</option>
           {GENDERS.map(gender => <option key={gender.value} value={gender.value}>{gender.label}</option>)}
         </select>
       </div>
 
       <div>
-        <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 mb-2">LinkedIn Profile <span className="text-red-500">*</span></label>
+        <label htmlFor="linkedin" className="block text-sm font-medium text-gray-700 mb-2">{t('register.linkedin')} <span className="text-red-500">*</span></label>
         <input id="linkedin" name="linkedin" type="url" required value={formData.linkedin} onChange={handleChange}
           placeholder="https://linkedin.com/in/yourprofile"
           className={tw.goldInput} />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-3">Languages you speak</label>
+        <label className="block text-sm font-medium text-gray-700 mb-3">{t('register.languagesSpeak')}</label>
         <div className="grid grid-cols-2 gap-2">
           {LANGUAGES.map(language => (
             <label key={language.code} className={`flex items-center p-2 rounded-lg border cursor-pointer transition-all ${formData.languages.includes(language.code) ? 'border-[#D4A017] bg-[#FCF3CF]' : 'border-gray-200 hover:border-gray-300'}`}>
@@ -310,7 +312,7 @@ export default function Register() {
 
       <div>
         <label htmlFor="whatsapp_number" className="block text-sm font-medium text-gray-700 mb-2">
-          WhatsApp Number <span className="text-gray-400">(optional)</span>
+          {t('register.whatsapp')} <span className="text-gray-400">({t('register.optional')})</span>
         </label>
         <input id="whatsapp_number" name="whatsapp_number" type="tel" value={formData.whatsapp_number} onChange={handleChange}
           placeholder="+1234567890"
@@ -327,18 +329,18 @@ export default function Register() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
         </svg>
       </motion.div>
-      <h3 className="text-2xl font-bold text-gray-900 mb-4">Check Your Email</h3>
+      <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('register.checkEmail')}</h3>
       <p className="text-gray-600 mb-6">
-        {successMessage || "We've sent a verification link to your email address. Please verify your email to activate your account."}
+        {successMessage || t('register.verificationSent')}
       </p>
       <p className="text-sm text-gray-500 mb-8">
         Didn't receive the email? Check your spam folder or{' '}
         <button onClick={() => usersAPI.resendVerification(formData.email)} className="text-[#D4A017] hover:text-[#154360] font-semibold">
-          click here to resend
+          {t('register.resend')}
         </button>
       </p>
       <Link to="/login" className="inline-block px-8 py-3 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all" style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>
-        Go to Login
+        {t('google.goToLogin')}
       </Link>
     </motion.div>
   );
@@ -353,8 +355,8 @@ export default function Register() {
               <img src="/logo-full.png" alt="GazaBridge" className="h-20 w-[126px] object-contain" />
             </div>
           </Link>
-          <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
-          <p className="mt-2 text-gray-600">Join our community of learners and volunteers</p>
+          <h2 className="text-3xl font-bold text-gray-900">{t('register.createAccount')}</h2>
+          <p className="mt-2 text-gray-600">{t('register.joinCommunity')}</p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
@@ -369,7 +371,7 @@ export default function Register() {
                     >
                       {index + 1 < step ? '✓' : index + 1}
                     </div>
-                    <span className={`ml-2 text-sm font-medium hidden sm:block ${index + 1 <= step ? 'text-[#D4A017]' : 'text-gray-400'}`}>{stepName}</span>
+                    <span className={`ml-2 text-sm font-medium hidden sm:block ${index + 1 <= step ? 'text-[#D4A017]' : 'text-gray-400'}`}>{t(`register.${stepName}`)}</span>
                     {index < STEPS.length - 1 && <div className={`w-12 sm:w-20 h-0.5 mx-2 ${index + 1 < step ? '' : 'bg-gray-200'}`} />}
                   </div>
                 ))}
@@ -384,7 +386,7 @@ export default function Register() {
               </div>
               <div className="relative mb-6">
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
-                <div className="relative flex justify-center text-sm"><span className="px-4 bg-white text-gray-500">or continue with email</span></div>
+                <div className="relative flex justify-center text-sm"><span className="px-4 bg-white text-gray-500">{t('auth.orEmail')}</span></div>
               </div>
             </>
           )}
@@ -410,13 +412,13 @@ export default function Register() {
                 {step > 1 && (
                   <motion.button type="button" onClick={handleBack} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                     className="flex-1 py-3 border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors">
-                    Back
+                    {t('register.back')}
                   </motion.button>
                 )}
                 {step < 2 ? (
                   <motion.button type="button" onClick={handleNext} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                     className="flex-1 py-3 text-white font-semibold rounded-xl shadow-lg transition-all" style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>
-                    Continue
+                    {t('register.continue')}
                   </motion.button>
                 ) : (
                   <motion.button type="submit" disabled={loading} whileHover={{ scale: loading ? 1 : 1.02 }} whileTap={{ scale: loading ? 1 : 0.98 }}
@@ -427,9 +429,9 @@ export default function Register() {
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                         </svg>
-                        Creating account...
+                        {t('register.creating')}
                       </div>
-                    ) : 'Create Account'}
+                    ) : t('register.createAccount')}
                   </motion.button>
                 )}
               </div>
@@ -439,8 +441,8 @@ export default function Register() {
 
         {step < 3 && (
           <p className="text-center mt-6 text-gray-600">
-            Already have an account?{' '}
-            <Link to="/login" className="text-[#D4A017] hover:text-[#154360] font-semibold">Sign in</Link>
+            {t('register.alreadyAccount')}{' '}
+            <Link to="/login" className="text-[#D4A017] hover:text-[#154360] font-semibold">{t('auth.signIn')}</Link>
           </p>
         )}
       </motion.div>

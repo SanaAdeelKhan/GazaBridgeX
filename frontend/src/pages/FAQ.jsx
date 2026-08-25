@@ -12,6 +12,22 @@ import {
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { faqData } from '../data/faq';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
+
+const arabicFaq = [
+  ['هل غزة بريدج مجانية؟', 'نعم، مجانية بالكامل للجميع، للمتطوعين وأهل غزة على حد سواء. نؤمن بأن التعليم يجب أن يكون متاحاً للجميع ولا نفرض أي رسوم على خدماتنا.'],
+  ['كيف أتواصل مع متطوع؟', 'اضغط على "مراسلة" في أي بطاقة متطوع لإرسال رسالة مباشرة عبر المنصة. يمكنك أيضاً استخدام رقم WhatsApp أو الانضمام إلى مجموعة WhatsApp إذا أضافها المتطوع إلى ملفه.'],
+  ['هل يمكنني أن أكون متطوعاً وباحثاً عن مساعدة؟', 'نعم! عند إكمال ملفك الشخصي، يمكنك اختيار الدورين. يعلّم كثير من أفراد مجتمعنا مهارة ويتعلمون أخرى، وهذا يشجع على بناء مجتمع أقوى وأكثر تعاوناً.'],
+  ['ما اللغات المدعومة؟', 'تدعم المنصة جميع اللغات. يمكنك كتابة عروضك وطلباتك بالعربية أو الإنجليزية أو أي لغة أخرى. لدينا متطوعون وباحثون من خلفيات لغوية متنوعة.'],
+  ['هل معلوماتي الشخصية آمنة؟', 'ملفك الشخصي ظاهر للمستخدمين المسجلين فقط. أنت تتحكم في معلومات التواصل التي تشاركها. لا نبيع أو نشارك بياناتك الشخصية مع أطراف خارجية، ويمكنك إخفاء أو إظهار تفاصيل التواصل في أي وقت.'],
+  ['من يمكنه الانضمام كمتطوع؟', 'يمكن لأي شخص لديه مهارات لمشاركتها الانضمام كمتطوع! سواء كنت مطوراً أو مصمماً أو مسوقاً محترفاً أو تمتلك مهارات قيّمة أخرى، يمكنك إحداث فرق. يأتي المتطوعون من جميع أنحاء العالم.'],
+  ['هل يجب أن أكون من غزة لطلب المساعدة؟', 'رغم أن تركيزنا الأساسي هو دعم أهل غزة، فإن منصتنا مفتوحة للباحثين عن المساعدة من أي مكان. رسالتنا هي مساعدة من يحتاجون إلى المهارات الرقمية، مع اهتمام خاص بمجتمع غزة.'],
+  ['كيف أنشئ حساباً؟', 'اضغط ببساطة على "ابدأ الآن" وسجّل باستخدام حساب Google أو بريدك الإلكتروني. تستغرق العملية أقل من دقيقتين. بعد التسجيل، يمكنك إكمال ملفك والبدء بالتواصل فوراً.'],
+  ['ما نوع المهارات التي يمكنني تعلمها؟', 'يمكنك تعلم مجموعة واسعة من المهارات الرقمية، منها تطوير الويب وتصميم UI/UX والتسويق الرقمي وعلم البيانات وتطوير تطبيقات الهاتف واللغة الإنجليزية وغير ذلك. نقدم أيضاً التوجيه المهني وخدمات مراجعة السيرة الذاتية.'],
+  ['كيف يتم التحقق من المتطوعين؟', 'يمر المتطوعون بعملية مراجعة للملف الشخصي. رغم أننا لا نجري فحوصات خلفية رسمية، فإننا نراقب نشاط المنصة ونشجع ملاحظات المجتمع. يمكن للمستخدمين الإبلاغ عن أي مخاوف لفريقنا.'],
+  ['هل يمكنني تقديم مهارات متعددة كمتطوع؟', 'بالتأكيد! يمكنك إدراج جميع مهاراتك في ملفك وإنشاء عروض متعددة. يساعد ذلك الباحثين عن المساعدة في العثور عليك لأنواع مختلفة من الدعم والاستفادة من خبرتك.'],
+  ['كيف أبلغ عن سلوك غير لائق؟', 'إذا واجهت أي مشكلة، يمكنك الإبلاغ عن المستخدمين مباشرة عبر المنصة أو التواصل معنا على gazabridgex@gmail.com. نتعامل مع جميع البلاغات بجدية ونتخذ الإجراء المناسب للحفاظ على مجتمع آمن.'],
+];
 
 function NoiseOverlay() {
   return (
@@ -70,6 +86,9 @@ function Magnetic({ children }) {
 
 function FAQItem({ faq, index }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { language } = useAppTranslation();
+  const question = language === 'ar' ? arabicFaq[index][0] : faq.question;
+  const answer = language === 'ar' ? arabicFaq[index][1] : faq.answer;
 
   return (
     <motion.div
@@ -94,7 +113,7 @@ function FAQItem({ faq, index }) {
             {String(index + 1).padStart(2, '0')}
           </span>
           <span className="text-base font-semibold transition-colors duration-200 hover:text-[#D4A017]" style={{ color: colors.body }}>
-            {faq.question}
+            {question}
           </span>
         </div>
 
@@ -129,7 +148,7 @@ function FAQItem({ faq, index }) {
               className="px-7 pb-6 pt-1 flex gap-4"
             >
               <div className="w-px flex-shrink-0 ml-[42px]" style={{ backgroundColor: colors.goldLight }} />
-              <p className="text-sm leading-relaxed" style={{ color: colors.muted }}>{faq.answer}</p>
+              <p className="text-sm leading-relaxed" style={{ color: colors.muted }}>{answer}</p>
             </motion.div>
           </motion.div>
         )}
@@ -142,6 +161,7 @@ function FAQItem({ faq, index }) {
 // MAIN
 // ─────────────────────────────────────────────────────────────────────────────
 export default function FAQ() {
+  const { t } = useAppTranslation();
   const heroRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
   const heroY       = useTransform(scrollYProgress, [0, 1], [0, 130]);
@@ -216,7 +236,7 @@ export default function FAQ() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: colors.gold }} />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5" style={{ backgroundColor: colors.gold }} />
               </motion.span>
-              <span className="text-sm font-semibold" style={{ color: colors.title }}>{faqData.length} Questions Answered</span>
+              <span className="text-sm font-semibold" style={{ color: colors.title }}>{faqData.length} {t('faq.questionsAnswered')}</span>
             </motion.div>
 
             <div className="space-y-1 overflow-hidden">
@@ -234,7 +254,7 @@ export default function FAQ() {
                 className="italic leading-[0.95] tracking-tight"
                 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem,6.5vw,6rem)', fontWeight: 700, color: colors.gold }}
               >
-                Questions?
+                {t('faq.questions')}
               </motion.h1>
               <motion.h1
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
@@ -269,7 +289,7 @@ export default function FAQ() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search questions..."
+                placeholder={t('faq.searchPlaceholder')}
                 className="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-200 rounded-full text-sm shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 focus:border-[#D4A017]"
                 style={{ color: colors.body, '--tw-ring-color': 'rgba(212,160,23,0.2)' }}
               />
@@ -313,7 +333,7 @@ export default function FAQ() {
             >
               <div className="h-px w-8" style={{ backgroundColor: colors.gold }} />
               <span className="text-xs font-semibold tracking-[0.2em] uppercase" style={{ color: colors.gold }}>
-                {search ? `${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${search}"` : 'All Questions'}
+                {search ? t('faq.resultsFor', { count: filtered.length, suffix: filtered.length === 1 ? '' : 's', query: search }) : t('faq.allQuestions')}
               </span>
               <div className="h-px flex-1 bg-gray-100" />
               <span className="text-xs" style={{ color: colors.muted }}>{filtered.length} total</span>
@@ -337,14 +357,14 @@ export default function FAQ() {
                 <h3 className="text-xl font-bold mb-2" style={{ fontFamily: "'Instrument Serif', Georgia, serif", color: colors.headingDark }}>
                   No matches found
                 </h3>
-                <p className="text-sm mb-6" style={{ color: colors.muted }}>Try a different search term or browse all questions.</p>
+                <p className="text-sm mb-6" style={{ color: colors.muted }}>{t('faq.tryDifferent')}</p>
                 <motion.button
                   whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                   onClick={() => setSearch('')}
                   className="px-6 py-3 text-white text-sm font-semibold rounded-full transition-colors"
                   style={{ backgroundColor: colors.sidebar }}
                 >
-                  Clear search
+                  {t('faq.clearSearch')}
                 </motion.button>
               </motion.div>
             )}
@@ -368,7 +388,7 @@ export default function FAQ() {
                 className="text-3xl font-bold text-white mb-2"
                 style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
               >
-                Still have questions?
+                {t('faq.stillQuestions')}
               </h3>
               <p className="text-white/70 mb-7 text-sm leading-relaxed max-w-sm mx-auto">
                 Our team is here to help. Reach out any time and we'll get back to you.

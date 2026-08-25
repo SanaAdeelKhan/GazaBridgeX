@@ -5,11 +5,14 @@ import { BrowserRouter } from 'react-router-dom'
 import './index.css'
 import './i18n'
 import App from './App.jsx'
+import AutoTranslate from './i18n/autoTranslate'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AutoTranslate>
+        <App />
+      </AutoTranslate>
     </BrowserRouter>
   </StrictMode>,
 )

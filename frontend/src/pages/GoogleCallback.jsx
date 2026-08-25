@@ -4,11 +4,13 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import colors from '../theme/colors';
+import { useAppTranslation } from '../hooks/useAppTranslation';
 
 export default function GoogleCallback() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { googleLogin } = useAuth();
+  const { t } = useAppTranslation();
   const [error, setError] = useState('');
   const [processing, setProcessing] = useState(true);
   const hasRun = useRef(false);
@@ -22,13 +24,13 @@ export default function GoogleCallback() {
       const errorParam = searchParams.get('error');
 
       if (errorParam) {
-        setError('Google authentication was cancelled or failed.');
+        setError(t('google.cancelled'));
         setProcessing(false);
         return;
       }
 
       if (!code) {
-        setError('No authorization code received from Google.');
+        setError(t('google.noCode'));
         setProcessing(false);
         return;
       }
@@ -73,8 +75,8 @@ export default function GoogleCallback() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </motion.div>
-          <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>Completing authentication</h2>
-          <p style={{ color: colors.muted }}>Please wait while we sign you in...</p>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>{t('google.completing')}</h2>
+          <p style={{ color: colors.muted }}>{t('google.pleaseSignIn')}</p>
         </div>
       </div>
     );
@@ -94,7 +96,7 @@ export default function GoogleCallback() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>Authentication Failed</h2>
+          <h2 className="text-2xl font-bold mb-2" style={{ color: colors.headingDark }}>{t('google.failed')}</h2>
           <p className="mb-6" style={{ color: colors.muted }}>{error}</p>
           <div className="flex flex-col gap-3">
             <button
@@ -102,14 +104,14 @@ export default function GoogleCallback() {
               className="w-full py-3 text-white font-semibold rounded-xl shadow-lg"
               style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
             >
-              Try Again
+              {t('google.tryAgain')}
             </button>
             <button
               onClick={() => navigate('/')}
               className="w-full py-3 border border-gray-300 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
               style={{ color: colors.body }}
             >
-              Go Home
+              {t('google.goHome')}
             </button>
           </div>
         </motion.div>

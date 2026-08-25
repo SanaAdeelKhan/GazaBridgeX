@@ -13,7 +13,7 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
   const { unreadCount } = useNotifications();
   const navigate = useNavigate();
   const chatNav = useChatNav();
-  const { t } = useAppTranslation();
+  const { t, language, changeLanguage } = useAppTranslation();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileRef = useRef(null);
 
@@ -91,6 +91,18 @@ export default function HeaderBar({ onToggleSidebar, sidebarOpen }) {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => changeLanguage(language === 'ar' ? 'en' : 'ar')}
+            aria-label={t('language.switchTo')}
+            className="px-3 py-2 rounded-xl text-sm font-semibold transition-colors"
+            style={{ color: colors.navText }}
+            onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'}
+            onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+          >
+            {language === 'ar' ? t('language.english') : t('language.arabic')}
+          </button>
+
           {/* Notifications */}
           <motion.button
             whileHover={{ scale: 1.05 }}
