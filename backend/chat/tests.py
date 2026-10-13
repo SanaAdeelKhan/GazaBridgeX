@@ -110,7 +110,7 @@ class ConversationTests(ChatTestCase):
         response = self.client.get("/chat/conversations/")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_other_user_cannot_see_conversation(self):
         """User3 should not see conversations between user1 and user2."""
@@ -120,7 +120,7 @@ class ConversationTests(ChatTestCase):
         response = self.client.get("/chat/conversations/")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 0)
+        self.assertEqual(len(response.data["results"]), 0)
 
     def test_save_message_updates_conversation_timestamp(self):
         """Saving a message should update the conversation's updated_at."""
@@ -546,7 +546,7 @@ class PermissionTests(ChatTestCase):
         self.authenticate(self.user3)
         response = self.client.get("/chat/conversations/")
         
-        self.assertEqual(len(response.data), 0)
+        self.assertEqual(len(response.data["results"]), 0)
 
     def test_non_member_cannot_see_group_messages(self):
         """Non-members should not access group messages."""

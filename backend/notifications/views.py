@@ -28,6 +28,7 @@ from notifications.selectors import (
 )
 from notifications.permissions import IsOwnerOfNotification, IsManagerOrAdminOrSuperuser
 from backend.pagination import StandardResultsSetPagination
+from backend.page_cache import CachedPageListMixin
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +47,7 @@ class UnreadCountView(generics.GenericAPIView):
         return Response(serializer.data)
 
 
-class NotificationListView(generics.ListAPIView):
+class NotificationListView(CachedPageListMixin, generics.ListAPIView):
     """
     GET /notifications/<user_id>/ — List user's notifications.
     Only works for the logged-in user's own notifications.
@@ -55,25 +56,21 @@ class NotificationListView(generics.ListAPIView):
     serializer_class = NotificationOutputSerializer
     pagination_class = StandardResultsSetPagination
 
-    def get_queryset(self):
+    def get_cache_prefix(self):
+        # Per-user versioned prefix, bumped by invalidate_notification_cache_for_user.
+        return f"notifications_list_{self.kwargs['user_id']}"
+
+    def get_cache_filters(self):
         user_id = self.kwargs.get("user_id")
-        
+
         # Only the logged-in user can see their own notifications
         if user_id != self.request.user.pk:
             raise PermissionDenied("You can only view your own notifications.")
-        
-        page = int(self.request.query_params.get("page", 1))
-        page_size = int(self.request.query_params.get("page_size", 20))
-        
-        cached = get_cached_notification_list(user_id, page=page, page_size=page_size)
-        if cached is not None:
-            return cached
-        
-        queryset = get_notifications_for_user(user_id)
-        result_list = list(queryset)
-        set_cached_notification_list(user_id, result_list, page=page, page_size=page_size)
-        
-        return result_list
+
+        return {"user_id": user_id}
+
+    def get_queryset(self):
+        return get_notifications_for_user(self.kwargs.get("user_id"))
 
 
 class MarkReadView(generics.GenericAPIView):
@@ -105,6 +102,10 @@ class NotificationDeleteView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, user_id, notification_id, *args, **kwargs):
+        # The URL user_id must be the caller; ownership is then checked
+        # against it in the service.
+        if user_id != request.user.pk:
+            raise PermissionDenied("You can only delete your own notifications.")
         try:
             delete_notification(notification_id, user_id)
         except ValueError as exc:

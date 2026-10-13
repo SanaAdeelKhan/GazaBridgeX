@@ -48,6 +48,8 @@ class Resource(models.Model):
         indexes = [
             models.Index(fields=["category"]),
             models.Index(fields=["user", "-created_at"]),
+            models.Index(fields=["-created_at"], name="resource_created_desc_idx"),
+            models.Index(fields=["category", "-created_at"], name="resource_cat_created_idx"),
         ]
 
     def __str__(self) -> str:

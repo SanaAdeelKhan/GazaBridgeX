@@ -95,6 +95,7 @@ class LiveSection(models.Model):
         verbose_name_plural = "Live Sections"
         indexes = [
             models.Index(fields=["user", "-created_at"]),
+            models.Index(fields=["-created_at"], name="ls_created_desc_idx"),
             models.Index(fields=["category"]),
             models.Index(fields=["status"]),
             models.Index(fields=["skill_level"]),
@@ -156,7 +157,6 @@ class LiveSectionContent(models.Model):
         verbose_name_plural = "Live Section Contents"
         indexes = [
             models.Index(fields=["live_section", "created_at"]),
-            models.Index(fields=["user"]),
         ]
     
     def __str__(self) -> str:
@@ -199,8 +199,6 @@ class LiveSectionOfferLink(models.Model):
         verbose_name = "Live Section-Offer Link"
         verbose_name_plural = "Live Section-Offer Links"
         indexes = [
-            models.Index(fields=["live_section"]),
-            models.Index(fields=["offer"]),
         ]
     
     def __str__(self) -> str:

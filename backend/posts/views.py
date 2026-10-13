@@ -31,6 +31,7 @@ from posts.selectors import (
 )
 from posts.permissions import CanManageOffer, CanManageRequest, CanCreatePost
 from backend.pagination import StandardResultsSetPagination
+from backend.page_cache import CachedPageListMixin
 
 logger = logging.getLogger(__name__)
 
@@ -156,7 +157,7 @@ class OfferDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class OfferListView(generics.ListAPIView):
+class OfferListView(CachedPageListMixin, generics.ListAPIView):
     """
     GET /posts/offers/ - List all offers with optional filters & pagination.
     
@@ -170,40 +171,32 @@ class OfferListView(generics.ListAPIView):
     - page: page number (default: 1)
     - page_size: items per page (default: 20, max: 100)
     
-    Caching: First 10 pages cached for 5 minutes. 100% consistency via aggressive invalidation.
+    Caching: first 10 pages cached for 5 minutes (only the requested page is
+    stored, not the whole table). Invalidated by the existing list version bump.
     """
     
     permission_classes = [IsAuthenticated]
     serializer_class = OfferOutputSerializer
     pagination_class = StandardResultsSetPagination
+    cache_prefix = "offers_list"
     
-    def get_queryset(self):
+    def get_cache_filters(self):
         query_serializer = OfferListQuerySerializer(data=self.request.query_params)
         query_serializer.is_valid(raise_exception=True)
         params = query_serializer.validated_data
-        
-        # Extract pagination params
-        page = int(self.request.query_params.get('page', 1))
-        page_size = int(self.request.query_params.get('page_size', 20))
-        
-        # Try Redis cache first
-        cached = get_cached_offer_list(
-            category=params.get('category'),
-            availability=params.get('availability'),
-            status=params.get('status'),
-            user_id=params.get('user_id'),
-            search=params.get('search'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-        
-        if cached is not None:
-            # Return cached queryset-like result
-            return cached
-        
-        # Cache miss — fetch from DB
-        queryset = get_offers_queryset(
+        self._params = params
+        return {
+            "category": params.get('category'),
+            "availability": params.get('availability'),
+            "status": params.get('status'),
+            "user_id": params.get('user_id'),
+            "search": params.get('search'),
+            "ordering": params.get('ordering', '-created_at'),
+        }
+    
+    def get_queryset(self):
+        params = self._params
+        return get_offers_queryset(
             category=params.get('category'),
             availability=params.get('availability'),
             status=params.get('status'),
@@ -211,22 +204,6 @@ class OfferListView(generics.ListAPIView):
             search=params.get('search'),
             ordering=params.get('ordering', '-created_at')
         )
-        
-        # Convert to list and cache it (queryset evaluation happens here)
-        result_list = list(queryset)
-        set_cached_offer_list(
-            result_list,
-            category=params.get('category'),
-            availability=params.get('availability'),
-            status=params.get('status'),
-            user_id=params.get('user_id'),
-            search=params.get('search'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-        
-        return result_list
 
 
 # ---------------------------------------------------------------------------
@@ -349,7 +326,7 @@ class RequestDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class RequestListView(generics.ListAPIView):
+class RequestListView(CachedPageListMixin, generics.ListAPIView):
     """
     GET /posts/requests/ - List all requests with optional filters & pagination.
     
@@ -362,61 +339,37 @@ class RequestListView(generics.ListAPIView):
     - page: page number (default: 1)
     - page_size: items per page (default: 20, max: 100)
     
-    Caching: First 10 pages cached for 5 minutes. 100% consistency via aggressive invalidation.
+    Caching: first 10 pages cached for 5 minutes (only the requested page is
+    stored, not the whole table). Invalidated by the existing list version bump.
     """
     
     permission_classes = [IsAuthenticated]
     serializer_class = RequestOutputSerializer
     pagination_class = StandardResultsSetPagination
+    cache_prefix = "requests_list"
     
-    def get_queryset(self):
+    def get_cache_filters(self):
         query_serializer = RequestListQuerySerializer(data=self.request.query_params)
         query_serializer.is_valid(raise_exception=True)
         params = query_serializer.validated_data
-        
-        # Extract pagination params
-        page = int(self.request.query_params.get('page', 1))
-        page_size = int(self.request.query_params.get('page_size', 20))
-        
-        # Try Redis cache first
-        cached = get_cached_request_list(
-            category=params.get('category'),
-            status=params.get('status'),
-            user_id=params.get('user_id'),
-            search=params.get('search'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-        
-        if cached is not None:
-            # Return cached queryset-like result
-            return cached
-        
-        # Cache miss — fetch from DB
-        queryset = get_requests_queryset(
+        self._params = params
+        return {
+            "category": params.get('category'),
+            "status": params.get('status'),
+            "user_id": params.get('user_id'),
+            "search": params.get('search'),
+            "ordering": params.get('ordering', '-created_at'),
+        }
+    
+    def get_queryset(self):
+        params = self._params
+        return get_requests_queryset(
             category=params.get('category'),
             status=params.get('status'),
             user_id=params.get('user_id'),
             search=params.get('search'),
             ordering=params.get('ordering', '-created_at')
         )
-        
-        # Convert to list and cache it (queryset evaluation happens here)
-        result_list = list(queryset)
-        set_cached_request_list(
-            result_list,
-            category=params.get('category'),
-            status=params.get('status'),
-            user_id=params.get('user_id'),
-            search=params.get('search'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-        
-        return result_list
-
 
 
 # ---------------------------------------------------------------------------

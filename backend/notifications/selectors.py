@@ -26,7 +26,7 @@ def get_notification_by_id(notification_id: int) -> Optional[Notification]:
     """Get a single notification by ID (no caching needed for single item)."""
     return (
         Notification.objects
-        .select_related("receiver", "sender")
+        .only("id", "receiver_id", "is_read")
         .filter(pk=notification_id)
         .first()
     )
@@ -38,6 +38,7 @@ def get_notifications_for_user(user_id: int) -> QuerySet:
         Notification.objects
         .filter(receiver_id=user_id)
         .select_related("sender")
+        .prefetch_related("sender__roles")
         .order_by("-created_at")
     )
 

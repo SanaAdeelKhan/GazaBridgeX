@@ -20,8 +20,14 @@ def get_matches_for_user(user, role=None, offer_id=None, request_id=None):
     offer_id: optional — narrow to matches for one specific Offer of the user's.
     request_id: optional — narrow to matches for one specific Request of the user's.
     """
+    # Same rows as Q(offer__user=user) | Q(request__user=user), but driven from
+    # the user's own post ids (indexed by user) instead of an OR across two
+    # joined tables.
+    from posts.models import Offer, Request
+
     qs = Match.objects.filter(
-        Q(offer__user=user) | Q(request__user=user)
+        Q(offer_id__in=Offer.objects.filter(user=user).values("id")) |
+        Q(request_id__in=Request.objects.filter(user=user).values("id"))
     ).exclude(offer__user=F("request__user"))
 
     if role == "offerer":

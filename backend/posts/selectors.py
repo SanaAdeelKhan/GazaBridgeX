@@ -13,15 +13,31 @@ Caching Strategy:
 from typing import Optional, Any, List
 
 from django.core.cache import cache
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet
+from django.utils import timezone
 
+from backend.search_q import search_q
 from posts.models import Offer, Request
-from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_SINGLE, CACHE_TTL_LIST
+from cache_utils import (
+    get_cached_list, set_cached_list, increment_cache_version, get_cache_version,
+    CACHE_TTL_SINGLE, CACHE_TTL_LIST,
+)
 
 
 def get_cache_key(prefix: str, identifier: Any) -> str:
     """Generate a consistent cache key."""
     return f"posts:{prefix}:{identifier}"
+
+
+def linked_cache_key(kind: str, offer_id: Any) -> str:
+    """Key of the 'courses/live sections linked to an offer' cache entry.
+
+    ``kind`` is "linked_courses" or "linked_ls". The key embeds a global
+    version that courses/live_sections bump on any write (including delete),
+    so editing or deleting a course / live section invalidates every offer's
+    linked list in O(1) even though the links themselves may already be gone.
+    """
+    return get_cache_key(kind, f"v{get_cache_version(kind)}:{offer_id}")
 
 
 # ---------------------------------------------------------------------------
@@ -77,12 +93,9 @@ def get_offers_queryset(
         queryset = queryset.filter(user_id=user_id)
     
     if search:
-        queryset = queryset.filter(
-            Q(offer_name__icontains=search) |
-            Q(description__icontains=search)
-        )
+        queryset = queryset.filter(search_q(search, "offer_name", "description"))
     
-    queryset = queryset.order_by(ordering)
+    queryset = queryset.order_by(ordering, "-id")
     
     return queryset
 
@@ -196,12 +209,9 @@ def get_requests_queryset(
         queryset = queryset.filter(user_id=user_id)
     
     if search:
-        queryset = queryset.filter(
-            Q(request_name__icontains=search) |
-            Q(description__icontains=search)
-        )
+        queryset = queryset.filter(search_q(search, "request_name", "description"))
     
-    queryset = queryset.order_by(ordering)
+    queryset = queryset.order_by(ordering, "-id")
     
     return queryset
 
@@ -274,7 +284,7 @@ def get_linked_courses_for_offer(offer_id: int):
     Returns list of dicts for lightweight serialization.
     """
     # cache_key = get_cache_key("linked_courses", str(offer_id))
-    cache_key = get_cache_key("linked_courses", offer_id)
+    cache_key = linked_cache_key("linked_courses", offer_id)
     cached = cache.get(cache_key)
     
     if cached is not None:
@@ -309,11 +319,11 @@ def get_linked_live_sections_for_offer(offer_id: int):
     Returns list of dicts for lightweight serialization.
     """
     # cache_key = get_cache_key("linked_ls", str(offer_id))
-    cache_key = get_cache_key("linked_ls", offer_id)
+    cache_key = linked_cache_key("linked_ls", offer_id)
     cached = cache.get(cache_key)
     
     if cached is not None:
-        return cached
+        return _refresh_effective_status(cached)
     
     from live_sections.models import LiveSectionOfferLink
     
@@ -339,6 +349,19 @@ def get_linked_live_sections_for_offer(offer_id: int):
     return result
 
 
+def _refresh_effective_status(items):
+    """Recompute 'effective_status' at read time from the cached status and
+    ending_date, so a live section that ended after the list was cached is
+    reported closed immediately (same rule as LiveSection.get_effective_status)."""
+    now = timezone.now()
+    refreshed = []
+    for item in items:
+        status = item["status"]
+        if status == "active" and now >= item["ending_date"]:
+            status = "closed"
+        refreshed.append({**item, "effective_status": status})
+    return refreshed
+
 
 # ---------------------------------------------------------------------------
 # Cache Invalidation (Aggressive — flush ALL list caches on any write)
@@ -355,8 +378,8 @@ def invalidate_offer_cache(offer_id: int) -> None:
     cache.delete(cache_key)
     
     # Invalidate linked courses and live sections caches
-    cache.delete(get_cache_key("linked_courses", offer_id))
-    cache.delete(get_cache_key("linked_ls", offer_id))
+    cache.delete(linked_cache_key("linked_courses", offer_id))
+    cache.delete(linked_cache_key("linked_ls", offer_id))
 
     # Flush ALL offer list caches
     invalidate_offers_list_cache()

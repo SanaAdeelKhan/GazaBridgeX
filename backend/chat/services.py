@@ -9,16 +9,17 @@ from typing import Optional
 
 from django.core.cache import cache
 from django.db import transaction
+from django.db.models import Q
 
 from chat.models import (
     Conversation, Group, GroupMembership,
     Message, MessageReceipt, Block
 )
 from chat.selectors import (
-    get_or_create_conversation, get_group_by_id,
+    get_or_create_conversation, get_group_light,
     get_user_groups,
     set_cached_groups,
-    invalidate_user_chat_caches, is_blocked,
+    invalidate_user_chat_caches, invalidate_users_chat_caches, is_blocked,
 )
 
 logger = logging.getLogger(__name__)
@@ -36,8 +37,13 @@ def save_message(
     content: str,
     conversation_id: Optional[int] = None,
     group_id: Optional[int] = None,
+    participant_ids: Optional[tuple] = None,
 ) -> Message:
-    """Save a message and update conversation/group timestamps."""
+    """Save a message and update conversation/group timestamps.
+
+    ``participant_ids`` (user1_id, user2_id) lets callers that already hold the
+    conversation skip re-reading it just to learn who to invalidate.
+    """
     with transaction.atomic():
         message = Message.objects.create(
             sender_id=sender_id,
@@ -54,21 +60,31 @@ def save_message(
     # A write-through re-read here risks re-caching a stale snapshot if the
     # cache was already populated before this message (e.g. brand-new conversation).
     if conversation_id:
-        conv = Conversation.objects.get(pk=conversation_id)
-        invalidate_user_chat_caches(conv.user1_id)
-        invalidate_user_chat_caches(conv.user2_id)
+        if participant_ids is None:
+            conv = Conversation.objects.get(pk=conversation_id)
+            participant_ids = (conv.user1_id, conv.user2_id)
+        invalidate_users_chat_caches(participant_ids)
 
     return message
 
 
 def mark_message_read(message_id: int, user_id: int) -> None:
-    """Mark a 1-on-1 message as read."""
-    Message.objects.filter(pk=message_id).update(is_read=True)
+    """Mark a 1-on-1 message as read (only inside conversations the user is in)."""
+    Message.objects.filter(pk=message_id).filter(
+        Q(conversation__user1_id=user_id) | Q(conversation__user2_id=user_id)
+    ).update(is_read=True)
 
 
 def mark_group_message_read(message_id: int, user_id: int) -> None:
     """Mark a group message as read for a specific user."""
-    MessageReceipt.objects.get_or_create(message_id=message_id, user_id=user_id)
+    # Only members of the message's group can record a receipt for it.
+    if not GroupMembership.objects.filter(group__messages__pk=message_id, user_id=user_id).exists():
+        return
+    # One INSERT ... ON CONFLICT DO NOTHING instead of SELECT + (savepoint) INSERT.
+    MessageReceipt.objects.bulk_create(
+        [MessageReceipt(message_id=message_id, user_id=user_id)],
+        ignore_conflicts=True,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -122,7 +138,7 @@ def add_member_to_group(*, group_id: int, email: str, added_by_id: int) -> Group
     """Add a user to a group by email."""
     from users.models import User
     
-    group = get_group_by_id(group_id)
+    group = get_group_light(group_id)
     if not group:
         raise ValueError("Group not found.")
     
@@ -142,6 +158,11 @@ def add_member_to_group(*, group_id: int, email: str, added_by_id: int) -> Group
         raise ValueError("User is already a member.")
     
     with transaction.atomic():
+        # Lock the group row so two concurrent adds cannot both pass the
+        # size check above and push the group over MAX_GROUP_MEMBERS.
+        locked = Group.objects.select_for_update().get(pk=group.pk)
+        if locked.member_count >= MAX_GROUP_MEMBERS:
+            raise ValueError(f"Group is full. Max {MAX_GROUP_MEMBERS} members allowed.")
         membership = GroupMembership.objects.create(group=group, user=user, is_admin=False)
         group.member_count = GroupMembership.objects.filter(group=group).count()
         group.save(update_fields=["member_count"])
@@ -151,15 +172,31 @@ def add_member_to_group(*, group_id: int, email: str, added_by_id: int) -> Group
     # set_cached_groups(user.id, groups)
     
     # Invalidate cache for both users — next read will rebuild correctly
-    invalidate_user_chat_caches(added_by_id)
-    invalidate_user_chat_caches(user.id)
+    invalidate_users_chat_caches([added_by_id, user.id])
     
     return membership
 
 
+def _disconnect_removed_member(group_id: int, user_id: int) -> None:
+    """Tell the group's open sockets that ``user_id`` was removed so that
+    member's socket closes (membership is only checked at connect time)."""
+    try:
+        from asgiref.sync import async_to_sync
+        from channels.layers import get_channel_layer
+
+        layer = get_channel_layer()
+        if layer is not None:
+            async_to_sync(layer.group_send)(
+                f"group_{group_id}",
+                {"type": "member_removed", "user_id": user_id},
+            )
+    except Exception:
+        logger.exception("Failed to notify group %s about removed user %s.", group_id, user_id)
+
+
 def remove_member_from_group(*, group_id: int, user_id: int, removed_by_id: int) -> None:
     """Remove a user from a group."""
-    group = get_group_by_id(group_id)
+    group = get_group_light(group_id)
     if not group:
         raise ValueError("Group not found.")
     
@@ -177,11 +214,12 @@ def remove_member_from_group(*, group_id: int, user_id: int, removed_by_id: int)
     
     # Write-through
     invalidate_user_chat_caches(user_id)
+    _disconnect_removed_member(group_id, user_id)
 
 
 def make_group_admin(*, group_id: int, user_id: int, promoter_id: int) -> None:
     """Make a member an admin. Only group owner can do this."""
-    group = get_group_by_id(group_id)
+    group = get_group_light(group_id)
     if not group:
         raise ValueError("Group not found.")
     
@@ -193,7 +231,7 @@ def make_group_admin(*, group_id: int, user_id: int, promoter_id: int) -> None:
 
 def leave_group(*, group_id: int, user_id: int) -> None:
     """Leave a group. The owner cannot leave — they must delete the group instead."""
-    group = get_group_by_id(group_id)
+    group = get_group_light(group_id)
     if not group:
         raise ValueError("Group not found.")
 
@@ -210,13 +248,14 @@ def leave_group(*, group_id: int, user_id: int) -> None:
         group.save(update_fields=["member_count"])
 
     invalidate_user_chat_caches(user_id)
+    _disconnect_removed_member(group_id, user_id)
 
 
 def delete_group(*, group_id: int, requesting_user_id: int) -> None:
     """Delete a group. Owner, group admin, manager, admin, superuser can delete."""
     from users.models import User
     user = User.objects.get(pk=requesting_user_id)
-    group = get_group_by_id(group_id)
+    group = get_group_light(group_id)
     
     if not group:
         raise ValueError("Group not found.")
@@ -232,10 +271,19 @@ def delete_group(*, group_id: int, requesting_user_id: int) -> None:
     # Invalidate all members' caches
     member_ids = list(GroupMembership.objects.filter(group=group).values_list("user_id", flat=True))
     
-    group.delete()  # CASCADE deletes memberships and messages
+    with transaction.atomic():
+        # Same end state as group.delete()'s cascade, but receipts go in one
+        # DELETE and messages in bounded batches instead of loading every
+        # message/receipt row into memory.
+        MessageReceipt.objects.filter(message__group_id=group.pk).delete()
+        while True:
+            batch = list(Message.objects.filter(group_id=group.pk).values_list("pk", flat=True)[:2000])
+            if not batch:
+                break
+            Message.objects.filter(pk__in=batch).delete()
+        group.delete()  # CASCADE deletes memberships
     
-    for uid in member_ids:
-        invalidate_user_chat_caches(uid)
+    invalidate_users_chat_caches(member_ids)
 
 # ---------------------------------------------------------------------------
 # Notify via Email (manual trigger, per-conversation cooldown)

@@ -8,6 +8,8 @@ import logging
 from typing import Dict, Any
 
 from django.db import transaction
+
+from backend.model_updates import apply_updates_and_save
 from django.utils import timezone
 
 from live_sections.models import LiveSection, LiveSectionContent, LiveSectionOfferLink
@@ -76,10 +78,7 @@ def update_live_section(
         raise PermissionError("You don't have permission to update this live section.")
     
     with transaction.atomic():
-        for field, value in update_data.items():
-            if hasattr(ls, field) and value is not None:
-                setattr(ls, field, value)
-        ls.save()
+        apply_updates_and_save(ls, update_data)
     
     invalidate_live_section_cache(ls_id)
     return ls
@@ -155,10 +154,7 @@ def update_content(
         raise PermissionError("You don't have permission to update this content.")
     
     with transaction.atomic():
-        for field, value in update_data.items():
-            if hasattr(content, field) and value is not None:
-                setattr(content, field, value)
-        content.save()
+        apply_updates_and_save(content, update_data)
     
     invalidate_content_cache(content_id)
     invalidate_live_section_cache(content.live_section_id)
@@ -225,7 +221,8 @@ def link_ls_to_offer(
 
     # Invalidate linked live sections cache
     from django.core.cache import cache
-    cache.delete(f"posts:linked_ls:{offer_id}")
+    from posts.selectors import linked_cache_key
+    cache.delete(linked_cache_key("linked_ls", offer_id))
     
     return link
 
@@ -259,7 +256,8 @@ def unlink_ls_from_offer(
 
     # Invalidate linked live sections cache
     from django.core.cache import cache
-    cache.delete(f"posts:linked_ls:{offer_id}")
+    from posts.selectors import linked_cache_key
+    cache.delete(linked_cache_key("linked_ls", offer_id))
 
 # ---------------------------------------------------------------------------
 # Permission Helpers

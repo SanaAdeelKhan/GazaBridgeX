@@ -10,6 +10,8 @@ from typing import Optional, Dict, Any
 
 from django.db import transaction
 
+from backend.model_updates import apply_updates_and_save
+
 from posts.models import Offer, Request
 from users.models import Role
 from matches.services import compute_matches_for_offer, compute_matches_for_request
@@ -77,11 +79,7 @@ def update_offer(
         raise PermissionError("You don't have permission to update this offer.")
     
     with transaction.atomic():
-        for field, value in update_data.items():
-            if hasattr(offer, field) and value is not None:
-                setattr(offer, field, value)
-        
-        offer.save()
+        apply_updates_and_save(offer, update_data)
     
     invalidate_offer_cache(offer_id)
     
@@ -160,11 +158,7 @@ def update_request(
         raise PermissionError("You don't have permission to update this request.")
     
     with transaction.atomic():
-        for field, value in update_data.items():
-            if hasattr(request_obj, field) and value is not None:
-                setattr(request_obj, field, value)
-        
-        request_obj.save()
+        apply_updates_and_save(request_obj, update_data)
     
     # Invalidate caches
     invalidate_request_cache(request_id)

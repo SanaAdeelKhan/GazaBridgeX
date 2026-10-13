@@ -33,6 +33,7 @@ from courses.permissions import (
     CanCreateContent, CanLinkCourseToOffer
 )
 from backend.pagination import StandardResultsSetPagination
+from backend.page_cache import CachedPageListMixin
 
 logger = logging.getLogger(__name__)
 
@@ -78,10 +79,8 @@ class CourseCreateView(generics.CreateAPIView):
     
     def _serialize_course_detail(self, course, request):
         """Serialize course detail with visibility-filtered contents."""
-        data = CourseDetailOutputSerializer(course).data
         visible_contents = get_visible_contents_for_course(course, request.user)
-        data['contents'] = ContentOutputSerializer(visible_contents, many=True).data
-        return data
+        return CourseDetailOutputSerializer(course, context={"contents": visible_contents}).data
 
 
 class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -111,9 +110,8 @@ class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
             )
         
         # Serialize course with visibility-filtered contents
-        data = CourseDetailOutputSerializer(instance).data
         visible_contents = get_visible_contents_for_course(instance, request.user)
-        data['contents'] = ContentOutputSerializer(visible_contents, many=True).data
+        data = CourseDetailOutputSerializer(instance, context={"contents": visible_contents}).data
         
         return Response(data)
     
@@ -146,9 +144,8 @@ class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
             raise PermissionDenied(str(exc))
         
         # Return with visibility-filtered contents
-        data = CourseDetailOutputSerializer(updated_course).data
         visible_contents = get_visible_contents_for_course(updated_course, request.user)
-        data['contents'] = ContentOutputSerializer(visible_contents, many=True).data
+        data = CourseDetailOutputSerializer(updated_course, context={"contents": visible_contents}).data
         
         return Response(data)
     
@@ -178,7 +175,7 @@ class CourseDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class CourseListView(generics.ListAPIView):
+class CourseListView(CachedPageListMixin, generics.ListAPIView):
     """
     GET /courses/ - List all courses with optional filters & pagination.
     
@@ -192,31 +189,26 @@ class CourseListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = CourseOutputSerializer
     pagination_class = StandardResultsSetPagination
+    cache_prefix = "courses_list"
     
-    def get_queryset(self):
+    def get_cache_filters(self):
         query_serializer = CourseListQuerySerializer(data=self.request.query_params)
         query_serializer.is_valid(raise_exception=True)
         params = query_serializer.validated_data
-        
-        page = int(self.request.query_params.get('page', 1))
-        page_size = int(self.request.query_params.get('page_size', 20))
-        
-        cached = get_cached_course_list(
-            category=params.get('category'),
-            skill_level=params.get('skill_level'),
-            language=params.get('language'),
-            status=params.get('status'),
-            user_id=params.get('user_id'),
-            search=params.get('search'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-        
-        if cached is not None:
-            return cached
-        
-        queryset = get_courses_queryset(
+        self._params = params
+        return {
+            "category": params.get('category'),
+            "skill_level": params.get('skill_level'),
+            "language": params.get('language'),
+            "status": params.get('status'),
+            "user_id": params.get('user_id'),
+            "search": params.get('search'),
+            "ordering": params.get('ordering', '-created_at'),
+        }
+    
+    def get_queryset(self):
+        params = self._params
+        return get_courses_queryset(
             category=params.get('category'),
             skill_level=params.get('skill_level'),
             language=params.get('language'),
@@ -225,22 +217,6 @@ class CourseListView(generics.ListAPIView):
             search=params.get('search'),
             ordering=params.get('ordering', '-created_at')
         )
-        
-        result_list = list(queryset)
-        set_cached_course_list(
-            result_list,
-            category=params.get('category'),
-            skill_level=params.get('skill_level'),
-            language=params.get('language'),
-            status=params.get('status'),
-            user_id=params.get('user_id'),
-            search=params.get('search'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-        
-        return result_list
 
 
 # ---------------------------------------------------------------------------

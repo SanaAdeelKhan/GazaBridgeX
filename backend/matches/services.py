@@ -8,6 +8,9 @@ and persist as Match rows.
 import logging
 import re
 
+from django.db import IntegrityError, transaction
+from django.utils import timezone
+
 from matches.models import Match
 
 logger = logging.getLogger(__name__)
@@ -34,6 +37,20 @@ def extract_keywords(text: str) -> set:
     return {w for w in words if len(w) > 3 and w not in STOPWORDS}
 
 
+def _score_from_keywords(offer_kw: set, req_kw: set) -> int:
+    """Baseline 50 + up to 50 for Jaccard overlap of the two keyword sets."""
+    base = 50
+    union = offer_kw | req_kw
+
+    if not union:
+        bonus = 0
+    else:
+        overlap_ratio = len(offer_kw & req_kw) / len(union)
+        bonus = round(overlap_ratio * 50)
+
+    return base + bonus
+
+
 def compute_score(offer, request):
     """
     Returns an integer 50-100 if categories match, else None (no match).
@@ -46,43 +63,110 @@ def compute_score(offer, request):
     if offer.category != request.category:
         return None
 
-    base = 50
-    offer_kw = extract_keywords(offer.description)
-    req_kw = extract_keywords(request.description)
-    union = offer_kw | req_kw
-
-    if not union:
-        bonus = 0
-    else:
-        overlap_ratio = len(offer_kw & req_kw) / len(union)
-        bonus = round(overlap_ratio * 50)
-
-    return base + bonus
-
-
-def _upsert_match(offer, request, score):
-    match, created = Match.objects.update_or_create(
-        offer=offer,
-        request=request,
-        defaults={"score": score},
+    return _score_from_keywords(
+        extract_keywords(offer.description),
+        extract_keywords(request.description),
     )
 
+
+def _notify_new_match(match):
+    """Send the two 'new match' emails (synchronous Brevo) and set the flags."""
+    from matches.tasks import send_match_notification_email
+
+    try:
+        if send_match_notification_email(match=match, role="offer"):
+            match.notified_offer_user = True
+    except Exception:
+        logger.exception("Failed to send match notification (offer side) for match %s.", match.pk)
+
+    try:
+        if send_match_notification_email(match=match, role="request"):
+            match.notified_request_user = True
+    except Exception:
+        logger.exception("Failed to send match notification (request side) for match %s.", match.pk)
+
+
+def _sync_matches(anchor, candidates, anchor_side: str):
+    """Score ``anchor`` against ``candidates`` and persist the Match rows.
+
+    anchor_side is "offer" (candidates are Requests) or "request" (candidates
+    are Offers). Same results as the old per-candidate update_or_create loop,
+    but with a constant number of queries: the anchor's keywords are extracted
+    once, existing matches are loaded in one query, and rows are written with
+    bulk_create / bulk_update.
+
+    Returns ``[(candidate, score), ...]`` for every matching candidate.
+    """
+    other_side = "request" if anchor_side == "offer" else "offer"
+    anchor_kw = extract_keywords(anchor.description)
+
+    scored = []
+    for cand in candidates:
+        offer, request = (anchor, cand) if anchor_side == "offer" else (cand, anchor)
+        if offer.user_id == request.user_id:
+            continue
+        if offer.category != request.category:
+            continue
+        cand_kw = extract_keywords(cand.description)
+        offer_kw, req_kw = (anchor_kw, cand_kw) if anchor_side == "offer" else (cand_kw, anchor_kw)
+        scored.append((cand, _score_from_keywords(offer_kw, req_kw)))
+
+    if not scored:
+        return []
+
+    existing = {
+        getattr(m, f"{other_side}_id"): m
+        for m in Match.objects.filter(**{anchor_side: anchor})
+    }
+
+    now = timezone.now()
+    to_create, to_update = [], []
+    for cand, score in scored:
+        match = existing.get(cand.pk)
+        if match is None:
+            offer, request = (anchor, cand) if anchor_side == "offer" else (cand, anchor)
+            to_create.append(Match(offer=offer, request=request, score=score))
+        else:
+            # update_or_create used to save() every existing row, bumping
+            # updated_at; bulk_update skips auto_now, so set it explicitly.
+            match.score = score
+            match.updated_at = now
+            to_update.append(match)
+
+    if to_update:
+        Match.objects.bulk_update(to_update, ["score", "updated_at"], batch_size=500)
+
+    created = []
+    if to_create:
+        try:
+            with transaction.atomic():
+                Match.objects.bulk_create(to_create, batch_size=500)
+            created = to_create
+        except IntegrityError:
+            # A concurrent request inserted one of these pairs first: fall
+            # back to the previous row-by-row upsert for this batch.
+            for m in to_create:
+                obj, was_created = Match.objects.update_or_create(
+                    offer=m.offer, request=m.request, defaults={"score": m.score},
+                )
+                if was_created:
+                    created.append(obj)
+
     if created:
-        from matches.tasks import send_match_notification_email
+        if any(m.pk is None for m in created):
+            # Backend did not return primary keys from bulk_create: reload them.
+            ids = [getattr(m, f"{other_side}_id") for m in created]
+            by_other = {
+                getattr(m, f"{other_side}_id"): m
+                for m in Match.objects.filter(**{anchor_side: anchor, f"{other_side}_id__in": ids})
+            }
+            for m in created:
+                m.pk = by_other[getattr(m, f"{other_side}_id")].pk
+        for m in created:
+            _notify_new_match(m)
+        Match.objects.bulk_update(created, ["notified_offer_user", "notified_request_user"])
 
-        try:
-            if send_match_notification_email(match=match, role="offer"):
-                match.notified_offer_user = True
-        except Exception:
-            logger.exception("Failed to send match notification (offer side) for match %s.", match.pk)
-
-        try:
-            if send_match_notification_email(match=match, role="request"):
-                match.notified_request_user = True
-        except Exception:
-            logger.exception("Failed to send match notification (request side) for match %s.", match.pk)
-
-        match.save(update_fields=["notified_offer_user", "notified_request_user"])
+    return scored
 
 
 def compute_matches_for_offer(offer):
@@ -92,14 +176,8 @@ def compute_matches_for_offer(offer):
     candidates = Request.objects.filter(
         category=offer.category,
         status=PostStatusChoices.ACTIVE,
-    )
-    results = []
-    for req in candidates:
-        score = compute_score(offer, req)
-        if score is not None:
-            _upsert_match(offer, req, score)
-            results.append((req, score))
-    return results
+    ).select_related("user")
+    return _sync_matches(offer, candidates, "offer")
 
 
 def compute_matches_for_request(request):
@@ -109,14 +187,8 @@ def compute_matches_for_request(request):
     candidates = Offer.objects.filter(
         category=request.category,
         status=PostStatusChoices.ACTIVE,
-    )
-    results = []
-    for offer in candidates:
-        score = compute_score(offer, request)
-        if score is not None:
-            _upsert_match(offer, request, score)
-            results.append((offer, score))
-    return results
+    ).select_related("user")
+    return _sync_matches(request, candidates, "request")
 
 
 def recompute_all_matches():
@@ -124,7 +196,7 @@ def recompute_all_matches():
     from posts.models import Offer, PostStatusChoices
 
     total = 0
-    for offer in Offer.objects.filter(status=PostStatusChoices.ACTIVE):
+    for offer in Offer.objects.filter(status=PostStatusChoices.ACTIVE).select_related("user"):
         total += len(compute_matches_for_offer(offer))
     return total
 

@@ -91,6 +91,7 @@ class Course(models.Model):
         verbose_name_plural = "Courses"
         indexes = [
             models.Index(fields=["user", "-created_at"]),
+            models.Index(fields=["-created_at"], name="course_created_desc_idx"),
             models.Index(fields=["category"]),
             models.Index(fields=["status"]),
             models.Index(fields=["skill_level"]),
@@ -136,7 +137,6 @@ class Content(models.Model):
         verbose_name_plural = "Contents"
         indexes = [
             models.Index(fields=["course", "created_at"]),
-            models.Index(fields=["user"]),
         ]
     
     def __str__(self) -> str:
@@ -182,8 +182,6 @@ class CourseOfferLink(models.Model):
         verbose_name = "Course-Offer Link"
         verbose_name_plural = "Course-Offer Links"
         indexes = [
-            models.Index(fields=["course"]),
-            models.Index(fields=["offer"]),
         ]
     
     def __str__(self) -> str:

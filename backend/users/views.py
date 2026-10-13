@@ -7,6 +7,7 @@ Pattern per view: validate input → call service → return output.
 
 import logging
 
+from django.db.models import prefetch_related_objects
 from rest_framework import generics, status, views
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -25,7 +26,8 @@ from users.services.user_services import (
     demote_from_manager, change_user_password, create_superuser_account
 )
 from users.selectors.user_selectors import (
-    get_user_by_id, get_users_with_filters, get_user_with_permissions
+    get_user_by_id, get_user_by_id_lean, get_users_with_filters,
+    get_user_with_permissions
 )
 from users.permissions import (
     IsAdminOrSuperuser, CanManageUser, CanPromoteDemoteUser, CanChangePassword
@@ -282,8 +284,8 @@ class ChangePasswordView(generics.UpdateAPIView):
     
     def get_object(self):
         user_id = self.kwargs.get('pk')
-        return get_user_by_id(user_id)
-    
+        return get_user_by_id_lean(user_id)
+
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         if not instance:
@@ -291,7 +293,7 @@ class ChangePasswordView(generics.UpdateAPIView):
                 {"detail": "User not found."},
                 status=status.HTTP_404_NOT_FOUND
             )
-        
+
         if instance.pk != request.user.pk:
             raise PermissionDenied("You can only change your own password.")
         
@@ -442,22 +444,24 @@ class CurrentUserView(generics.RetrieveUpdateAPIView):
         return UserSerializer
     
     def get_object(self):
-        return get_user_by_id(self.request.user.pk)
-    
+        # request.user was just loaded from the DB by JWT auth; reuse it and
+        # only add the roles prefetch the serializer needs.
+        user = self.request.user
+        prefetch_related_objects([user], "roles")
+        return user
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = UserSerializer(instance)
         return Response(serializer.data)
-    
+
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         try:
             updated_user = update_user_profile(
-                user_id=instance.pk,
+                user_id=request.user.pk,
                 requesting_user=request.user,
                 update_data=serializer.validated_data
             )

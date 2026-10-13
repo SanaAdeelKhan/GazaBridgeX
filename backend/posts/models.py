@@ -89,6 +89,7 @@ class Offer(models.Model):
         verbose_name_plural = "Offers"
         indexes = [
             models.Index(fields=["user", "-created_at"]),
+            models.Index(fields=["-created_at"], name="offer_created_desc_idx"),
             models.Index(fields=["category"]),
             models.Index(fields=["status"]),
             models.Index(fields=["availability"]),
@@ -146,6 +147,7 @@ class Request(models.Model):
         verbose_name_plural = "Requests"
         indexes = [
             models.Index(fields=["user", "-created_at"]),
+            models.Index(fields=["-created_at"], name="request_created_desc_idx"),
             models.Index(fields=["category"]),
             models.Index(fields=["status"]),
         ]

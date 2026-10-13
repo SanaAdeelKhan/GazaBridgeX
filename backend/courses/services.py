@@ -10,6 +10,8 @@ from typing import Dict, Any
 
 from django.db import transaction
 
+from backend.model_updates import apply_updates_and_save
+
 from courses.models import Course, Content, CourseOfferLink
 from courses.selectors import (
     get_course_by_id, get_content_by_id,
@@ -80,11 +82,7 @@ def update_course(
         raise PermissionError("You don't have permission to update this course.")
     
     with transaction.atomic():
-        for field, value in update_data.items():
-            if hasattr(course, field) and value is not None:
-                setattr(course, field, value)
-        
-        course.save()
+        apply_updates_and_save(course, update_data)
     
     invalidate_course_cache(course_id)
     
@@ -170,11 +168,7 @@ def update_content(
         raise PermissionError("You don't have permission to update this content.")
     
     with transaction.atomic():
-        for field, value in update_data.items():
-            if hasattr(content, field) and value is not None:
-                setattr(content, field, value)
-        
-        content.save()
+        apply_updates_and_save(content, update_data)
     
     invalidate_content_cache(content_id)
     invalidate_course_cache(content.course_id)
@@ -244,7 +238,8 @@ def link_course_to_offer(
 
     # Invalidate linked courses cache
     from django.core.cache import cache
-    cache.delete(f"posts:linked_courses:{offer_id}")
+    from posts.selectors import linked_cache_key
+    cache.delete(linked_cache_key("linked_courses", offer_id))
     
     return link
 
@@ -279,7 +274,8 @@ def unlink_course_from_offer(
 
     # Invalidate linked courses cache
     from django.core.cache import cache
-    cache.delete(f"posts:linked_courses:{offer_id}")
+    from posts.selectors import linked_cache_key
+    cache.delete(linked_cache_key("linked_courses", offer_id))
 # ---------------------------------------------------------------------------
 # Permission Helpers
 # ---------------------------------------------------------------------------

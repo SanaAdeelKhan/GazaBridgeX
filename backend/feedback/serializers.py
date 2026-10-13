@@ -10,6 +10,16 @@ from rest_framework import serializers
 from feedback.models import Feedback, FeedbackReply, RatingSummary
 
 
+def public_replies(feedback):
+    """Public replies of a feedback, using the prefetched replies when present.
+
+    ``.filter()`` on a related manager ignores prefetch_related, so the
+    prefetched rows are filtered in Python instead (same rows, same order)."""
+    if "replies" in getattr(feedback, "_prefetched_objects_cache", {}):
+        return [reply for reply in feedback.replies.all() if reply.is_public]
+    return feedback.replies.filter(is_public=True)
+
+
 # ---------------------------------------------------------------------------
 # Feedback Reply Serializers
 # ---------------------------------------------------------------------------
@@ -205,8 +215,7 @@ class FeedbackOutputSerializer(serializers.ModelSerializer):
     
     def get_replies(self, obj) -> list:
         """Return public replies for this feedback."""
-        replies = obj.replies.filter(is_public=True)
-        return ReplyOutputSerializer(replies, many=True).data
+        return ReplyOutputSerializer(public_replies(obj), many=True).data
 
 
 class FeedbackListQuerySerializer(serializers.Serializer):
@@ -253,6 +262,9 @@ class RatingSummaryQuerySerializer(serializers.Serializer):
         required=False
     )
     object_id = serializers.IntegerField(min_value=1, required=False)
+    # Pagination of the all-summaries list (bad values -> 400, size capped).
+    page = serializers.IntegerField(min_value=1, required=False, default=1)
+    page_size = serializers.IntegerField(min_value=1, max_value=50, required=False, default=20)
     
     def validate(self, data):
         """Validate object_id is provided when feedback_type is not platform."""

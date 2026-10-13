@@ -13,9 +13,11 @@ Caching Strategy:
 from typing import Optional, Any, List
 
 from django.core.cache import cache
-from django.db.models import QuerySet, Q
+from django.db.models import Count, IntegerField, OuterRef, Prefetch, QuerySet, Subquery
+from django.db.models.functions import Coalesce
 from django.utils import timezone
 
+from backend.search_q import search_q
 from live_sections.models import LiveSection, LiveSectionContent, LiveSectionOfferLink
 from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_SINGLE
 
@@ -33,6 +35,8 @@ def invalidate_live_section_cache(ls_id: int) -> None:
     cache_key = get_cache_key("live_section", str(ls_id))
     cache.delete(cache_key)
     invalidate_ls_list_cache()
+    # Offers' "linked live sections" lists show this live section's data.
+    increment_cache_version("linked_ls")
 
 
 def invalidate_ls_list_cache() -> None:
@@ -61,7 +65,9 @@ def get_live_section_by_id(ls_id: int) -> Optional[LiveSection]:
         ls = (
             LiveSection.objects
             .select_related("user")
-            .prefetch_related("contents")
+            .prefetch_related(
+                Prefetch("contents", queryset=LiveSectionContent.objects.select_related("user"))
+            )
             .filter(pk=ls_id)
             .first()
         )
@@ -81,7 +87,21 @@ def get_live_sections_queryset(
     ordering: str = "-created_at"
 ) -> QuerySet:
     """Get live sections queryset with optional filters."""
-    queryset = LiveSection.objects.select_related("user").prefetch_related("contents").all()
+    # contents_total is a COUNT subquery, so the list never loads content rows
+    # (full descriptions/links) just to count them.
+    contents_total = Coalesce(
+        Subquery(
+            LiveSectionContent.objects
+            .filter(live_section=OuterRef("pk"))
+            .order_by()
+            .values("live_section")
+            .annotate(c=Count("pk"))
+            .values("c"),
+            output_field=IntegerField(),
+        ),
+        0,
+    )
+    queryset = LiveSection.objects.select_related("user").annotate(contents_total=contents_total)
 
     if category:
         queryset = queryset.filter(category=category)
@@ -94,12 +114,9 @@ def get_live_sections_queryset(
     if user_id:
         queryset = queryset.filter(user_id=user_id)
     if search:
-        queryset = queryset.filter(
-            Q(title__icontains=search) |
-            Q(description__icontains=search)
-        )
+        queryset = queryset.filter(search_q(search, "title", "description"))
 
-    return queryset.order_by(ordering)
+    return queryset.order_by(ordering, "-id")
 
 
 def get_cached_live_section_list(

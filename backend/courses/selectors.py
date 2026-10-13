@@ -13,7 +13,10 @@ Caching Strategy:
 from typing import Optional, List
 
 from django.core.cache import cache
-from django.db.models import QuerySet, Q
+from django.db.models import Count, IntegerField, OuterRef, Prefetch, QuerySet, Subquery
+from django.db.models.functions import Coalesce
+
+from backend.search_q import search_q
 
 from courses.models import Course, Content, CourseOfferLink
 from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_SINGLE
@@ -40,7 +43,9 @@ def get_course_by_id(course_id: int) -> Optional[Course]:
         course = (
             Course.objects
             .select_related("user")
-            .prefetch_related("contents")
+            .prefetch_related(
+                Prefetch("contents", queryset=Content.objects.select_related("user"))
+            )
             .filter(pk=course_id)
             .first()
         )
@@ -63,7 +68,21 @@ def get_courses_queryset(
     Get courses queryset with optional filters.
     Returns QuerySet so DRF can handle pagination.
     """
-    queryset = Course.objects.select_related("user").prefetch_related("contents").all()
+    # contents_total is a COUNT subquery, so the list never loads content rows
+    # (full descriptions/links) just to count them.
+    contents_total = Coalesce(
+        Subquery(
+            Content.objects
+            .filter(course=OuterRef("pk"))
+            .order_by()
+            .values("course")
+            .annotate(c=Count("pk"))
+            .values("c"),
+            output_field=IntegerField(),
+        ),
+        0,
+    )
+    queryset = Course.objects.select_related("user").annotate(contents_total=contents_total)
     
     if category:
         queryset = queryset.filter(category=category)
@@ -81,12 +100,9 @@ def get_courses_queryset(
         queryset = queryset.filter(user_id=user_id)
     
     if search:
-        queryset = queryset.filter(
-            Q(title__icontains=search) |
-            Q(description__icontains=search)
-        )
+        queryset = queryset.filter(search_q(search, "title", "description"))
     
-    queryset = queryset.order_by(ordering)
+    queryset = queryset.order_by(ordering, "-id")
     
     return queryset
 
@@ -220,6 +236,8 @@ def invalidate_course_cache(course_id: int) -> None:
     cache_key = get_cache_key("course", str(course_id))
     cache.delete(cache_key)
     invalidate_courses_list_cache()
+    # Offers' "linked courses" lists show this course's title/status/owner.
+    increment_cache_version("linked_courses")
 
 
 def invalidate_courses_list_cache() -> None:

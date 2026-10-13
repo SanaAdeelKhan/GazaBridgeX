@@ -15,6 +15,7 @@ from typing import Optional, List
 from django.core.cache import cache
 from django.db.models import QuerySet, Q
 
+from backend.search_q import search_q
 from resources.models import Resource
 from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_SINGLE
 
@@ -61,12 +62,9 @@ def get_resources_queryset(
     if user_id:
         queryset = queryset.filter(user_id=user_id)
     if search:
-        queryset = queryset.filter(
-            Q(title__icontains=search) |
-            Q(description__icontains=search)
-        )
+        queryset = queryset.filter(search_q(search, "title", "description"))
 
-    return queryset.order_by(ordering)
+    return queryset.order_by(ordering, "-id")
 
 
 # ---------------------------------------------------------------------------

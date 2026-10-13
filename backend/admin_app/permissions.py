@@ -17,7 +17,7 @@ class IsManagerOrAdminOrSuperuser(BasePermission):
             return False
         
         return (
-            request.user.is_manager or
             request.user.is_staff or
-            request.user.is_superuser
+            request.user.is_superuser or
+            request.user.is_manager
         )

@@ -32,7 +32,6 @@ class Conversation(models.Model):
         unique_together = ["user1", "user2"]
         ordering = ["-updated_at"]
         indexes = [
-            models.Index(fields=["composite_key"]),
             models.Index(fields=["-updated_at"]),
         ]
 
@@ -129,6 +128,12 @@ class Message(models.Model):
             models.Index(fields=["conversation", "created_at"]),
             models.Index(fields=["group", "created_at"]),
             models.Index(fields=["sender"]),
+            # Unread-count / mark-read lookups only ever touch unread rows.
+            models.Index(
+                fields=["conversation"],
+                condition=models.Q(is_read=False),
+                name="msg_conv_unread_idx",
+            ),
         ]
 
     def __str__(self):

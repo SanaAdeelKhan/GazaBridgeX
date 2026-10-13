@@ -9,7 +9,7 @@ import logging
 from typing import Optional, Dict, Any
 
 from django.contrib.contenttypes.models import ContentType
-from django.db import transaction
+from django.db import IntegrityError, connection, transaction
 from django.db.models import Q
 
 from feedback.models import (
@@ -23,6 +23,7 @@ from feedback.selectors import (
     get_reply_by_id,
     _get_content_type_for_feedback_type,
     invalidate_all_feedback_caches,
+    invalidate_feedback_list_cache,
 )
 
 logger = logging.getLogger(__name__)
@@ -91,9 +92,27 @@ def _recalculate_rating_summary(
         object_id=object_id,
     )
     
-    # Get counts for each rating
-    total_count = feedback_queryset.count()
-    
+    # Serialize concurrent recalculations of the same target: the summary row
+    # is locked until the surrounding transaction commits, so the last writer
+    # always computes from up-to-date feedback rows.
+    if connection.in_atomic_block:
+        rating_summary = RatingSummary.objects.select_for_update().get(pk=rating_summary.pk)
+
+    # One pass over the target's public feedback: total, average and the
+    # per-star distribution (was count() + GROUP BY + AVG = 3 queries).
+    from django.db.models import Count, Avg, Q
+
+    stats = feedback_queryset.aggregate(
+        total=Count("id"),
+        average=Avg("rating"),
+        c1=Count("id", filter=Q(rating=1)),
+        c2=Count("id", filter=Q(rating=2)),
+        c3=Count("id", filter=Q(rating=3)),
+        c4=Count("id", filter=Q(rating=4)),
+        c5=Count("id", filter=Q(rating=5)),
+    )
+    total_count = stats["total"]
+
     if total_count == 0:
         rating_summary.average_rating = 0.00
         rating_summary.total_feedbacks = 0
@@ -103,25 +122,12 @@ def _recalculate_rating_summary(
         rating_summary.rating_4_count = 0
         rating_summary.rating_5_count = 0
     else:
-        # Get distribution counts
-        from django.db.models import Count, Avg
-        
-        distribution = (
-            feedback_queryset
-            .values("rating")
-            .annotate(count=Count("id"))
-        )
-        
-        # Initialize counts
-        rating_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
-        
-        for item in distribution:
-            rating_counts[item["rating"]] = item["count"]
-        
-        # Calculate average
-        average = feedback_queryset.aggregate(Avg("rating"))["rating__avg"]
-        
-        rating_summary.average_rating = round(average, 2)
+        rating_counts = {
+            1: stats["c1"], 2: stats["c2"], 3: stats["c3"],
+            4: stats["c4"], 5: stats["c5"],
+        }
+
+        rating_summary.average_rating = round(stats["average"], 2)
         rating_summary.total_feedbacks = total_count
         rating_summary.rating_1_count = rating_counts[1]
         rating_summary.rating_2_count = rating_counts[2]
@@ -301,22 +307,33 @@ def create_feedback(
             f"Use PUT /feedback/{existing_feedback.id}/ to update it."
         )
     
-    with transaction.atomic():
-        feedback = Feedback.objects.create(
-            user=user,
-            feedback_type=feedback_type,
-            content_type=content_type,
-            object_id=validated_object_id,
-            rating=rating,
-            feedback_text=feedback_text,
-            is_public=is_public,
-        )
-        
-        # Update rating summary
-        _recalculate_rating_summary(
-            feedback_type=feedback_type,
-            content_type=content_type,
-            object_id=validated_object_id,
+    try:
+        with transaction.atomic():
+            feedback = Feedback.objects.create(
+                user=user,
+                feedback_type=feedback_type,
+                content_type=content_type,
+                object_id=validated_object_id,
+                rating=rating,
+                feedback_text=feedback_text,
+                is_public=is_public,
+            )
+            
+            # Update rating summary
+            _recalculate_rating_summary(
+                feedback_type=feedback_type,
+                content_type=content_type,
+                object_id=validated_object_id,
+            )
+    except IntegrityError:
+        # A concurrent submission by the same user won the race (the unique
+        # constraints now enforce this for platform feedback too).
+        existing_feedback = duplicate_query.first()
+        if existing_feedback is None:
+            raise
+        raise ValueError(
+            f"You have already submitted feedback for this. "
+            f"Use PUT /feedback/{existing_feedback.id}/ to update it."
         )
     
     # INVALIDATE CACHE AFTER SUCCESSFUL CREATION
@@ -334,10 +351,15 @@ def update_feedback(
     feedback_id: int,
     user,
     update_data: Dict[str, Any],
+    instance: Optional[Feedback] = None,
 ) -> Feedback:
-    """Update an existing feedback entry (owner only)."""
+    """Update an existing feedback entry (owner only).
+
+    ``instance`` is the feedback the view already loaded for this request;
+    passing it avoids fetching (and prefetching) the same row twice.
+    """
     
-    feedback = get_feedback_by_id(feedback_id)
+    feedback = instance if instance is not None else get_feedback_by_id(feedback_id)
     
     if not feedback:
         raise ValueError("Feedback not found.")
@@ -369,10 +391,11 @@ def delete_feedback(
     *,
     feedback_id: int,
     user,
+    instance: Optional[Feedback] = None,
 ) -> None:
     """Delete a feedback entry (owner only)."""
     
-    feedback = get_feedback_by_id(feedback_id)
+    feedback = instance if instance is not None else get_feedback_by_id(feedback_id)
     
     if not feedback:
         raise ValueError("Feedback not found.")
@@ -408,10 +431,12 @@ def create_reply(
     replied_by,
     reply_text: str,
     is_public: bool = True,
+    feedback: Optional[Feedback] = None,
 ) -> FeedbackReply:
     """Create a reply to feedback. Any authenticated user can reply."""
     
-    feedback = get_feedback_by_id(feedback_id)
+    if feedback is None:
+        feedback = get_feedback_by_id(feedback_id)
     
     if not feedback:
         raise ValueError("Feedback not found.")
@@ -425,7 +450,7 @@ def create_reply(
         )
     
     # INVALIDATE CACHE AFTER REPLY CREATION (replies appear in feedback detail)
-    transaction.on_commit(invalidate_all_feedback_caches)
+    transaction.on_commit(invalidate_feedback_list_cache)
     
     # Send email to feedback author
     _send_reply_email_to_feedback_author(feedback, reply)
@@ -438,10 +463,11 @@ def update_reply(
     reply_id: int,
     user,
     update_data: Dict[str, Any],
+    instance: Optional[FeedbackReply] = None,
 ) -> FeedbackReply:
     """Update an existing reply (creator or superuser only)."""
     
-    reply = get_reply_by_id(reply_id)
+    reply = instance if instance is not None else get_reply_by_id(reply_id)
     
     if not reply:
         raise ValueError("Reply not found.")
@@ -457,7 +483,7 @@ def update_reply(
         reply.save()
     
     # INVALIDATE CACHE AFTER REPLY UPDATE
-    transaction.on_commit(invalidate_all_feedback_caches)
+    transaction.on_commit(invalidate_feedback_list_cache)
     
     return reply
 
@@ -466,10 +492,11 @@ def delete_reply(
     *,
     reply_id: int,
     user,
+    instance: Optional[FeedbackReply] = None,
 ) -> None:
     """Delete a reply (creator or superuser only)."""
     
-    reply = get_reply_by_id(reply_id)
+    reply = instance if instance is not None else get_reply_by_id(reply_id)
     
     if not reply:
         raise ValueError("Reply not found.")
@@ -481,4 +508,4 @@ def delete_reply(
         reply.delete()
     
     # INVALIDATE CACHE AFTER REPLY DELETION
-    transaction.on_commit(invalidate_all_feedback_caches)
+    transaction.on_commit(invalidate_feedback_list_cache)

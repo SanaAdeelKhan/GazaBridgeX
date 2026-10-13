@@ -88,16 +88,37 @@ class Feedback(models.Model):
         verbose_name = "Feedback"
         verbose_name_plural = "Feedback"
         indexes = [
-            models.Index(fields=["feedback_type", "content_type", "object_id"]),
             models.Index(fields=["created_at"]),
             models.Index(fields=["rating"]),
             models.Index(fields=["is_public", "feedback_type"]),
+            # Serve filter + ORDER BY -created_at for the public list
+            # (unfiltered/platform path and the per-target path).
+            models.Index(
+                fields=["is_public", "feedback_type", "-created_at"],
+                name="fb_pub_type_created_idx",
+            ),
+            models.Index(
+                fields=["feedback_type", "content_type", "object_id", "is_public", "-created_at"],
+                name="fb_target_pub_created_idx",
+            ),
         ]
         constraints = [
             models.UniqueConstraint(
                 fields=["user", "feedback_type", "content_type", "object_id"],
                 name="unique_feedback_per_user_per_target",
                 condition=models.Q(user__isnull=False),
+            ),
+            # NULL content_type/object_id are "distinct" to the constraint
+            # above, so platform feedback needs its own partial unique index.
+            models.UniqueConstraint(
+                fields=["user"],
+                name="unique_platform_feedback_per_user",
+                condition=models.Q(
+                    feedback_type="platform",
+                    content_type__isnull=True,
+                    object_id__isnull=True,
+                    user__isnull=False,
+                ),
             ),
         ]
     
@@ -164,7 +185,6 @@ class FeedbackReply(models.Model):
         verbose_name_plural = "Feedback Replies"
         indexes = [
             models.Index(fields=["feedback", "created_at"]),
-            models.Index(fields=["replied_by"]),
         ]
     
     def __str__(self) -> str:
@@ -229,12 +249,17 @@ class RatingSummary(models.Model):
         verbose_name = "Rating Summary"
         verbose_name_plural = "Rating Summaries"
         indexes = [
-            models.Index(fields=["feedback_type", "content_type", "object_id"]),
         ]
         constraints = [
             models.UniqueConstraint(
                 fields=["feedback_type", "content_type", "object_id"],
                 name="unique_rating_summary_per_target",
+            ),
+            # Same NULL-is-distinct gap: only one platform summary row.
+            models.UniqueConstraint(
+                fields=["feedback_type"],
+                name="unique_platform_rating_summary",
+                condition=models.Q(content_type__isnull=True),
             ),
         ]
     

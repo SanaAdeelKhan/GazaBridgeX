@@ -76,10 +76,8 @@ class LiveSectionCreateView(generics.CreateAPIView):
         return Response(output, status=status.HTTP_201_CREATED)
     
     def _serialize_detail(self, ls, request):
-        data = LiveSectionDetailOutputSerializer(ls).data
         visible = get_visible_contents_for_live_section(ls, request.user)
-        data['contents'] = LiveSectionContentOutputSerializer(visible, many=True).data
-        return data
+        return LiveSectionDetailOutputSerializer(ls, context={"contents": visible}).data
 
 
 class LiveSectionDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -100,9 +98,8 @@ class LiveSectionDetailView(generics.RetrieveUpdateDestroyAPIView):
         if not instance:
             return Response({"detail": "Live section not found."}, status=status.HTTP_404_NOT_FOUND)
         
-        data = LiveSectionDetailOutputSerializer(instance).data
         visible = get_visible_contents_for_live_section(instance, request.user)
-        data['contents'] = LiveSectionContentOutputSerializer(visible, many=True).data
+        data = LiveSectionDetailOutputSerializer(instance, context={"contents": visible}).data
         return Response(data)
     
     def update(self, request, *args, **kwargs):
@@ -127,9 +124,8 @@ class LiveSectionDetailView(generics.RetrieveUpdateDestroyAPIView):
         except PermissionError as exc:
             raise PermissionDenied(str(exc))
         
-        data = LiveSectionDetailOutputSerializer(updated).data
         visible = get_visible_contents_for_live_section(updated, request.user)
-        data['contents'] = LiveSectionContentOutputSerializer(visible, many=True).data
+        data = LiveSectionDetailOutputSerializer(updated, context={"contents": visible}).data
         return Response(data)
     
     def delete(self, request, *args, **kwargs):

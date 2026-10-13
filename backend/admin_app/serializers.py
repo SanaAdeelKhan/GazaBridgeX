@@ -27,4 +27,4 @@ class UserRoleListSerializer(serializers.ModelSerializer):
         fields = ["id", "email", "first_name", "last_name", "roles"]
     
     def get_roles(self, obj: User) -> list:
-        return list(obj.roles.values_list("name", flat=True))
+        return [role.name for role in obj.roles.all()]  # uses the selectors' prefetch

@@ -36,7 +36,12 @@ class ConversationOutputSerializer(serializers.ModelSerializer):
         }
 
     def get_last_message(self, obj):
-        last = obj.messages.last()
+        # The list view supplies a precomputed map (2 queries for all rows).
+        last_map = self.context.get("last_by_conv")
+        if last_map is not None:
+            last = last_map.get(obj.pk)
+        else:
+            last = obj.messages.last()
         if last:
             return {"content": last.content[:100], "created_at": last.created_at, "sender_id": last.sender_id}
         return None
@@ -45,6 +50,9 @@ class ConversationOutputSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if not request:
             return 0
+        unread_map = self.context.get("unread_by_conv")
+        if unread_map is not None:
+            return unread_map.get(obj.pk, 0)
         return obj.messages.filter(is_read=False).exclude(sender=request.user).count()
 
 
@@ -84,6 +92,9 @@ class GroupOutputSerializer(serializers.ModelSerializer):
             return False
         if obj.owner_id == request.user.pk:
             return True
+        admin_ids = self.context.get("admin_group_ids")
+        if admin_ids is not None:
+            return obj.pk in admin_ids
         return obj.memberships.filter(user=request.user, is_admin=True).exists()
 
 
@@ -96,7 +107,10 @@ class GroupDetailOutputSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "description", "owner", "owner_email", "member_count", "members", "created_at", "updated_at"]
 
     def get_members(self, obj):
-        memberships = obj.memberships.select_related("user").all()
+        if "memberships" in getattr(obj, "_prefetched_objects_cache", {}):
+            memberships = obj.memberships.all()  # prefetched with user
+        else:
+            memberships = obj.memberships.select_related("user").all()
         return [
             {"id": m.user_id, "email": m.user.email, "first_name": m.user.first_name, "last_name": m.user.last_name, "is_admin": m.is_admin}
             for m in memberships

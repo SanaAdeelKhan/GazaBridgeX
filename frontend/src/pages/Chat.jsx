@@ -55,13 +55,25 @@ export default function Chat() {
   const loadChats = useCallback(async () => {
     setLoadingList(true);
     try {
-      const [convRes, groupRes] = await Promise.all([
-        chatAPI.getConversations(),
-        chatAPI.getGroups(),
-      ]);
+      // The backend now returns these lists in pages of up to 100
+      // ({ pagination, results }); keep fetching until there is no next page
+      // so the sidebar still shows every chat (older array responses work too).
+      const fetchAll = async (fetchPage) => {
+        const items = [];
+        let page = 1;
+        for (;;) {
+          const res = await fetchPage({ page });
+          if (Array.isArray(res.data)) return res.data;
+          items.push(...(res.data.results ?? []));
+          if (!res.data.pagination?.next) return items;
+          page += 1;
+        }
+      };
 
-      const convs  = Array.isArray(convRes.data)  ? convRes.data  : (convRes.data.results  ?? []);
-      const grps   = Array.isArray(groupRes.data) ? groupRes.data : (groupRes.data.results ?? []);
+      const [convs, grps] = await Promise.all([
+        fetchAll(chatAPI.getConversations),
+        fetchAll(chatAPI.getGroups),
+      ]);
 
       setConversations(convs);
       setGroups(grps);

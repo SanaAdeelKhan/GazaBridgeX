@@ -9,13 +9,13 @@ import logging
 from typing import List, Optional, Dict, Any
 
 from django.core.cache import cache
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.utils import timezone
 
 from users.models import EmailVerificationToken, User, Role
 from users.selectors.user_selectors import (
     email_exists, get_registerable_roles, get_user_by_email,
-    get_user_by_id, get_token_by_value, get_role_by_name,
+    get_user_by_id, get_user_by_id_lean, get_token_by_value, get_role_by_name,
     invalidate_user_cache, invalidate_users_list_cache
 )
 from users.tasks import send_verification_email, build_cache_key
@@ -97,7 +97,8 @@ def register_user(
     validated_roles = _validate_role_selection(roles)
     role_qs = get_registerable_roles().filter(name__in=validated_roles)
 
-    found_names = set(role_qs.values_list("name", flat=True))
+    role_objs = list(role_qs)
+    found_names = {r.name for r in role_objs}
     missing = set(validated_roles) - found_names
     if missing:
         logger.error("Role seed missing from DB: %s.", missing)
@@ -107,20 +108,24 @@ def register_user(
 
     languages_str = ",".join(languages) if languages else ""
 
-    with transaction.atomic():
-        user = User.objects.create_user(
-            email=email.lower(),
-            password=password,
-            first_name=first_name,
-            last_name=last_name,
-            country=country,
-            gender=gender,
-            linkedin=linkedin,
-            whatsapp_number=whatsapp_number,
-            languages=languages_str,
-        )
-        user.roles.set(role_qs)
-        token = create_verification_token(user)
+    try:
+        with transaction.atomic():
+            user = User.objects.create_user(
+                email=email.lower(),
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                country=country,
+                gender=gender,
+                linkedin=linkedin,
+                whatsapp_number=whatsapp_number,
+                languages=languages_str,
+            )
+            user.roles.set(role_objs)
+            token = create_verification_token(user)
+    except IntegrityError:
+        # A concurrent registration with the same email won the race.
+        raise ValueError(f"An account with the email '{email}' already exists.")
 
     _cache_registration_payload(user, token)
     send_verification_email(user.pk)
@@ -187,7 +192,8 @@ def register_oauth_user(
     validated_roles = _validate_role_selection(roles)
     role_qs = get_registerable_roles().filter(name__in=validated_roles)
 
-    found_names = set(role_qs.values_list("name", flat=True))
+    role_objs = list(role_qs)
+    found_names = {r.name for r in role_objs}
     missing = set(validated_roles) - found_names
     if missing:
         logger.error("Role seed missing from DB: %s.", missing)
@@ -213,7 +219,7 @@ def register_oauth_user(
         user.set_unusable_password()
         user.save()
         
-        user.roles.set(role_qs)
+        user.roles.set(role_objs)
 
     invalidate_users_list_cache()
 
@@ -238,8 +244,14 @@ def verify_email(*, token_value: str) -> User:
         raise ValueError("expired")
 
     with transaction.atomic():
+        # Conditional update: of two concurrent requests with the same token,
+        # only one flips is_used and the other is told the link was used.
+        consumed = EmailVerificationToken.objects.filter(
+            pk=token_obj.pk, is_used=False,
+        ).update(is_used=True)
+        if not consumed:
+            raise ValueError("used")
         token_obj.is_used = True
-        token_obj.save(update_fields=["is_used"])
 
         token_obj.user.is_active = True
         token_obj.user.save(update_fields=["is_active"])
@@ -292,6 +304,9 @@ def update_user_profile(
     # Fields that cannot be updated via profile update
     forbidden_fields = {'email', 'roles'}
     
+    concrete_fields = {f.name for f in User._meta.concrete_fields}
+    changed_fields = []
+
     with transaction.atomic():
         for field, value in update_data.items():
             if field in forbidden_fields:
@@ -300,18 +315,22 @@ def update_user_profile(
             # Special handling for languages
             if field == 'languages' and isinstance(value, list):
                 target_user.set_languages(value)
+                changed_fields.append(field)
             elif hasattr(target_user, field):
                 setattr(target_user, field, value)
+                if field in concrete_fields:
+                    changed_fields.append(field)
 
-        target_user.save()
+        # Write only the columns that were set, so a concurrent password
+        # change / deactivation is not overwritten by this stale read.
+        if changed_fields:
+            target_user.save(update_fields=changed_fields)
 
-        # Invalidate list caches
-        invalidate_user_cache(user_id)
-        invalidate_users_list_cache()
+        # Invalidate list caches once the write is committed
+        transaction.on_commit(lambda: invalidate_user_cache(user_id))
 
-    # Re-fetch fresh from DB to return the saved state
-    fresh_user = User.objects.prefetch_related("roles").get(pk=user_id)
-    return fresh_user
+    # target_user already holds the saved state (and its prefetched roles)
+    return target_user
 
 
 def delete_user(
@@ -403,19 +422,18 @@ def change_user_password(
     new_password: str
 ) -> User:
     """Change user's password (user can only change their own)."""
-    target_user = get_user_by_id(user_id)
-    
+    target_user = get_user_by_id_lean(user_id)
+
     if not target_user:
         raise ValueError("User not found.")
-    
+
     if requesting_user.pk != target_user.pk:
         raise PermissionError("You can only change your own password.")
-    
+
     with transaction.atomic():
         target_user.set_password(new_password)
-        target_user.save()
-        
-        # Invalidate cache for this user
-        invalidate_user_cache(user_id)
-    
+        target_user.save(update_fields=["password"])
+        # The password is not part of any cached user list, so there is
+        # nothing to invalidate here.
+
     return target_user

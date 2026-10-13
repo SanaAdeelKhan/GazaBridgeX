@@ -92,6 +92,9 @@ class LiveSectionOutputSerializer(serializers.ModelSerializer):
         return f"{obj.user.first_name} {obj.user.last_name}"
     
     def get_contents_count(self, obj: LiveSection) -> int:
+        total = getattr(obj, "contents_total", None)  # annotated by the list selector
+        if total is not None:
+            return total
         return obj.contents.count()
     
     def get_effective_status(self, obj: LiveSection) -> str:
@@ -123,8 +126,12 @@ class LiveSectionDetailOutputSerializer(serializers.ModelSerializer):
         return obj.get_effective_status()
     
     def get_contents(self, obj: LiveSection) -> list:
-        from live_sections.serializers import LiveSectionContentOutputSerializer
-        return LiveSectionContentOutputSerializer(obj.contents.all(), many=True).data
+        # Views pass the visibility-filtered contents so they are serialized
+        # once (they used to be serialized here and again in the view).
+        contents = self.context.get("contents")
+        if contents is None:
+            contents = obj.contents.all()
+        return LiveSectionContentOutputSerializer(contents, many=True).data
 
 
 # ---------------------------------------------------------------------------

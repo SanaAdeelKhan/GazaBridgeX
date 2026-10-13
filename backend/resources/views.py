@@ -20,6 +20,7 @@ from resources.selectors import (
 )
 from resources.permissions import CanManageResource
 from backend.pagination import StandardResultsSetPagination
+from backend.page_cache import CachedPageListMixin
 
 logger = logging.getLogger(__name__)
 
@@ -114,48 +115,30 @@ class ResourceDetailView(generics.RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ResourceListView(generics.ListAPIView):
+class ResourceListView(CachedPageListMixin, generics.ListAPIView):
     """GET /resources/ — Everyone authenticated."""
     permission_classes = [IsAuthenticated]
     serializer_class = ResourceOutputSerializer
     pagination_class = StandardResultsSetPagination
+    cache_prefix = "resources_list"
 
-    def get_queryset(self):
+    def get_cache_filters(self):
         query_serializer = ResourceListQuerySerializer(data=self.request.query_params)
         query_serializer.is_valid(raise_exception=True)
         params = query_serializer.validated_data
+        self._params = params
+        return {
+            "category": params.get('category'),
+            "search": params.get('search'),
+            "user_id": params.get('user_id'),
+            "ordering": params.get('ordering', '-created_at'),
+        }
 
-        page = int(self.request.query_params.get('page', 1))
-        page_size = int(self.request.query_params.get('page_size', 20))
-
-        cached = get_cached_resource_list(
-            category=params.get('category'),
-            search=params.get('search'),
-            user_id=params.get('user_id'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-
-        if cached is not None:
-            return cached
-
-        queryset = get_resources_queryset(
+    def get_queryset(self):
+        params = self._params
+        return get_resources_queryset(
             category=params.get('category'),
             search=params.get('search'),
             user_id=params.get('user_id'),
             ordering=params.get('ordering', '-created_at')
         )
-
-        result_list = list(queryset)
-        set_cached_resource_list(
-            result_list,
-            category=params.get('category'),
-            search=params.get('search'),
-            user_id=params.get('user_id'),
-            ordering=params.get('ordering', '-created_at'),
-            page=page,
-            page_size=page_size
-        )
-
-        return result_list

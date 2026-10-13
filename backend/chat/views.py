@@ -22,11 +22,12 @@ from chat.services import (
 )
 from chat.selectors import (
     get_user_conversations, get_conversation_messages,
-    get_user_groups, get_group_by_id, get_group_messages,
-    get_blocked_users,
+    get_user_groups, get_group_by_id, get_group_light, get_group_messages,
+    get_blocked_users, get_conversation_summaries, get_admin_group_ids,
+    get_conversation_by_id,
 )
 from chat.permissions import IsConversationParticipant, IsGroupMember, CanManageGroup
-from backend.pagination import StandardResultsSetPagination
+from backend.pagination import StandardResultsSetPagination, ChatListPagination
 
 
 # ---------------------------------------------------------------------------
@@ -37,12 +38,28 @@ class ConversationListView(generics.ListAPIView):
     """GET /chat/conversations/"""
     permission_classes = [IsAuthenticated]
     serializer_class = ConversationOutputSerializer
+    pagination_class = ChatListPagination
 
     def get_queryset(self):
         return get_user_conversations(self.request.user.pk)
 
     def get_serializer_context(self):
-        return {"request": self.request}
+        return {"request": self.request, **getattr(self, "_summary_context", {})}
+
+    def list(self, request, *args, **kwargs):
+        # Paginate the (cached) conversation list, then compute last message +
+        # unread counts for just that page in 2 queries (live, not cached)
+        # instead of 2 queries per conversation.
+        page = self.paginate_queryset(self.get_queryset())
+        last_by_conv, unread_by_conv = get_conversation_summaries(
+            [c.pk for c in page], request.user.pk,
+        )
+        self._summary_context = {
+            "last_by_conv": last_by_conv,
+            "unread_by_conv": unread_by_conv,
+        }
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class ConversationMessagesView(generics.ListAPIView):
@@ -53,6 +70,10 @@ class ConversationMessagesView(generics.ListAPIView):
 
     def get_queryset(self):
         conv_id = self.kwargs["conv_id"]
+        # Only participants may read a conversation's history.
+        conversation = get_conversation_by_id(conv_id)
+        if conversation is not None:
+            self.check_object_permissions(self.request, conversation)
         return get_conversation_messages(conv_id)
 
 
@@ -158,12 +179,22 @@ class GroupListView(generics.ListAPIView):
     """GET /chat/groups/"""
     permission_classes = [IsAuthenticated]
     serializer_class = GroupOutputSerializer
+    pagination_class = ChatListPagination
 
     def get_queryset(self):
         return get_user_groups(self.request.user.pk)
 
     def get_serializer_context(self):
-        return {"request": self.request}
+        return {"request": self.request, **getattr(self, "_admin_context", {})}
+
+    def list(self, request, *args, **kwargs):
+        page = self.paginate_queryset(self.get_queryset())
+        # One query for the admin flags of every listed group (was 1 per group).
+        self._admin_context = {
+            "admin_group_ids": get_admin_group_ids(request.user.pk, [g.pk for g in page]),
+        }
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class GroupDetailView(generics.RetrieveDestroyAPIView):
@@ -180,10 +211,14 @@ class GroupDetailView(generics.RetrieveDestroyAPIView):
         instance = self.get_object()
         if not instance:
             return Response({"detail": "Group not found."}, status=status.HTTP_404_NOT_FOUND)
+        # Only members may see a group's detail / member list. The memberships
+        # are already prefetched, so this costs no extra query.
+        if not any(m.user_id == request.user.pk for m in instance.memberships.all()):
+            raise PermissionDenied("You are not a member of this group.")
         return Response(GroupDetailOutputSerializer(instance).data)
 
     def delete(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = get_group_light(self.kwargs["pk"])  # memberships not needed
         if not instance:
             return Response({"detail": "Group not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -213,8 +248,8 @@ class GroupMessagesView(generics.ListAPIView):
 
     def get_queryset(self):
         group_id = self.kwargs["pk"]
-        # Manually check group membership
-        group = get_group_by_id(group_id)
+        # Manually check group membership (memberships are not needed here)
+        group = get_group_light(group_id)
         if not group:
             from rest_framework.exceptions import NotFound
             raise NotFound("Group not found.")

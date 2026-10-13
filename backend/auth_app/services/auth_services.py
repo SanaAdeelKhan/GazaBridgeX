@@ -49,7 +49,9 @@ def _resolve_roles(user: User) -> list[str]:
     if user.is_staff and not user.is_superuser:
         roles.append("admin")
 
-    db_roles = list(user.roles.values_list("name", flat=True))
+    # .all() reuses the roles prefetched by the auth selectors (Role.Meta
+    # ordering = name, same order as the previous values_list query).
+    db_roles = [role.name for role in user.roles.all()]
     roles.extend(db_roles)
 
     return roles
@@ -97,10 +99,18 @@ def _update_last_login(user: User) -> None:
     Fire-and-forget — a failure must never abort a login.
     """
     try:
-        UserActivity.objects.update_or_create(
-            user=user,
-            defaults={"last_login_at": timezone.now()},
+        now = timezone.now()
+        # Common case: the row exists -> a single UPDATE (update() skips
+        # auto_now, so updated_at is set explicitly). Only a user's very first
+        # login falls through to update_or_create.
+        updated = UserActivity.objects.filter(user_id=user.pk).update(
+            last_login_at=now, updated_at=now,
         )
+        if not updated:
+            UserActivity.objects.update_or_create(
+                user=user,
+                defaults={"last_login_at": now},
+            )
     except Exception:
         logger.exception("Failed to update last_login for user %s.", user.pk)
 
@@ -118,8 +128,8 @@ def _build_token_pair(user: User) -> dict:
     # Embed extra claims into both tokens.
     refresh["user_id"] = user.pk
     refresh["roles"]   = roles
-    refresh.access_token["user_id"] = user.pk
-    refresh.access_token["roles"]   = roles
+    # The access token (built from the refresh payload below) inherits both
+    # claims, so they are not set again on a throwaway access token.
 
     refresh_lifetime = settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"]
     _store_refresh_token(str(refresh["jti"]), user.pk, refresh_lifetime)
@@ -203,7 +213,15 @@ def refresh_token(*, old_refresh_token: str) -> dict:
         raise ValueError("invalid")
 
     # Invalidate old token before issuing new one — prevents race conditions.
-    _delete_refresh_token(old_jti)
+    # cache.delete() reports whether the key still existed, so of two
+    # concurrent rotations of the same token only one succeeds.
+    try:
+        if not cache.delete(_REFRESH_KEY.format(jti=old_jti)):
+            raise ValueError("invalid")
+    except ValueError:
+        raise
+    except Exception:
+        logger.exception("Failed to delete refresh token jti=%s from Redis.", old_jti)
 
     return _build_token_pair(user)
 
@@ -233,6 +251,14 @@ def update_activity_visibility(*, user: User, is_visible: bool) -> UserActivity:
     Toggle whether the user's last_login_at is visible to others.
     Creates the activity record if it doesn't exist yet.
     """
+    now = timezone.now()
+    updated = UserActivity.objects.filter(user_id=user.pk).update(
+        is_visible=is_visible, updated_at=now,
+    )
+    if updated:
+        activity = UserActivity.objects.get(user_id=user.pk)
+        activity.user = user
+        return activity
     activity, _ = UserActivity.objects.update_or_create(
         user=user,
         defaults={"is_visible": is_visible},

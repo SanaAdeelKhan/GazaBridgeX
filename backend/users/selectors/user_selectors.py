@@ -14,9 +14,10 @@ Caching policy:
 from typing import Optional, List, Dict, Any
 
 from django.core.cache import cache
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet
 from django.utils import timezone
 
+from backend.search_q import search_q
 from users.models import EmailVerificationToken, Role, User
 from cache_utils import get_cached_list, set_cached_list, increment_cache_version, CACHE_TTL_LONG
 
@@ -99,6 +100,11 @@ def get_user_by_id(user_id: int) -> Optional[User]:
     )
 
 
+def get_user_by_id_lean(user_id: int) -> Optional[User]:
+    """Get user by ID without the roles prefetch (for callers that never read roles)."""
+    return User.objects.filter(pk=user_id).first()
+
+
 def get_users_with_filters(
     role: Optional[str] = None,
     country: Optional[str] = None,
@@ -124,7 +130,14 @@ def get_users_with_filters(
     if cached_result is not None:
         return cached_result
 
-    queryset = User.objects.select_related().prefetch_related("roles")
+    # password / preferred_language are never serialized by UserSerializer;
+    # deferring them keeps the row narrow and keeps the password hash out of
+    # the pickled Redis payload.
+    queryset = (
+        User.objects
+        .defer("password", "preferred_language")
+        .prefetch_related("roles")
+    )
 
     if role:
         queryset = queryset.filter(roles__name=role)
@@ -134,9 +147,7 @@ def get_users_with_filters(
         queryset = queryset.filter(is_active=is_active)
     if search:
         queryset = queryset.filter(
-            Q(email__icontains=search) |
-            Q(first_name__icontains=search) |
-            Q(last_name__icontains=search)
+            search_q(search, "email", "first_name", "last_name")
         )
     if not role and not search:
         queryset = queryset.filter(is_superuser=False)

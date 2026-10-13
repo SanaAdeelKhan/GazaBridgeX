@@ -22,6 +22,7 @@ from feedback.serializers import (
     ReplyCreateInputSerializer,
     ReplyUpdateInputSerializer,
     ReplyOutputSerializer,
+    public_replies,
 )
 from feedback.services import (
     create_feedback,
@@ -184,6 +185,7 @@ class FeedbackDetailView(generics.RetrieveUpdateDestroyAPIView):
                 feedback_id=instance.pk,
                 user=request.user,
                 update_data=serializer.validated_data,
+                instance=instance,
             )
         except (ValueError, PermissionError) as exc:
             return Response(
@@ -209,6 +211,7 @@ class FeedbackDetailView(generics.RetrieveUpdateDestroyAPIView):
             delete_feedback(
                 feedback_id=instance.pk,
                 user=request.user,
+                instance=instance,
             )
         except (ValueError, PermissionError) as exc:
             return Response(
@@ -257,7 +260,7 @@ class ReplyListCreateView(generics.ListCreateAPIView):
                 status=status.HTTP_404_NOT_FOUND
             )
         
-        replies = feedback.replies.filter(is_public=True)
+        replies = public_replies(feedback)
         serializer = ReplyOutputSerializer(replies, many=True)
         
         return Response({"replies": serializer.data})
@@ -280,6 +283,7 @@ class ReplyListCreateView(generics.ListCreateAPIView):
                 replied_by=request.user,
                 reply_text=data["reply_text"],
                 is_public=data.get("is_public", True),
+                feedback=feedback,
             )
         except (ValueError, PermissionError) as exc:
             status_code = (
@@ -364,6 +368,7 @@ class ReplyDetailView(generics.RetrieveUpdateDestroyAPIView):
                 reply_id=instance.pk,
                 user=request.user,
                 update_data=serializer.validated_data,
+                instance=instance,
             )
         except (ValueError, PermissionError) as exc:
             return Response(
@@ -389,6 +394,7 @@ class ReplyDetailView(generics.RetrieveUpdateDestroyAPIView):
             delete_reply(
                 reply_id=instance.pk,
                 user=request.user,
+                instance=instance,
             )
         except (ValueError, PermissionError) as exc:
             return Response(
@@ -444,8 +450,8 @@ class RatingSummaryView(generics.ListAPIView):
             return Response({"rating_summary": serializer.data})
         
         # Otherwise, return paginated list of all summaries
-        page = int(request.query_params.get('page', 1))
-        page_size = int(request.query_params.get('page_size', 20))
+        page = params['page']
+        page_size = params['page_size']
         
         result = get_all_rating_summaries(
             feedback_type=feedback_type,

@@ -52,6 +52,7 @@ def get_feedback_by_id(feedback_id: int) -> Optional[Feedback]:
     return (
         Feedback.objects
         .select_related("user", "content_type")
+        .defer("user__password")
         .prefetch_related(
             "user__roles",
             "replies",
@@ -106,6 +107,7 @@ def get_feedback_with_filters(
     queryset = (
         Feedback.objects
         .select_related("user", "content_type")
+        .defer("user__password")
         .prefetch_related(
             "user__roles",
             "replies",

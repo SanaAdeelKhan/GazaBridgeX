@@ -118,8 +118,14 @@ def confirm_password_reset(*, token_value: str, new_password: str) -> None:
         raise ValueError("expired")
 
     with transaction.atomic():
+        # Conditional update: only one of two concurrent requests with the
+        # same token can consume it.
+        consumed = type(token_obj).objects.filter(
+            pk=token_obj.pk, is_used=False,
+        ).update(is_used=True)
+        if not consumed:
+            raise ValueError("used")
         token_obj.is_used = True
-        token_obj.save(update_fields=["is_used"])
 
         token_obj.user.set_password(new_password)
         token_obj.user.save(update_fields=["password"])

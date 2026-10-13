@@ -7,14 +7,17 @@ Write layer and business-logic enforcement.
 import logging
 from typing import Optional, List, Set
 
+from django.core.cache import cache
 from django.db import transaction
 
 from notifications.models import Notification
 from notifications.selectors import (
     get_notification_by_id,
     invalidate_notification_cache_for_user,
-    invalidate_all_notification_caches
+    invalidate_all_notification_caches,
+    get_cache_key,
 )
+from cache_utils import increment_cache_version
 
 logger = logging.getLogger(__name__)
 
@@ -90,22 +93,31 @@ def send_admin_notifications(
             )
         
         if notifications:
-            Notification.objects.bulk_create(notifications)
+            # batch_size keeps a send to 100k users from being one giant INSERT.
+            Notification.objects.bulk_create(notifications, batch_size=1000)
     
-    # Queue email tasks for each notification
-    created = Notification.objects.filter(
-        receiver_id__in=target_user_ids,
-        sender=sender,
-        content=content
-    ).order_by("-created_at")[:len(target_user_ids)]
+    # Email exactly the rows created above. bulk_create returns primary keys
+    # on PostgreSQL / modern SQLite, so no re-query by (receiver, sender,
+    # content) over the unindexed content column is needed. The old query
+    # stays as a fallback for backends that do not return keys.
+    if notifications and all(n.pk is not None for n in notifications):
+        created = notifications
+    else:
+        created = Notification.objects.filter(
+            receiver_id__in=target_user_ids,
+            sender=sender,
+            content=content
+        ).order_by("-created_at")[:len(target_user_ids)]
     
     from notifications.tasks import send_notification_email
     for notification in created:
         send_notification_email(notification.id)
     
     # Invalidate all caches
-    for user_id in target_user_ids:
-        invalidate_notification_cache_for_user(user_id)
+    if target_user_ids:
+        cache.delete_many([get_cache_key("unread_count", uid) for uid in target_user_ids])
+        for user_id in target_user_ids:
+            increment_cache_version(f"notifications_list_{user_id}")
     invalidate_all_notification_caches()
     
     return len(notifications)

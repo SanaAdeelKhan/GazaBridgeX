@@ -25,7 +25,7 @@ class NotificationOutputSerializer(serializers.ModelSerializer):
             return None
         if obj.sender.is_superuser or obj.sender.is_staff:
             return "Admin"
-        role_names = set(obj.sender.roles.values_list("name", flat=True))
+        role_names = {r.name for r in obj.sender.roles.all()}  # prefetched by the selector
         if "manager" in role_names:
             return "Manager"
         if "volunteer" in role_names:

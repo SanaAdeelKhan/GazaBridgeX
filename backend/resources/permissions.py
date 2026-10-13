@@ -31,9 +31,9 @@ class CanManageResource(BasePermission):
         
         # Write operations — only manager, admin, superuser
         return (
-            request.user.is_manager or
             request.user.is_staff or
-            request.user.is_superuser
+            request.user.is_superuser or
+            request.user.is_manager
         )
     
     def has_object_permission(self, request, view, obj):
@@ -43,7 +43,7 @@ class CanManageResource(BasePermission):
         
         # Only manager, admin, superuser can edit/delete
         return (
-            request.user.is_manager or
             request.user.is_staff or
-            request.user.is_superuser
+            request.user.is_superuser or
+            request.user.is_manager
         )

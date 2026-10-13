@@ -170,9 +170,13 @@ REST_FRAMEWORK = {
         "anon": "20/minute",   # 20 requests per minute for unauthenticated users
         "user": "180/minute"   # 180 requests per minute for authenticated users
     },
-    # "DEFAULT_RENDERER_CLASSES": [
-    #     "rest_framework.renderers.JSONRenderer",
-    # ],
+    # JSON only in production; the browsable API (extra form rendering work
+    # per request) stays available when DEBUG=True.
+    "DEFAULT_RENDERER_CLASSES": (
+        ["rest_framework.renderers.JSONRenderer", "rest_framework.renderers.BrowsableAPIRenderer"]
+        if DEBUG else
+        ["rest_framework.renderers.JSONRenderer"]
+    ),
     # "DEFAULT_PARSER_CLASSES": [
     #     "rest_framework.parsers.JSONParser",
     # ],

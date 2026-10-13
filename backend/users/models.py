@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+from django.db.models import prefetch_related_objects
 from django.utils import timezone
 
 # ---------------------------------------------------------------------------
@@ -218,7 +219,12 @@ class User(AbstractUser):
         self.languages = ",".join(language_codes) if language_codes else ""
 
     def has_role(self, role_name: str) -> bool:
-        return self.roles.filter(name=role_name).exists()
+        # Roles are loaded once per instance (<= a handful of rows) and reused
+        # by every later is_manager/is_volunteer/is_seeker check, instead of one
+        # EXISTS query per check. add()/remove()/set() clear this cache.
+        if "roles" not in getattr(self, "_prefetched_objects_cache", {}):
+            prefetch_related_objects([self], "roles")
+        return any(role.name == role_name for role in self.roles.all())
 
     @property
     def is_manager(self) -> bool:
