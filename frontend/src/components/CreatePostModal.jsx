@@ -23,7 +23,10 @@ const AVAILABILITY = [
   { value: '10_plus_hours', label: '10+ hours/week' },
 ];
 
-export default function CreatePostModal({ onClose, onCreated }) {
+// `required` turns the modal into a blocking step (used by FirstPostGate): no
+// close button, backdrop clicks are ignored and Cancel becomes "Log out".
+// Without it the modal behaves exactly as before.
+export default function CreatePostModal({ onClose, onCreated, required = false, onLogout }) {
   const { refreshUser } = useAuth();
   const [postType, setPostType] = useState('offer'); // 'offer' or 'request'
   const [formData, setFormData] = useState({
@@ -78,7 +81,7 @@ export default function CreatePostModal({ onClose, onCreated }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-      onClick={onClose}
+      onClick={required ? undefined : onClose}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -90,13 +93,24 @@ export default function CreatePostModal({ onClose, onCreated }) {
       >
         <div className="p-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>Create Post</h2>
-            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-              <svg className="w-5 h-5" style={{ color: colors.muted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            <h2 className="text-2xl font-bold" style={{ color: colors.headingDark }}>
+              {required ? 'Create your first post' : 'Create Post'}
+            </h2>
+            {!required && (
+              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
+                <svg className="w-5 h-5" style={{ color: colors.muted }} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
+
+          {required && (
+            <p className="text-sm mb-6" style={{ color: colors.muted }}>
+              Welcome to GazaBridge. Share what you can offer or what you need help with, so we can start
+              matching you with the right people. You need one post to continue.
+            </p>
+          )}
 
           {/* Post Type Selector */}
           <div className="mb-6">
@@ -207,11 +221,11 @@ export default function CreatePostModal({ onClose, onCreated }) {
             <div className="flex gap-3 pt-4">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={required ? onLogout : onClose}
                 className="flex-1 py-3 border-2 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
                 style={{ borderColor: '#D1D5DB', color: colors.body }}
               >
-                Cancel
+                {required ? 'Log out' : 'Cancel'}
               </button>
               <motion.button
                 type="submit"

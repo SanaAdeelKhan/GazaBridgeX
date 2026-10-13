@@ -7,6 +7,7 @@ import Sidebar from './Sidebar';
 import AdminSidebar from './AdminSidebar';
 import HeaderBar from './HeaderBar';
 import ProfileFieldsPrompt from '../ProfileFieldsPrompt';
+import FirstPostGate from '../FirstPostGate';
 import { ChatNavProvider } from '../../context/ChatNavContext';
 import colors from '../../theme/colors';
 
@@ -29,6 +30,7 @@ export default function DashboardLayout() {
           <HeaderBar />
           <Outlet />
           <ProfileFieldsPrompt />
+          <FirstPostGate />
         </div>
       </ChatNavProvider>
     );
@@ -67,6 +69,7 @@ export default function DashboardLayout() {
         </main>
       </div>
       <ProfileFieldsPrompt />
+      <FirstPostGate />
     </div>
   );
 }
