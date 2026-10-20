@@ -1,5 +1,5 @@
-// frontend/src/pages/HowItWorks.jsx
-// Design system: Instrument Serif + DM Sans — retheme matches Home.jsx hero (navy/gold/olive)
+﻿// frontend/src/pages/HowItWorks.jsx
+// Design system: Instrument Serif + DM Sans â€” retheme matches Home.jsx hero (navy/gold/olive)
 // Deps: framer-motion (already installed)
 
 import {
@@ -13,8 +13,9 @@ import {
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import colors from '../theme/colors';
+import SEO from '../components/SEO';
 
-// ─── Noise overlay ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Noise overlay â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function NoiseOverlay() {
   return (
     <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.035] mix-blend-overlay" xmlns="http://www.w3.org/2000/svg">
@@ -27,7 +28,7 @@ function NoiseOverlay() {
   );
 }
 
-// ─── Mouse gradient (same as Home) ────────────────────────────────────────────
+// â”€â”€â”€ Mouse gradient (same as Home) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function MouseGradient() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
   useEffect(() => {
@@ -45,7 +46,7 @@ function MouseGradient() {
   );
 }
 
-// ─── Cursor blob (same as Home) ───────────────────────────────────────────────
+// â”€â”€â”€ Cursor blob (same as Home) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CursorBlob() {
   const blobRef = useRef(null);
   const pos = useRef({ x: 0, y: 0 });
@@ -71,26 +72,26 @@ function CursorBlob() {
   );
 }
 
-// ─── Magnetic wrapper ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Magnetic wrapper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Magnetic({ children }) {
   return <>{children}</>;
 }
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const volunteerSteps = [
-  { number: '01', title: 'Create a Free Account',   description: 'Sign up using Google or email in under 60 seconds. No card, no commitment.',           icon: '👤' },
-  { number: '02', title: 'Complete Your Profile',   description: 'Add your skills, languages, availability, and optionally your LinkedIn and WhatsApp.',  icon: '📝' },
-  { number: '03', title: 'Post an Offer',           description: 'Describe what you can teach or help with — coding, English, CV review, design, etc.',   icon: '📢' },
-  { number: '04', title: 'Browse Needs',            description: 'Find people in Gaza who need your skills and message them directly.',                    icon: '🔍' },
-  { number: '05', title: 'Connect & Teach',         description: 'Connect via platform messages, WhatsApp chat, or invite them to your group.',           icon: '💬' },
+  { number: '01', title: 'Create a Free Account',   description: 'Sign up using Google or email in under 60 seconds. No card, no commitment.',           icon: 'ðŸ‘¤' },
+  { number: '02', title: 'Complete Your Profile',   description: 'Add your skills, languages, availability, and optionally your LinkedIn and WhatsApp.',  icon: 'ðŸ“' },
+  { number: '03', title: 'Post an Offer',           description: 'Describe what you can teach or help with â€” coding, English, CV review, design, etc.',   icon: 'ðŸ“¢' },
+  { number: '04', title: 'Browse Needs',            description: 'Find people in Gaza who need your skills and message them directly.',                    icon: 'ðŸ”' },
+  { number: '05', title: 'Connect & Teach',         description: 'Connect via platform messages, WhatsApp chat, or invite them to your group.',           icon: 'ðŸ’¬' },
 ];
 
 const seekerSteps = [
-  { number: '01', title: 'Create a Free Account',   description: 'Sign up using Google or email in under 60 seconds. Completely free.',                   icon: '👤' },
-  { number: '02', title: 'Complete Your Profile',   description: 'Add your location, languages, and contact info (WhatsApp or Telegram).',                icon: '📝' },
-  { number: '03', title: 'Post a Request',          description: 'Describe what help you need — "I want to learn English" or "I need CV help".',          icon: '📢' },
-  { number: '04', title: 'Browse Volunteers',       description: 'Find someone with the skills you need and message them directly.',                       icon: '🔍' },
-  { number: '05', title: 'Learn for Free',          description: 'Everything is completely free — volunteers are here to help at zero cost to you.',      icon: '🎓' },
+  { number: '01', title: 'Create a Free Account',   description: 'Sign up using Google or email in under 60 seconds. Completely free.',                   icon: 'ðŸ‘¤' },
+  { number: '02', title: 'Complete Your Profile',   description: 'Add your location, languages, and contact info (WhatsApp or Telegram).',                icon: 'ðŸ“' },
+  { number: '03', title: 'Post a Request',          description: 'Describe what help you need â€” "I want to learn English" or "I need CV help".',          icon: 'ðŸ“¢' },
+  { number: '04', title: 'Browse Volunteers',       description: 'Find someone with the skills you need and message them directly.',                       icon: 'ðŸ”' },
+  { number: '05', title: 'Learn for Free',          description: 'Everything is completely free â€” volunteers are here to help at zero cost to you.',      icon: 'ðŸŽ“' },
 ];
 
 const volunteerWhy = [
@@ -101,13 +102,13 @@ const volunteerWhy = [
 ];
 
 const seekerWhy = [
-  '100% free — no hidden costs, ever',
+  '100% free â€” no hidden costs, ever',
   'Learn from experienced global professionals',
   'Flexible learning at your own pace',
   'Build skills that lead to real, paying jobs',
 ];
 
-// ─── Step card ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Step card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function StepCard({ step, index, accentColors }) {
   return (
     <motion.div
@@ -147,7 +148,7 @@ function StepCard({ step, index, accentColors }) {
   );
 }
 
-// ─── Why card ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Why card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function WhyCard({ emoji, title, points, accentColors }) {
   return (
     <motion.div
@@ -188,7 +189,7 @@ function WhyCard({ emoji, title, points, accentColors }) {
               <span
                 className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] mt-0.5 font-bold border"
                 style={{ backgroundColor: colors.goldLight, borderColor: colors.gold, color: colors.goldHover }}
-              >✓</span>
+              >âœ“</span>
               {p}
             </motion.li>
           ))}
@@ -198,9 +199,9 @@ function WhyCard({ emoji, title, points, accentColors }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // MAIN
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function HowItWorks() {
   const [activeRole, setActiveRole] = useState('volunteer');
   const heroRef = useRef(null);
@@ -223,7 +224,7 @@ export default function HowItWorks() {
     <div style={{ backgroundColor: colors.primaryLight, fontFamily: "'DM Sans', sans-serif" }}>
       <CursorBlob />
 
-      {/* ══════════════════════════════════════════════ HERO ══ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HERO â•â• */}
       <motion.section
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale, backgroundColor: colors.primaryLight }}
@@ -232,7 +233,7 @@ export default function HowItWorks() {
         <NoiseOverlay />
         <MouseGradient />
 
-        {/* Navy grid — identical treatment to Home */}
+        {/* Navy grid â€” identical treatment to Home */}
         <div className="absolute inset-0 pointer-events-none" style={{
           backgroundImage: `
             linear-gradient(${colors.primaryGlow} 1px, transparent 1px),
@@ -240,7 +241,7 @@ export default function HowItWorks() {
           backgroundSize: '80px 80px',
         }} />
 
-        {/* Architectural rings — right side, same as Home */}
+        {/* Architectural rings â€” right side, same as Home */}
         <motion.div style={{ y: heroY, borderColor: 'rgba(26,82,118,0.35)' }}
           className="absolute -right-40 top-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border pointer-events-none" />
         <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 80]), borderColor: 'rgba(26,82,118,0.2)' }}
@@ -248,7 +249,7 @@ export default function HowItWorks() {
         <motion.div style={{ y: useTransform(scrollYProgress, [0, 0.5], [0, 40]), backgroundColor: colors.oliveLight, opacity: 0.7 }}
           className="absolute -right-20 top-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full pointer-events-none" />
 
-        {/* Spinning badge — same as Home */}
+        {/* Spinning badge â€” same as Home */}
         <motion.div
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
@@ -263,16 +264,16 @@ export default function HowItWorks() {
             <svg className="absolute inset-0 w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 112 112">
               <path id="ring-hiw" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
               <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.gold} fontWeight="500" letterSpacing="3">
-                <textPath href="#ring-hiw">5 SIMPLE STEPS • FREE FOREVER • </textPath>
+                <textPath href="#ring-hiw">5 SIMPLE STEPS â€¢ FREE FOREVER â€¢ </textPath>
               </text>
             </svg>
             <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl" style={{ backgroundColor: colors.gold, boxShadow: '0 10px 25px rgba(212,160,23,0.4)' }}>
-              <span className="text-white text-xl">✦</span>
+              <span className="text-white text-xl">âœ¦</span>
             </div>
           </motion.div>
         </motion.div>
 
-        {/* Floating card — bottom left, same as Home */}
+        {/* Floating card â€” bottom left, same as Home */}
         <motion.div
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2, duration: 0.8 }}
@@ -284,7 +285,7 @@ export default function HowItWorks() {
             className="bg-white rounded-2xl shadow-xl shadow-black/5 border border-gray-100 p-4 w-54"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base" style={{ backgroundColor: colors.goldGlow }}>🤝</div>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base" style={{ backgroundColor: colors.goldGlow }}>ðŸ¤</div>
               <div>
                 <div className="text-xs font-medium" style={{ color: colors.muted }}>Live right now</div>
                 <div className="text-sm font-semibold" style={{ color: colors.body }}>238 active sessions</div>
@@ -307,7 +308,7 @@ export default function HowItWorks() {
         <motion.div style={{ y: heroY }} className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="max-w-2xl space-y-8">
 
-            {/* Eyebrow — same as Home */}
+            {/* Eyebrow â€” same as Home */}
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
@@ -322,7 +323,7 @@ export default function HowItWorks() {
               <span className="text-sm font-semibold" style={{ color: colors.title }}>Simple 5-Step Process</span>
             </motion.div>
 
-            {/* Headline — serif, same as Home */}
+            {/* Headline â€” serif, same as Home */}
             <div className="space-y-1 overflow-hidden">
               <motion.h1
                 initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
@@ -361,7 +362,7 @@ export default function HowItWorks() {
               style={{ color: colors.muted }}
             >
               A free platform connecting skilled volunteers worldwide with talented people
-              in Gaza who need digital skills support — in just five steps.
+              in Gaza who need digital skills support â€” in just five steps.
             </motion.p>
 
             {/* CTA row */}
@@ -380,7 +381,7 @@ export default function HowItWorks() {
                   >
                     <span className="relative z-10 flex items-center gap-2">
                       Join as Volunteer
-                      <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
+                      <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>â†’</motion.span>
                     </span>
                   </motion.button>
                 </Link>
@@ -432,7 +433,7 @@ export default function HowItWorks() {
         </motion.div>
       </motion.section>
 
-      {/* ══════════════════════════════════════════════ MARQUEE ══ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• MARQUEE â•â• */}
       <div className="relative py-4 overflow-hidden border-y" style={{ backgroundColor: colors.sidebar, borderColor: colors.onDarkBorder }}>
         <motion.div
           animate={{ x: ['0%', '-50%'] }}
@@ -440,17 +441,17 @@ export default function HowItWorks() {
           className="flex items-center gap-8 whitespace-nowrap"
         >
           {[...Array(2)].flatMap(() => [
-            'Create Account', '✦', 'Complete Profile', '✦', 'Post an Offer',
-            '✦', 'Browse Needs', '✦', 'Connect & Teach', '✦', 'Learn for Free', '✦',
+            'Create Account', 'âœ¦', 'Complete Profile', 'âœ¦', 'Post an Offer',
+            'âœ¦', 'Browse Needs', 'âœ¦', 'Connect & Teach', 'âœ¦', 'Learn for Free', 'âœ¦',
           ]).map((item, i) => (
-            <span key={i} className="text-sm font-medium tracking-wide" style={{ color: item === '✦' ? colors.gold : colors.onDarkMuted }}>
+            <span key={i} className="text-sm font-medium tracking-wide" style={{ color: item === 'âœ¦' ? colors.gold : colors.onDarkMuted }}>
               {item}
             </span>
           ))}
         </motion.div>
       </div>
 
-      {/* ══════════════════════════════════════════════ ROLE TOGGLE ══ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• ROLE TOGGLE â•â• */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
 
@@ -476,8 +477,8 @@ export default function HowItWorks() {
             {/* Toggle pill */}
             <div className="flex items-center rounded-full p-1.5 gap-1" style={{ backgroundColor: colors.badgeNeutral }}>
               {[
-                { id: 'volunteer', label: '🙌 I want to volunteer', },
-                { id: 'seeker',    label: '🎓 I want to learn', },
+                { id: 'volunteer', label: 'ðŸ™Œ I want to volunteer', },
+                { id: 'seeker',    label: 'ðŸŽ“ I want to learn', },
               ].map((opt) => (
                 <motion.button
                   key={opt.id}
@@ -503,7 +504,7 @@ export default function HowItWorks() {
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
               className="grid lg:grid-cols-[1.6fr_1fr] gap-12 items-start"
             >
-              {/* Left — scroll-driven timeline */}
+              {/* Left â€” scroll-driven timeline */}
               <div ref={stepsRef} className="relative">
                 {/* Vertical line */}
                 <div className="absolute left-[26px] top-6 bottom-6 w-px bg-gray-100">
@@ -522,10 +523,10 @@ export default function HowItWorks() {
                 </div>
               </div>
 
-              {/* Right — sticky why card */}
+              {/* Right â€” sticky why card */}
               <div className="lg:sticky lg:top-32">
                 <WhyCard
-                  emoji={isVolunteer ? '🌟' : '🎓'}
+                  emoji={isVolunteer ? 'ðŸŒŸ' : 'ðŸŽ“'}
                   title={isVolunteer ? 'Why Volunteer?' : 'Why Learn With Us?'}
                   points={whyPoints}
                   accentColors={accentColors}
@@ -545,7 +546,7 @@ export default function HowItWorks() {
                       className="w-full py-4 rounded-2xl font-bold text-white text-sm shadow-lg transition-all"
                       style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}
                     >
-                      {isVolunteer ? 'Join as Volunteer →' : 'Start Learning Free →'}
+                      {isVolunteer ? 'Join as Volunteer â†’' : 'Start Learning Free â†’'}
                     </motion.button>
                   </Link>
                   <motion.button
@@ -554,7 +555,7 @@ export default function HowItWorks() {
                     className="w-full py-3 rounded-2xl font-semibold text-sm border border-gray-200 transition-all hover:border-[#D4A017] hover:text-[#D4A017]"
                     style={{ color: colors.muted }}
                   >
-                    {isVolunteer ? 'Or learn instead →' : 'Or volunteer instead →'}
+                    {isVolunteer ? 'Or learn instead â†’' : 'Or volunteer instead â†’'}
                   </motion.button>
                 </motion.div>
               </div>
@@ -563,16 +564,16 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════ STATS BAND ══ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• STATS BAND â•â• */}
       <section className="py-16 overflow-hidden" style={{ backgroundColor: colors.pageBg }}>
         <NoiseOverlay />
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-px rounded-3xl overflow-hidden border" style={{ backgroundColor: colors.divider, borderColor: colors.divider }}>
             {[
-              { v: '5,000+', l: 'Active Learners',    icon: '🎓' },
-              { v: '850+',   l: 'Expert Volunteers',  icon: '🙌' },
-              { v: '45',     l: 'Countries Reached',  icon: '🌍' },
-              { v: '3,200+', l: 'Success Stories',    icon: '🏆' },
+              { v: '5,000+', l: 'Active Learners',    icon: 'ðŸŽ“' },
+              { v: '850+',   l: 'Expert Volunteers',  icon: 'ðŸ™Œ' },
+              { v: '45',     l: 'Countries Reached',  icon: 'ðŸŒ' },
+              { v: '3,200+', l: 'Success Stories',    icon: 'ðŸ†' },
             ].map((s, i) => (
               <motion.div
                 key={s.l}
@@ -600,7 +601,7 @@ export default function HowItWorks() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════ FINAL CTA ══ */}
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• FINAL CTA â•â• */}
       <section className="relative py-32 overflow-hidden">
         <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${colors.sidebar} 0%, ${colors.primary} 55%, ${colors.secondary} 100%)` }} />
         <div className="absolute inset-0 overflow-hidden">
@@ -649,7 +650,7 @@ export default function HowItWorks() {
               className="text-white/80 text-xl max-w-2xl mx-auto leading-relaxed"
             >
               Join thousands of learners and volunteers making a real difference.
-              Start today — completely free, forever.
+              Start today â€” completely free, forever.
             </motion.p>
 
             <motion.div
@@ -666,7 +667,7 @@ export default function HowItWorks() {
                     style={{ color: colors.title }}
                   >
                     Get Started Free
-                    <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
+                    <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>â†’</motion.span>
                   </motion.button>
                 </Link>
               </Magnetic>
@@ -689,10 +690,10 @@ export default function HowItWorks() {
               className="flex flex-wrap justify-center gap-8 pt-4 text-white/70"
             >
               {[
-                { icon: '🎓', label: 'Free Forever' },
-                { icon: '💬', label: 'Live Support' },
-                { icon: '🚀', label: 'Job-Ready Skills' },
-                { icon: '🌍', label: 'Global Community' },
+                { icon: 'ðŸŽ“', label: 'Free Forever' },
+                { icon: 'ðŸ’¬', label: 'Live Support' },
+                { icon: 'ðŸš€', label: 'Job-Ready Skills' },
+                { icon: 'ðŸŒ', label: 'Global Community' },
               ].map(item => (
                 <div key={item.label} className="flex items-center gap-2">
                   <span className="text-xl">{item.icon}</span>

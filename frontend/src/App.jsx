@@ -1,4 +1,4 @@
-// frontend/src/App.jsx - Complete with feedback routes
+﻿// frontend/src/App.jsx - Complete with feedback routes
 import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';

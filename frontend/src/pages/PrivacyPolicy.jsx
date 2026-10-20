@@ -1,6 +1,7 @@
-// frontend/src/pages/PrivacyPolicy.jsx
+﻿// frontend/src/pages/PrivacyPolicy.jsx
 import { motion } from 'framer-motion';
 import colors from '../theme/colors';
+import SEO from '../components/SEO';
 
 export default function PrivacyPolicy() {
   return (

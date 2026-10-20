@@ -1,5 +1,5 @@
-// frontend/src/pages/Services.jsx
-// Retheme: navy/gold/olive design system (colors.js) — matches Home.jsx / HowItWorks.jsx
+﻿// frontend/src/pages/Services.jsx
+// Retheme: navy/gold/olive design system (colors.js) â€” matches Home.jsx / HowItWorks.jsx
 // Deps: framer-motion (already installed)
 // Fonts: Instrument Serif + DM Sans (in index.html)
 
@@ -15,6 +15,7 @@ import { useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { services } from '../data/services';
 import colors from '../theme/colors';
+import SEO from '../components/SEO';
 
 function NoiseOverlay() {
   return (
@@ -195,11 +196,11 @@ export default function Services() {
             <svg className="absolute inset-0 w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 112 112">
               <path id="srv-ring" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
               <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.gold} fontWeight="500" letterSpacing="3">
-                <textPath href="#srv-ring">22 SKILLS • ALL FREE • 22 SKILLS • ALL FREE • </textPath>
+                <textPath href="#srv-ring">22 SKILLS â€¢ ALL FREE â€¢ 22 SKILLS â€¢ ALL FREE â€¢ </textPath>
               </text>
             </svg>
             <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl" style={{ backgroundColor: colors.gold, boxShadow: '0 10px 25px rgba(212,160,23,0.4)' }}>
-              <span className="text-white text-xl">✦</span>
+              <span className="text-white text-xl">âœ¦</span>
             </div>
           </motion.div>
         </motion.div>
@@ -216,7 +217,7 @@ export default function Services() {
             className="bg-white rounded-2xl shadow-xl shadow-black/5 border border-gray-100 p-4 w-52"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base" style={{ backgroundColor: colors.goldGlow }}>🎓</div>
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base" style={{ backgroundColor: colors.goldGlow }}>ðŸŽ“</div>
               <div>
                 <div className="text-xs font-medium" style={{ color: colors.muted }}>This month</div>
                 <div className="text-sm font-semibold" style={{ color: colors.body }}>420+ enrolled</div>
@@ -300,7 +301,7 @@ export default function Services() {
                 className="text-lg leading-relaxed max-w-lg"
                 style={{ color: colors.muted }}
               >
-                22 comprehensive digital training paths built for people in Gaza —
+                22 comprehensive digital training paths built for people in Gaza â€”
                 from complete beginner to market-ready professional, at zero cost.
               </motion.p>
 
@@ -320,7 +321,7 @@ export default function Services() {
                     >
                       <span className="relative z-10 flex items-center gap-2 text-sm">
                         Start Learning Free
-                        <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
+                        <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>â†’</motion.span>
                       </span>
                     </motion.button>
                   </Link>
@@ -334,7 +335,7 @@ export default function Services() {
                     className="px-8 py-4 border-2 border-gray-300 font-bold rounded-full transition-all duration-300 text-sm hover:border-[#D4A017] hover:text-[#D4A017]"
                     style={{ color: colors.body }}
                   >
-                    Browse All Skills ↓
+                    Browse All Skills â†“
                   </motion.button>
                 </Magnetic>
               </motion.div>
@@ -386,7 +387,7 @@ export default function Services() {
               >
                 <div className="flex items-center justify-between">
                   <div className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-lg" style={{ background: `linear-gradient(135deg, ${colors.gold}, ${colors.goldHover})` }}>
-                    <span className="text-white text-lg">📚</span>
+                    <span className="text-white text-lg">ðŸ“š</span>
                   </div>
                   <span className="text-[10px] font-semibold px-3 py-1 rounded-full tracking-wide uppercase" style={{ backgroundColor: colors.goldLight, color: colors.goldHover }}>
                     22 Tracks
@@ -418,7 +419,7 @@ export default function Services() {
                 </div>
 
                 <div className="flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs mt-1" style={{ backgroundColor: colors.goldLight, color: colors.muted }}>
-                  <span style={{ color: colors.gold }}>✦</span>
+                  <span style={{ color: colors.gold }}>âœ¦</span>
                   <span>All tracks <strong style={{ color: colors.goldHover }}>100% free</strong></span>
                 </div>
               </motion.div>
@@ -428,7 +429,7 @@ export default function Services() {
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
                 className="absolute top-4 right-0 bg-white shadow-xl shadow-black/8 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
               >
-                <span className="text-base">🌍</span>
+                <span className="text-base">ðŸŒ</span>
                 <div>
                   <div className="text-xs font-semibold" style={{ color: colors.body }}>45 Countries</div>
                   <div className="text-[10px]" style={{ color: colors.muted }}>Mentors active</div>
@@ -440,7 +441,7 @@ export default function Services() {
                 transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
                 className="absolute bottom-6 left-0 bg-white shadow-xl shadow-black/8 rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
               >
-                <span className="text-base">🏆</span>
+                <span className="text-base">ðŸ†</span>
                 <div>
                   <div className="text-xs font-semibold" style={{ color: colors.body }}>3,200+ Graduates</div>
                   <div className="text-[10px]" style={{ color: colors.muted }}>hired globally</div>
@@ -475,8 +476,8 @@ export default function Services() {
         >
           {[...CATEGORIES.slice(1), ...CATEGORIES.slice(1)].map((cat, i) => {
             const icon = {
-              Development: '💻', Design: '🎨', Marketing: '📣',
-              Data: '📊', Security: '🔐', Career: '🚀',
+              Development: 'ðŸ’»', Design: 'ðŸŽ¨', Marketing: 'ðŸ“£',
+              Data: 'ðŸ“Š', Security: 'ðŸ”', Career: 'ðŸš€',
             }[cat];
             const doubled = [icon, cat, icon, cat];
             return doubled.map((item, j) => (
@@ -633,7 +634,7 @@ export default function Services() {
                           style={{ color: colors.muted }}
                         >
                           Enroll Free
-                          <motion.span animate={{ x: [0, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>→</motion.span>
+                          <motion.span animate={{ x: [0, 3, 0] }} transition={{ duration: 1.6, repeat: Infinity }}>â†’</motion.span>
                         </motion.span>
                       </div>
                     </div>
@@ -678,7 +679,7 @@ export default function Services() {
             >
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               <span className="text-xs font-semibold text-white/80 tracking-wide uppercase">
-                Start Today — Zero Cost
+                Start Today â€” Zero Cost
               </span>
             </motion.span>
 
@@ -732,7 +733,7 @@ export default function Services() {
                     style={{ color: colors.title }}
                   >
                     Get Started Free
-                    <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>→</motion.span>
+                    <motion.span animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>â†’</motion.span>
                   </motion.button>
                 </Link>
               </Magnetic>
@@ -757,10 +758,10 @@ export default function Services() {
               className="flex flex-wrap justify-center gap-6 pt-4 text-white/70"
             >
               {[
-                { icon: '🎓', label: 'Free Forever' },
-                { icon: '💬', label: 'Live Support' },
-                { icon: '🚀', label: 'Job-Ready Skills' },
-                { icon: '🌍', label: 'Global Mentors' },
+                { icon: 'ðŸŽ“', label: 'Free Forever' },
+                { icon: 'ðŸ’¬', label: 'Live Support' },
+                { icon: 'ðŸš€', label: 'Job-Ready Skills' },
+                { icon: 'ðŸŒ', label: 'Global Mentors' },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
                   <span className="text-xl">{item.icon}</span>

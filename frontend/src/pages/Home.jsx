@@ -1,33 +1,34 @@
-// frontend/src/pages/Home.jsx
-// ─────────────────────────────────────────────────────────────────────────────
+﻿// frontend/src/pages/Home.jsx
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // INSTALL REQUIREMENTS:
 //   npm install framer-motion gsap @studio-freight/lenis split-type
 //   (react-router-dom already installed)
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 import { motion, useScroll, useTransform, useSpring, AnimatePresence, useMotionValue, useAnimationFrame } from 'framer-motion';
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { services } from '../data/services';
 import colors from '../theme/colors';
 import HeroVideo from '../components/HeroVideo';
+import SEO from '../components/SEO';
 
-// ─── FONT IMPORT (add to your index.html or global CSS) ──────────────────────
+// â”€â”€â”€ FONT IMPORT (add to your index.html or global CSS) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-// ─── AVATAR COLOR CYCLE — replaces the old per-instance orange/purple/teal/blue
-//     gradients with the app's three brand colors, cycled for variety ────────
+// â”€â”€â”€ AVATAR COLOR CYCLE â€” replaces the old per-instance orange/purple/teal/blue
+//     gradients with the app's three brand colors, cycled for variety â”€â”€â”€â”€â”€â”€â”€â”€
 const AVATAR_CYCLE = [colors.primary, colors.gold, colors.olive, colors.primaryHover];
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // MAGNETIC BUTTON HOOK
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function useMagnetic(strength = 0.4) {
   const ref = useRef(null);
   const restRect = useRef(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
-  // Cache the button's resting position once per hover — measuring on every
+  // Cache the button's resting position once per hover â€” measuring on every
   // mousemove was chasing the button's own (already-offset) position, which
   // caused a feedback-loop shake instead of a smooth magnetic pull.
   const handleMouseMove = useCallback(() => {}, []);
@@ -41,9 +42,9 @@ function useMagnetic(strength = 0.4) {
   return { ref, x, y, handleMouseMove, handleMouseLeave };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // ANIMATED NUMBER
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function AnimatedNumber({ value, suffix = '' }) {
   const ref = useRef(null);
   const [displayed, setDisplayed] = useState(0);
@@ -74,9 +75,9 @@ function AnimatedNumber({ value, suffix = '' }) {
   return <span ref={ref}>{displayed.toLocaleString()}{suffix}</span>;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // NOISE TEXTURE SVG (inline, no external deps)
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function NoiseOverlay() {
   return (
     <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.035] mix-blend-overlay" xmlns="http://www.w3.org/2000/svg">
@@ -89,9 +90,9 @@ function NoiseOverlay() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // CURSOR BLOB (follows cursor with lerp)
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CursorBlob() {
   const blobRef = useRef(null);
   const pos = useRef({ x: 0, y: 0 });
@@ -124,9 +125,9 @@ function CursorBlob() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // SECTION: HERO
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function Hero() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 0.5], [0, 180]);
@@ -152,7 +153,7 @@ function Hero() {
     >
       <NoiseOverlay />
 
-      {/* Subtle background photo — faded, text stays primary focus */}
+      {/* Subtle background photo â€” faded, text stays primary focus */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -186,7 +187,7 @@ function Hero() {
         className="absolute -right-64 top-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full border pointer-events-none"
       />
 
-      {/* Floating badge — top right corner */}
+      {/* Floating badge â€” top right corner */}
       <motion.div
         initial={{ opacity: 0, x: 40 }}
         animate={{ opacity: 1, x: 0 }}
@@ -202,11 +203,11 @@ function Hero() {
           <svg className="absolute inset-0 w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 112 112">
             <path id="circle-text" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
             <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.gold} fontWeight="500" letterSpacing="3">
-              <textPath href="#circle-text">FREE FOREVER • LEARN TODAY • FREE FOREVER • </textPath>
+              <textPath href="#circle-text">FREE FOREVER â€¢ LEARN TODAY â€¢ FREE FOREVER â€¢ </textPath>
             </text>
           </svg>
           <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl" style={{ backgroundColor: colors.gold }}>
-            <span className="text-white text-xl">✦</span>
+            <span className="text-white text-xl">âœ¦</span>
           </div>
         </motion.div>
       </motion.div>
@@ -233,7 +234,7 @@ function Hero() {
               <div className="h-px flex-1" style={{ backgroundColor: colors.onDarkBorder }} />
             </motion.div>
 
-            {/* HEADLINE — giant serif + word swap */}
+            {/* HEADLINE â€” giant serif + word swap */}
             <div className="space-y-1">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
@@ -258,7 +259,7 @@ function Hero() {
                 <div className="relative overflow-hidden"
                   style={{ height: 'clamp(3.2rem,7vw,6.5rem)' }}
                 >
-                  {/* Invisible sizer — reserves width for the longest word so overflow-hidden doesn't clip to zero */}
+                  {/* Invisible sizer â€” reserves width for the longest word so overflow-hidden doesn't clip to zero */}
                   <span
                     aria-hidden="true"
                     style={{
@@ -319,7 +320,7 @@ function Hero() {
               style={{ fontFamily: "'DM Sans', sans-serif", color: colors.navText }}
             >
               A free platform connecting passionate volunteers worldwide with talented individuals in Gaza.
-              Learn digital skills, build your career, and transform your life — at zero cost.
+              Learn digital skills, build your career, and transform your life â€” at zero cost.
             </motion.p>
 
             {/* CTAs */}
@@ -348,7 +349,7 @@ function Hero() {
                         animate={{ x: [0, 4, 0] }}
                         transition={{ duration: 1.8, repeat: Infinity }}
                         className="inline-block"
-                      >→</motion.span>
+                      >â†’</motion.span>
                     </span>
                   </motion.button>
                 </Link>
@@ -406,14 +407,14 @@ function Hero() {
             </motion.div>
           </div>
 
-          {/* RIGHT — stacked card pile */}
+          {/* RIGHT â€” stacked card pile */}
           <motion.div
             initial={{ opacity: 0, x: 60 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
             className="relative hidden lg:flex items-center justify-center h-[520px]"
           >
-            {/* Card stack — background cards */}
+            {/* Card stack â€” background cards */}
             <motion.div
               animate={{ rotate: [-6, -4, -6] }}
               transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
@@ -429,35 +430,35 @@ function Hero() {
 
             <HeroVideo />
 
-            {/* Floating chip — top-right */}
+            {/* Floating chip â€” top-right */}
             <motion.div
               animate={{ y: [0, -8, 0], x: [0, 4, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
               className="absolute top-4 right-0 shadow-xl rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
               style={{ backgroundColor: colors.card }}
             >
-              <span className="text-base">🌍</span>
+              <span className="text-base">ðŸŒ</span>
               <div>
                 <div className="text-xs font-semibold" style={{ color: colors.body }}>45 Countries</div>
                 <div className="text-[10px]" style={{ color: colors.muted }}>Mentors connected</div>
               </div>
             </motion.div>
 
-            {/* Floating chip — bottom-right */}
+            {/* Floating chip â€” bottom-right */}
             <motion.div
               animate={{ y: [0, 10, 0], x: [0, -4, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
               className="absolute bottom-8 right-0 shadow-xl rounded-2xl px-4 py-2.5 flex items-center gap-2.5 z-20"
               style={{ backgroundColor: colors.card }}
             >
-              <span className="text-base">🏆</span>
+              <span className="text-base">ðŸ†</span>
               <div>
                 <div className="text-xs font-semibold" style={{ color: colors.body }}>3,200 Success Stories</div>
                 <div className="text-[10px]" style={{ color: colors.muted }}>And counting...</div>
               </div>
             </motion.div>
 
-            {/* Floating card — left side, near video stack */}
+            {/* Floating card â€” left side, near video stack */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -471,7 +472,7 @@ function Hero() {
                 style={{ backgroundColor: colors.card, borderColor: colors.cardBorder }}
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base" style={{ backgroundColor: colors.goldLight }}>🚀</div>
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center text-base" style={{ backgroundColor: colors.goldLight }}>ðŸš€</div>
                   <div>
                     <div className="text-xs font-medium" style={{ color: colors.muted }}>This month</div>
                     <div className="text-sm font-semibold" style={{ color: colors.body }}>312 launched careers</div>
@@ -516,11 +517,11 @@ function Hero() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // MARQUEE STRIP
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function MarqueeStrip() {
-  const items = ['Web Development', '✦\uFE0E', 'UI/UX Design', '✦\uFE0E', 'Data Science', '✦\uFE0E', 'Digital Marketing', '✦\uFE0E', 'Freelancing', '✦\uFE0E', 'AI & Machine Learning', '✦\uFE0E', 'Cybersecurity', '✦\uFE0E', 'Mobile Apps', '✦\uFE0E'];
+  const items = ['Web Development', 'âœ¦\uFE0E', 'UI/UX Design', 'âœ¦\uFE0E', 'Data Science', 'âœ¦\uFE0E', 'Digital Marketing', 'âœ¦\uFE0E', 'Freelancing', 'âœ¦\uFE0E', 'AI & Machine Learning', 'âœ¦\uFE0E', 'Cybersecurity', 'âœ¦\uFE0E', 'Mobile Apps', 'âœ¦\uFE0E'];
   const doubled = [...items, ...items];
 
   return (
@@ -534,7 +535,7 @@ function MarqueeStrip() {
           <span
             key={i}
             className="text-sm font-medium tracking-wide"
-            style={{ fontFamily: "'DM Sans', sans-serif", color: item.startsWith('✦') ? colors.gold : colors.onDarkMuted }}
+            style={{ fontFamily: "'DM Sans', sans-serif", color: item.startsWith('âœ¦') ? colors.gold : colors.onDarkMuted }}
           >
             {item}
           </span>
@@ -544,15 +545,15 @@ function MarqueeStrip() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SECTION: STATS — horizontal scroll + counter
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// SECTION: STATS â€” horizontal scroll + counter
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function StatsSection() {
   const stats = [
-    { value: 5000, suffix: '+', label: 'Active Learners', desc: 'from Gaza enrolled today', icon: '🎓' },
-    { value: 850, suffix: '+', label: 'Expert Volunteers', desc: 'from 45 countries', icon: '🙌' },
-    { value: 45, suffix: '', label: 'Countries Reached', desc: 'globally connected', icon: '🌍' },
-    { value: 3200, suffix: '+', label: 'Success Stories', desc: 'lives transformed', icon: '🏆' },
+    { value: 5000, suffix: '+', label: 'Active Learners', desc: 'from Gaza enrolled today', icon: 'ðŸŽ“' },
+    { value: 850, suffix: '+', label: 'Expert Volunteers', desc: 'from 45 countries', icon: 'ðŸ™Œ' },
+    { value: 45, suffix: '', label: 'Countries Reached', desc: 'globally connected', icon: 'ðŸŒ' },
+    { value: 3200, suffix: '+', label: 'Success Stories', desc: 'lives transformed', icon: 'ðŸ†' },
   ];
 
   return (
@@ -606,38 +607,38 @@ function StatsSection() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SECTION: HOW IT WORKS — vertical timeline
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// SECTION: HOW IT WORKS â€” vertical timeline
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function HowItWorksSection() {
   const steps = [
     {
       num: '01',
       title: 'Create Free Account',
-      desc: 'Sign up in under 60 seconds. No credit card, no commitments — just your name and email.',
+      desc: 'Sign up in under 60 seconds. No credit card, no commitments â€” just your name and email.',
       detail: 'Instant access to our full platform on day one.',
-      icon: '👤',
+      icon: 'ðŸ‘¤',
     },
     {
       num: '02',
       title: 'Connect with Mentors',
       desc: 'Get intelligently matched with expert volunteers from top global companies.',
       detail: 'Average match time: under 48 hours.',
-      icon: '🤝',
+      icon: 'ðŸ¤',
     },
     {
       num: '03',
       title: 'Learn & Build',
       desc: 'Access curated resources, live coding sessions, and real-world projects.',
       detail: 'Structured paths that go from zero to job-ready.',
-      icon: '📚',
+      icon: 'ðŸ“š',
     },
     {
       num: '04',
       title: 'Launch Your Career',
       desc: 'Land your first remote job or freelance client with our career support.',
       detail: '85% of graduates report new opportunities within 6 months.',
-      icon: '🚀',
+      icon: 'ðŸš€',
     },
   ];
 
@@ -652,7 +653,7 @@ function HowItWorksSection() {
 
         <div className="grid lg:grid-cols-[1fr_3fr] gap-16 items-start">
 
-          {/* LEFT — sticky heading */}
+          {/* LEFT â€” sticky heading */}
           <div className="lg:sticky lg:top-32">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
@@ -673,7 +674,7 @@ function HowItWorksSection() {
                 <em style={{ color: colors.olive }}>Works</em>
               </h2>
               <p className="leading-relaxed text-sm max-w-xs" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.muted }}>
-                A seamless journey from signup to career launch — crafted for your success.
+                A seamless journey from signup to career launch â€” crafted for your success.
               </p>
               <Link to="/how-it-works">
                 <motion.button
@@ -686,13 +687,13 @@ function HowItWorksSection() {
                   <motion.span
                     animate={{ x: [0, 3, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
-                  >→</motion.span>
+                  >â†’</motion.span>
                 </motion.button>
               </Link>
             </motion.div>
           </div>
 
-          {/* RIGHT — timeline steps */}
+          {/* RIGHT â€” timeline steps */}
           <div className="relative">
             {/* Timeline line */}
             <div className="absolute left-6 top-8 bottom-8 w-px" style={{ backgroundColor: colors.divider }}>
@@ -756,9 +757,9 @@ function HowItWorksSection() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SECTION: SERVICES — masonry-ish bento grid
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// SECTION: SERVICES â€” masonry-ish bento grid
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function ServicesSection() {
   const featured = services.slice(0, 6);
   const sizes = ['lg', 'sm', 'sm', 'sm', 'lg', 'sm']; // alternating bento
@@ -838,7 +839,7 @@ function ServicesSection() {
                     whileHover={{ x: 3 }}
                     className="text-xs transition-colors font-medium hover:text-[#2E7D32]"
                     style={{ color: colors.muted }}
-                  >Explore →</motion.span>
+                  >Explore â†’</motion.span>
                 </div>
               </div>
             </motion.div>
@@ -859,7 +860,7 @@ function ServicesSection() {
               style={{ fontFamily: "'DM Sans', sans-serif", backgroundColor: colors.primary }}
             >
               Browse All 20+ Skills
-              <span>→</span>
+              <span>â†’</span>
             </motion.button>
           </Link>
         </motion.div>
@@ -868,9 +869,9 @@ function ServicesSection() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SECTION: TESTIMONIALS — horizontal scroll carousel
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// SECTION: TESTIMONIALS â€” horizontal scroll carousel
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function TestimonialsSection() {
   const testimonials = [
     {
@@ -886,7 +887,7 @@ function TestimonialsSection() {
       name: "Mohammed K.", role: "Data Analyst @ Tech Co", avatar: "MK",
     },
     {
-      quote: "Within 6 months I was freelancing on international projects. GazaBridge didn't just teach me skills — it gave me confidence and a real income.",
+      quote: "Within 6 months I was freelancing on international projects. GazaBridge didn't just teach me skills â€” it gave me confidence and a real income.",
       name: "Layla A.", role: "Freelance Developer", avatar: "LA",
     },
   ];
@@ -995,17 +996,17 @@ function TestimonialsSection() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SECTION: FEATURES — asymmetric layout
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// SECTION: FEATURES â€” asymmetric layout
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function FeaturesSection() {
   const features = [
-    { title: '100% Free, Forever', desc: 'No hidden costs, no premium tiers. Every resource, mentor, and tool is free.', icon: '🎓' },
-    { title: 'Verified Expert Mentors', desc: 'Every mentor passes a rigorous multi-step verification process.', icon: '✅' },
-    { title: 'Global Community', desc: 'Connect with volunteers and learners from over 45 countries.', icon: '🌍' },
-    { title: 'Real Career Impact', desc: '85% of learners report improved job prospects within 6 months.', icon: '📈' },
-    { title: 'Flexible Pace', desc: 'Learn on your schedule — on-demand resources and live sessions, your way.', icon: '⏰' },
-    { title: 'Dedicated Support', desc: 'Our team is available every step of your journey.', icon: '💬' },
+    { title: '100% Free, Forever', desc: 'No hidden costs, no premium tiers. Every resource, mentor, and tool is free.', icon: 'ðŸŽ“' },
+    { title: 'Verified Expert Mentors', desc: 'Every mentor passes a rigorous multi-step verification process.', icon: 'âœ…' },
+    { title: 'Global Community', desc: 'Connect with volunteers and learners from over 45 countries.', icon: 'ðŸŒ' },
+    { title: 'Real Career Impact', desc: '85% of learners report improved job prospects within 6 months.', icon: 'ðŸ“ˆ' },
+    { title: 'Flexible Pace', desc: 'Learn on your schedule â€” on-demand resources and live sessions, your way.', icon: 'â°' },
+    { title: 'Dedicated Support', desc: 'Our team is available every step of your journey.', icon: 'ðŸ’¬' },
   ];
 
   const containerRef = useRef(null);
@@ -1020,7 +1021,7 @@ function FeaturesSection() {
 
         <div className="grid lg:grid-cols-2 gap-20 items-center">
 
-          {/* Left — heading + feature list */}
+          {/* Left â€” heading + feature list */}
           <motion.div style={{ x: xLeft }}>
             <div className="space-y-8">
               <div>
@@ -1061,7 +1062,7 @@ function FeaturesSection() {
             </div>
           </motion.div>
 
-          {/* Right — more features + big visual */}
+          {/* Right â€” more features + big visual */}
           <motion.div style={{ x: xRight }} className="space-y-8">
 
             {/* Large highlight card */}
@@ -1076,7 +1077,7 @@ function FeaturesSection() {
               <div className="absolute -right-10 -top-10 w-48 h-48 rounded-full blur-2xl" style={{ backgroundColor: colors.overlayStrong }} />
               <div className="absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-2xl" style={{ backgroundColor: colors.overlaySoft }} />
               <div className="relative">
-                <div className="text-5xl mb-4">📈</div>
+                <div className="text-5xl mb-4">ðŸ“ˆ</div>
                 <div
                   className="text-5xl font-bold mb-2"
                   style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
@@ -1115,9 +1116,9 @@ function FeaturesSection() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SECTION: FINAL CTA — cinematic full-bleed
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// SECTION: FINAL CTA â€” cinematic full-bleed
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function FinalCTA() {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start end', 'end start'] });
@@ -1168,7 +1169,7 @@ function FinalCTA() {
             style={{ backgroundColor: colors.goldLight, borderColor: colors.divider }}
           >
             <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: colors.gold }} />
-            <span className="text-xs font-semibold tracking-wide uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.gold }}>Start Today — No Cost</span>
+            <span className="text-xs font-semibold tracking-wide uppercase" style={{ fontFamily: "'DM Sans', sans-serif", color: colors.gold }}>Start Today â€” No Cost</span>
           </motion.div>
 
           <h2
@@ -1216,7 +1217,7 @@ function FinalCTA() {
                   <motion.span
                     animate={{ x: [0, 4, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
-                  >→</motion.span>
+                  >â†’</motion.span>
                 </motion.button>
               </Link>
             </motion.div>
@@ -1249,11 +1250,11 @@ function FinalCTA() {
             className="flex flex-wrap justify-center gap-3"
           >
             {[
-              { icon: '🎓', label: 'Free Forever' },
-              { icon: '💬', label: 'Live Support' },
-              { icon: '🚀', label: 'Job-Ready Skills' },
-              { icon: '🌍', label: 'Global Mentors' },
-              { icon: '⚡', label: 'Start in Minutes' },
+              { icon: 'ðŸŽ“', label: 'Free Forever' },
+              { icon: 'ðŸ’¬', label: 'Live Support' },
+              { icon: 'ðŸš€', label: 'Job-Ready Skills' },
+              { icon: 'ðŸŒ', label: 'Global Mentors' },
+              { icon: 'âš¡', label: 'Start in Minutes' },
             ].map((item, i) => (
               <motion.div
                 key={item.label}
@@ -1275,9 +1276,9 @@ function FinalCTA() {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // ROOT EXPORT
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function Home() {
   return (
     <>

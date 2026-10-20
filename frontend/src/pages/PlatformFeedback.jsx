@@ -1,4 +1,4 @@
-// frontend/src/pages/PlatformFeedback.jsx
+﻿// frontend/src/pages/PlatformFeedback.jsx
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import RatingSummaryCard from '../components/RatingSummaryCard';
 import FeedbackList from '../components/FeedbackList';
 import colors from '../theme/colors';
+import SEO from '../components/SEO';
 
 export default function PlatformFeedback() {
     const { isAuthenticated } = useAuth();
@@ -49,7 +50,7 @@ export default function PlatformFeedback() {
                         className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6"
                         style={{ backgroundColor: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)' }}
                     >
-                        <span className="text-2xl">🌟</span>
+                        <span className="text-2xl">ðŸŒŸ</span>
                         <span className="text-xs font-semibold tracking-wide uppercase" style={{ color: colors.navText }}>
                             Community Feedback
                         </span>
@@ -108,7 +109,7 @@ export default function PlatformFeedback() {
                                     className="rounded-2xl p-4 text-center shadow-sm"
                                     style={{ backgroundColor: colors.card }}
                                 >
-                                    <div className="text-3xl mb-2">💡</div>
+                                    <div className="text-3xl mb-2">ðŸ’¡</div>
                                     <div className="text-2xl font-bold" style={{ color: colors.headingDark }}>
                                         500+
                                     </div>
@@ -121,7 +122,7 @@ export default function PlatformFeedback() {
                                     className="rounded-2xl p-4 text-center shadow-sm"
                                     style={{ backgroundColor: colors.card }}
                                 >
-                                    <div className="text-3xl mb-2">🚀</div>
+                                    <div className="text-3xl mb-2">ðŸš€</div>
                                     <div className="text-2xl font-bold" style={{ color: colors.headingDark }}>
                                         85%
                                     </div>

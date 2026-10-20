@@ -1,39 +1,40 @@
-// frontend/src/pages/Mission.jsx
+﻿// frontend/src/pages/Mission.jsx
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import colors from '../theme/colors';
+import SEO from '../components/SEO';
 import { useAppTranslation } from '../hooks/useAppTranslation';
 
 const missionPoints = [
   {
     title: 'Free Education for All',
     description: 'We believe that financial barriers should never prevent anyone from accessing quality education and building a better future.',
-    icon: '🎓',
+    icon: 'ðŸŽ“',
   },
   {
     title: 'Bridge the Digital Divide',
     description: 'By connecting skilled volunteers with learners in Gaza, we create pathways to the global digital economy.',
-    icon: '🌉',
+    icon: 'ðŸŒ‰',
   },
   {
     title: 'Empower Through Skills',
-    description: 'Digital skills open doors to remote work, freelancing, and entrepreneurship — creating sustainable livelihoods.',
-    icon: '💪',
+    description: 'Digital skills open doors to remote work, freelancing, and entrepreneurship â€” creating sustainable livelihoods.',
+    icon: 'ðŸ’ª',
   },
   {
     title: 'Build Global Community',
     description: 'We foster cross-cultural connections and understanding through shared learning and mutual support.',
-    icon: '🌍',
+    icon: 'ðŸŒ',
   },
   {
     title: 'Create Lasting Impact',
     description: 'When one person learns, they teach others. We create ripple effects that strengthen entire communities.',
-    icon: '🎯',
+    icon: 'ðŸŽ¯',
   },
   {
     title: 'Maintain Transparency',
-    description: 'We operate with complete transparency — no hidden costs, no premium features, just genuine help.',
-    icon: '✨',
+    description: 'We operate with complete transparency â€” no hidden costs, no premium features, just genuine help.',
+    icon: 'âœ¨',
   },
 ];
 
@@ -41,12 +42,12 @@ export default function Mission() {
   const { t, language } = useAppTranslation();
   const pointTranslations = language === 'ar'
     ? [
-      ['تعليم مجاني للجميع', 'نؤمن بأن العوائق المالية يجب ألا تمنع أي شخص من الوصول إلى التعليم الجيد وبناء مستقبل أفضل.'],
-      ['سد الفجوة الرقمية', 'من خلال ربط المتطوعين المهرة بالمتعلمين في غزة، نفتح طرقاً إلى الاقتصاد الرقمي العالمي.'],
-      ['التمكين من خلال المهارات', 'تفتح المهارات الرقمية أبواب العمل عن بُعد والعمل الحر وريادة الأعمال، مما يخلق سبل عيش مستدامة.'],
-      ['بناء مجتمع عالمي', 'نعزز التواصل والتفاهم بين الثقافات من خلال التعلم المشترك والدعم المتبادل.'],
-      ['إحداث أثر مستدام', 'عندما يتعلم شخص واحد، فإنه يعلّم الآخرين. نخلق آثاراً ممتدة تقوي المجتمعات بأكملها.'],
-      ['الشفافية', 'نعمل بشفافية كاملة، بلا تكاليف خفية أو ميزات مدفوعة، بل نقدم مساعدة حقيقية.'],
+      ['ØªØ¹Ù„ÙŠÙ… Ù…Ø¬Ø§Ù†ÙŠ Ù„Ù„Ø¬Ù…ÙŠØ¹', 'Ù†Ø¤Ù…Ù† Ø¨Ø£Ù† Ø§Ù„Ø¹ÙˆØ§Ø¦Ù‚ Ø§Ù„Ù…Ø§Ù„ÙŠØ© ÙŠØ¬Ø¨ Ø£Ù„Ø§ ØªÙ…Ù†Ø¹ Ø£ÙŠ Ø´Ø®Øµ Ù…Ù† Ø§Ù„ÙˆØµÙˆÙ„ Ø¥Ù„Ù‰ Ø§Ù„ØªØ¹Ù„ÙŠÙ… Ø§Ù„Ø¬ÙŠØ¯ ÙˆØ¨Ù†Ø§Ø¡ Ù…Ø³ØªÙ‚Ø¨Ù„ Ø£ÙØ¶Ù„.'],
+      ['Ø³Ø¯ Ø§Ù„ÙØ¬ÙˆØ© Ø§Ù„Ø±Ù‚Ù…ÙŠØ©', 'Ù…Ù† Ø®Ù„Ø§Ù„ Ø±Ø¨Ø· Ø§Ù„Ù…ØªØ·ÙˆØ¹ÙŠÙ† Ø§Ù„Ù…Ù‡Ø±Ø© Ø¨Ø§Ù„Ù…ØªØ¹Ù„Ù…ÙŠÙ† ÙÙŠ ØºØ²Ø©ØŒ Ù†ÙØªØ­ Ø·Ø±Ù‚Ø§Ù‹ Ø¥Ù„Ù‰ Ø§Ù„Ø§Ù‚ØªØµØ§Ø¯ Ø§Ù„Ø±Ù‚Ù…ÙŠ Ø§Ù„Ø¹Ø§Ù„Ù…ÙŠ.'],
+      ['Ø§Ù„ØªÙ…ÙƒÙŠÙ† Ù…Ù† Ø®Ù„Ø§Ù„ Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª', 'ØªÙØªØ­ Ø§Ù„Ù…Ù‡Ø§Ø±Ø§Øª Ø§Ù„Ø±Ù‚Ù…ÙŠØ© Ø£Ø¨ÙˆØ§Ø¨ Ø§Ù„Ø¹Ù…Ù„ Ø¹Ù† Ø¨ÙØ¹Ø¯ ÙˆØ§Ù„Ø¹Ù…Ù„ Ø§Ù„Ø­Ø± ÙˆØ±ÙŠØ§Ø¯Ø© Ø§Ù„Ø£Ø¹Ù…Ø§Ù„ØŒ Ù…Ù…Ø§ ÙŠØ®Ù„Ù‚ Ø³Ø¨Ù„ Ø¹ÙŠØ´ Ù…Ø³ØªØ¯Ø§Ù…Ø©.'],
+      ['Ø¨Ù†Ø§Ø¡ Ù…Ø¬ØªÙ…Ø¹ Ø¹Ø§Ù„Ù…ÙŠ', 'Ù†Ø¹Ø²Ø² Ø§Ù„ØªÙˆØ§ØµÙ„ ÙˆØ§Ù„ØªÙØ§Ù‡Ù… Ø¨ÙŠÙ† Ø§Ù„Ø«Ù‚Ø§ÙØ§Øª Ù…Ù† Ø®Ù„Ø§Ù„ Ø§Ù„ØªØ¹Ù„Ù… Ø§Ù„Ù…Ø´ØªØ±Ùƒ ÙˆØ§Ù„Ø¯Ø¹Ù… Ø§Ù„Ù…ØªØ¨Ø§Ø¯Ù„.'],
+      ['Ø¥Ø­Ø¯Ø§Ø« Ø£Ø«Ø± Ù…Ø³ØªØ¯Ø§Ù…', 'Ø¹Ù†Ø¯Ù…Ø§ ÙŠØªØ¹Ù„Ù… Ø´Ø®Øµ ÙˆØ§Ø­Ø¯ØŒ ÙØ¥Ù†Ù‡ ÙŠØ¹Ù„Ù‘Ù… Ø§Ù„Ø¢Ø®Ø±ÙŠÙ†. Ù†Ø®Ù„Ù‚ Ø¢Ø«Ø§Ø±Ø§Ù‹ Ù…Ù…ØªØ¯Ø© ØªÙ‚ÙˆÙŠ Ø§Ù„Ù…Ø¬ØªÙ…Ø¹Ø§Øª Ø¨Ø£ÙƒÙ…Ù„Ù‡Ø§.'],
+      ['Ø§Ù„Ø´ÙØ§ÙÙŠØ©', 'Ù†Ø¹Ù…Ù„ Ø¨Ø´ÙØ§ÙÙŠØ© ÙƒØ§Ù…Ù„Ø©ØŒ Ø¨Ù„Ø§ ØªÙƒØ§Ù„ÙŠÙ Ø®ÙÙŠØ© Ø£Ùˆ Ù…ÙŠØ²Ø§Øª Ù…Ø¯ÙÙˆØ¹Ø©ØŒ Ø¨Ù„ Ù†Ù‚Ø¯Ù… Ù…Ø³Ø§Ø¹Ø¯Ø© Ø­Ù‚ÙŠÙ‚ÙŠØ©.'],
     ]
     : missionPoints.map(point => [point.title, point.description]);
   return (

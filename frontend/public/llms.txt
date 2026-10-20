@@ -1,0 +1,26 @@
+﻿# GazaBridge
+
+> A volunteer-driven global platform connecting people in Palestine with worldwide mentors, educators, and resources through digital education, live sessions, and community support.
+
+## Main Website
+- Website: https://gazabridge.netlify.app/
+
+## Mission
+GazaBridge connects individuals in Gaza with international volunteers offering free educational mentorship, skill training, technical workshops, and real-time community engagement.
+
+## Public Landing Pages
+- Homepage: https://gazabridge.netlify.app/
+- About Us: https://gazabridge.netlify.app/about
+- How It Works: https://gazabridge.netlify.app/how-it-works
+- Services: https://gazabridge.netlify.app/services
+- Mission: https://gazabridge.netlify.app/mission
+- FAQ: https://gazabridge.netlify.app/faq
+- Feedback: https://gazabridge.netlify.app/feedback
+
+## Core Offerings
+- Mentorship & 1-on-1 Sessions: Direct guidance from global industry professionals.
+- Digital Education & Courses: Technical, creative, and professional learning tracks.
+- Community Collaboration: Real-time chat, group discussions, and shared learning materials.
+
+## Organization Type
+Non-Profit / Humanitarian Global Education Initiative.

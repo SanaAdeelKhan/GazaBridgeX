@@ -1,6 +1,7 @@
-// frontend/src/pages/TermsOfService.jsx
+﻿// frontend/src/pages/TermsOfService.jsx
 import { motion } from 'framer-motion';
 import colors from '../theme/colors';
+import SEO from '../components/SEO';
 
 export default function TermsOfService() {
   return (

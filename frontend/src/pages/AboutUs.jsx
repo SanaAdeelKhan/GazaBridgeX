@@ -1,11 +1,12 @@
-// frontend/src/pages/AboutUs.jsx
-// Retheme: navy/gold/olive design system (colors.js) — matches Home.jsx / HowItWorks.jsx / Services.jsx
+﻿// frontend/src/pages/AboutUs.jsx
+// Retheme: navy/gold/olive design system (colors.js) â€” matches Home.jsx / HowItWorks.jsx / Services.jsx
 
 import { motion, useScroll, useTransform, useMotionValue } from 'framer-motion';
 import { useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { teamMembers } from '../data/team';
 import colors from '../theme/colors';
+import SEO from '../components/SEO';
 
 function useMagnetic(strength = 0.4) {
   const ref = useRef(null);
@@ -78,11 +79,11 @@ export default function AboutUs() {
           <svg className="absolute inset-0 w-full h-full animate-[spin_14s_linear_infinite]" viewBox="0 0 112 112">
             <path id="circle-a" d="M 56,56 m -40,0 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="none" />
             <text fontSize="10" fontFamily="DM Sans, sans-serif" fill={colors.gold} fontWeight="500" letterSpacing="3">
-              <textPath href="#circle-a">OUR TEAM • SINCE 2023 • OUR TEAM • SINCE 2023 • </textPath>
+              <textPath href="#circle-a">OUR TEAM â€¢ SINCE 2023 â€¢ OUR TEAM â€¢ SINCE 2023 â€¢ </textPath>
             </text>
           </svg>
           <div className="w-14 h-14 rounded-full flex items-center justify-center shadow-xl" style={{ backgroundColor: colors.gold, boxShadow: '0 10px 25px rgba(212,160,23,0.4)' }}>
-            <span className="text-white text-xl">✦</span>
+            <span className="text-white text-xl">âœ¦</span>
           </div>
         </motion.div>
 
@@ -130,7 +131,7 @@ export default function AboutUs() {
                 })}
               </div>
               <span className="text-sm" style={{ color: colors.muted }}>
-                <span className="font-semibold" style={{ color: colors.body }}>{teamMembers.length} team members</span> — and growing
+                <span className="font-semibold" style={{ color: colors.body }}>{teamMembers.length} team members</span> â€” and growing
               </span>
             </div>
           </motion.div>
@@ -168,7 +169,7 @@ export default function AboutUs() {
                     style={{ fontFamily: "'Instrument Serif', Georgia, serif" }}
                   >45+</div>
                   <div className="text-sm leading-relaxed" style={{ color: colors.onDarkMuted }}>
-                    Countries with volunteers who believe that talent is universal — but opportunity isn't.
+                    Countries with volunteers who believe that talent is universal â€” but opportunity isn't.
                   </div>
                   <div className="mt-5 flex gap-1">
                     {[70, 85, 60, 95, 75, 90, 65].map((h, i) => (
@@ -195,11 +196,11 @@ export default function AboutUs() {
                 },
                 {
                   label: 'The Gap',
-                  text: `At the same time, countless professionals worldwide wanted to help but didn't know how to connect meaningfully. There was no bridge — just distance and frustration on both sides.`,
+                  text: `At the same time, countless professionals worldwide wanted to help but didn't know how to connect meaningfully. There was no bridge â€” just distance and frustration on both sides.`,
                 },
                 {
                   label: 'The Solution',
-                  text: `Our platform bridges this gap, making it easy for volunteers to share their skills and for learners to access world-class education — all completely free. We believe that by empowering individuals with digital skills, we can help build a more resilient and prosperous future for Gaza.`,
+                  text: `Our platform bridges this gap, making it easy for volunteers to share their skills and for learners to access world-class education â€” all completely free. We believe that by empowering individuals with digital skills, we can help build a more resilient and prosperous future for Gaza.`,
                 },
               ].map((block, i) => (
                 <motion.div
@@ -329,7 +330,7 @@ export default function AboutUs() {
                           whileHover={{ x: 3 }}
                           className="text-xs font-semibold text-gray-300 transition-colors cursor-pointer hover:text-[#D4A017]"
                         >
-                          Connect →
+                          Connect â†’
                         </motion.div>
                       )}
                     </div>
@@ -345,10 +346,10 @@ export default function AboutUs() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-px rounded-3xl overflow-hidden" style={{ backgroundColor: colors.divider }}>
             {[
-              { icon: '🎓', title: 'Education First', desc: "Every decision we make is guided by what's best for our learners." },
-              { icon: '🤝', title: 'Radical Generosity', desc: 'Free. Always. No exceptions, no upsells, no gated content.' },
-              { icon: '🌍', title: 'Borderless', desc: "Knowledge doesn't need a visa. Neither does our platform." },
-              { icon: '⚡', title: 'Real Impact', desc: 'We measure success in career outcomes, not website visits.' },
+              { icon: 'ðŸŽ“', title: 'Education First', desc: "Every decision we make is guided by what's best for our learners." },
+              { icon: 'ðŸ¤', title: 'Radical Generosity', desc: 'Free. Always. No exceptions, no upsells, no gated content.' },
+              { icon: 'ðŸŒ', title: 'Borderless', desc: "Knowledge doesn't need a visa. Neither does our platform." },
+              { icon: 'âš¡', title: 'Real Impact', desc: 'We measure success in career outcomes, not website visits.' },
             ].map((v, i) => (
               <motion.div
                 key={v.title}
@@ -429,7 +430,7 @@ export default function AboutUs() {
                         animate={{ x: [0, 4, 0] }}
                         transition={{ duration: 1.5, repeat: Infinity }}
                         className="inline-block"
-                      >→</motion.span>
+                      >â†’</motion.span>
                     </span>
                   </motion.button>
                 </Link>

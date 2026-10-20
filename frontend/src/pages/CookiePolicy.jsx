@@ -1,6 +1,7 @@
-// frontend/src/pages/CookiePolicy.jsx
+﻿// frontend/src/pages/CookiePolicy.jsx
 import { motion } from 'framer-motion';
 import colors from '../theme/colors';
+import SEO from '../components/SEO';
 
 export default function CookiePolicy() {
   return (
